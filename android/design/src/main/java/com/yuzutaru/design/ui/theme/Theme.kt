@@ -1,4 +1,4 @@
-package com.yuzutaru.levela.ui.theme
+package com.yuzutaru.design.ui.theme
 
 import android.app.Activity
 import android.os.Build
