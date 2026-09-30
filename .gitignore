@@ -1,2 +1,8 @@
 .DS_Store
 .kotlin/
+
+# Raw font source downloads (bundled copies live in android/design/src/main/res/font)
+/Inter/
+/Plus_Jakarta_Sans/
+/Poppins/
+/Urbanist/
