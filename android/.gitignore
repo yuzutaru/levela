@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# graphify knowledge-graph output (generated, machine-local)
+/graphify-out/
