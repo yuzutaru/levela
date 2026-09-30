@@ -1,6 +1,6 @@
 # Levela
 
-Cross-platform app: Android (Kotlin + Jetpack Compose) and iOS (SwiftUI + SwiftData).
+Cross-platform app: Android (Kotlin + Jetpack Compose) and iOS (SwiftUI).
 
 ## Requirements
 
@@ -27,5 +27,5 @@ Or open `ios/Levela.xcodeproj` in Xcode and run.
 
 ## Project layout
 
-- `android/` — Android application (Kotlin, Jetpack Compose)
-- `ios/` — iOS application (SwiftUI, SwiftData)
+- `android/` — Android application (Kotlin, Jetpack Compose). Modules: `:app`, `:design`.
+- `ios/` — iOS application (SwiftUI). Modules: `Levela` app + local packages `Design`, `Onboarding`.
