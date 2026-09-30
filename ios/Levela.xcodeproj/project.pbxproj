@@ -6,6 +6,11 @@
 	objectVersion = 110;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		AA00000000000000000000D5 /* Design in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000D3 /* Design */; };
+		AA00000000000000000000D6 /* Onboarding in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000D4 /* Onboarding */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		21F13905306DD1B000DCCF15 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -51,6 +56,8 @@
 		21F138F2306DD1AF00DCCF15 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				AA00000000000000000000D5 /* Design in Frameworks */,
+				AA00000000000000000000D6 /* Onboarding in Frameworks */,
 			);
 		};
 		21F13901306DD1B000DCCF15 /* Frameworks */ = {
@@ -103,6 +110,10 @@
 				21F138F7306DD1AF00DCCF15 /* Levela */,
 			);
 			name = Levela;
+			packageProductDependencies = (
+				AA00000000000000000000D3 /* Design */,
+				AA00000000000000000000D4 /* Onboarding */,
+			);
 			productName = Levela;
 			productReference = 21F138F5306DD1AF00DCCF15 /* Levela.app */;
 			productType = "com.apple.product-type.application";
@@ -181,6 +192,10 @@
 			);
 			mainGroup = 21F138EC306DD1AF00DCCF15;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				AA00000000000000000000D1 /* XCLocalSwiftPackageReference "Packages/Design" */,
+				AA00000000000000000000D2 /* XCLocalSwiftPackageReference "Packages/Onboarding" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 21F138F6306DD1AF00DCCF15 /* Products */;
 			projectDirPath = "";
@@ -548,6 +563,28 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		AA00000000000000000000D1 /* XCLocalSwiftPackageReference "Packages/Design" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Design;
+		};
+		AA00000000000000000000D2 /* XCLocalSwiftPackageReference "Packages/Onboarding" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Onboarding;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AA00000000000000000000D3 /* Design */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Design;
+		};
+		AA00000000000000000000D4 /* Onboarding */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Onboarding;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 21F138ED306DD1AF00DCCF15 /* Project object */;
 	validationLevel = 1;
