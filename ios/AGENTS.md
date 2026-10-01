@@ -6,7 +6,8 @@ structure changes.
 ## What this is
 
 Levela's iOS app: SwiftUI, single-window, iOS 18+. The Android app lives in
-`../android/` (Kotlin + Jetpack Compose) and is out of scope here.
+`../android/` (Kotlin + Jetpack Compose) and is out of scope here; its agent
+guide is at `../android/AGENTS.md`.
 
 ## Module layout
 
@@ -53,6 +54,10 @@ All theme code is in `Packages/Design/Sources/Design/`:
 | `Typography.swift` | `LevelaTypography`: the type scale mapping roles → families. |
 | `Theme.swift` | `LevelaColors` (light/dark), the `levelaColors` environment value, and the `levelaTheme()` view modifier. |
 
+`Design` maps 1:1 to Android's `:design` module (same palette, font families, and
+role→family mapping); the graphify graph in `graphify-out/` is the iOS counterpart
+of the one built under `../android/graphify-out/`.
+
 Typography convention (mirrors Android):
 
 - Headings (`display*`, `headline*`, `title*`) use **Poppins**.
@@ -85,3 +90,18 @@ PostScript name.
   (e.g. `OnboardingRoute`) so the app never reaches into feature internals.
 - Persistence (SwiftData) is intentionally not wired yet; add a dedicated
   `Core`/`Persistence` package when a feature actually needs it.
+
+## Knowledge graph (graphify)
+
+A graphify knowledge graph can be generated in `graphify-out/`. That directory is
+**gitignored** — it is local generated output, not committed:
+
+- `graph.html` — interactive graph, open in a browser.
+- `GRAPH_REPORT.md` — community/god-node audit.
+- `graph.json` — raw nodes/edges.
+
+Generate or refresh it from this directory with `/graphify ios`. Extraction is
+structural (Swift AST, no LLM key) plus semantic extraction of this `AGENTS.md`,
+so it rebuilds cheaply. Prefer `graphify query "<question>"` over re-reading files
+for architecture questions, and never edit `graphify-out/` by hand — regenerate it
+instead.
