@@ -15,3 +15,6 @@ xcuserdata/
 # Swift Package Manager
 .build/
 .swiftpm/
+
+# graphify knowledge-graph output (generated, machine-local)
+/graphify-out/
