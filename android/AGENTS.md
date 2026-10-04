@@ -61,6 +61,30 @@ below that it falls back to the light/dark `ColorScheme`s in `Theme.kt`.
 Fonts live in `design/src/main/res/font/`. The raw font downloads are gitignored
 at the repo root; only the bundled `.ttf` files are tracked.
 
+## App icon
+
+Launcher icons are **generated** — do not hand-edit `app/src/main/res/mipmap-*`,
+`drawable-*/ic_launcher_foreground.png`, or `drawable-*/ic_launcher_monochrome.png`.
+They come from the shared contract in `../assets/app-icon/`:
+
+```sh
+./scripts/generate_icons.sh            # regenerate Android + iOS, then verify
+./scripts/generate_icons.sh --verify   # check without writing
+```
+
+The adaptive icon (`mipmap-anydpi-v26/ic_launcher{,_round}.xml`) composes
+`@color/ic_launcher_background`, the safe-zone foreground layer, and an Android 13
+monochrome layer. See [`../assets/app-icon/README.md`](../assets/app-icon/README.md).
+
+## Theme colors
+
+The design system still uses the Material template palette (`Purple80`/`Pink40`).
+The **target** dark purple/yellow palette is specified in
+[`../THEME_COLORS.md`](../THEME_COLORS.md) and is **not yet wired into `Color.kt`**.
+
+Related docs: [`../ios/AGENTS.md`](../ios/AGENTS.md) (iOS counterpart),
+[`../README.md`](../README.md) (project overview).
+
 ## Conventions
 
 - Compose-only UI; no XML layouts. `@Preview` composables accompany UI code.
