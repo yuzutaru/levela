@@ -30,7 +30,10 @@ Or open `ios/Levela.xcodeproj` in Xcode and run.
 - `android/` — Android application (Kotlin, Jetpack Compose). Modules: `:app`, `:design`.
 - `ios/` — iOS application (SwiftUI). Modules: `Levela` app + local packages `Design`, `Onboarding`.
 - `assets/app-icon/` — master app icon + the contract that drives both platforms' icons.
+- `assets/theme-colors/` — reference imagery for the theme-color spec.
 - `scripts/` — repo tooling, including `generate_icons.sh`.
+- `THEME_COLORS.md` — proposed app color palette (not yet wired into code).
+- `android/AGENTS.md`, `ios/AGENTS.md` — per-platform agent guides.
 
 ## App icon
 
@@ -40,3 +43,20 @@ two platforms can't mismatch. See [`assets/app-icon/README.md`](assets/app-icon/
 ```sh
 ./scripts/generate_icons.sh
 ```
+
+## Theme
+
+The Design system on both platforms currently uses the Material template palette
+(`Purple80`/`Pink40`). The target dark purple/yellow palette is specified in
+[`THEME_COLORS.md`](THEME_COLORS.md) (**proposed**, not yet wired into code). The
+design reference is [`assets/theme-colors/reference.png`](assets/theme-colors/reference.png).
+
+## Documentation
+
+| Document | Purpose |
+| --- | --- |
+| [`README.md`](README.md) | Project overview, build, and layout. |
+| [`android/AGENTS.md`](android/AGENTS.md) | Android module layout, design system, conventions. |
+| [`ios/AGENTS.md`](ios/AGENTS.md) | iOS module layout, design system, conventions. |
+| [`THEME_COLORS.md`](THEME_COLORS.md) | Target app color palette (proposed). |
+| [`assets/app-icon/README.md`](assets/app-icon/README.md) | App-icon contract, generator, and outputs. |
