@@ -79,6 +79,30 @@ PostScript name.
 > PostScript names are `Inter24pt-*`, not `Inter-*`. `Fonts.swift` accounts for
 > this; keep it in sync if the font files change.
 
+## App icon
+
+App icons are **generated** — do not hand-edit
+`Levela/Assets.xcassets/AppIcon.appiconset/`. The set (`AppIcon-1024.png` for
+light, `-dark`, `-tinted`) comes from the shared contract in `../assets/app-icon/`:
+
+```sh
+./scripts/generate_icons.sh            # regenerate Android + iOS, then verify
+./scripts/generate_icons.sh --verify   # check without writing
+```
+
+Light is opaque, dark has a transparent background (the system draws it), and
+tinted is opaque grayscale on black — matching Apple's iOS 18 requirements. See
+[`../assets/app-icon/README.md`](../assets/app-icon/README.md).
+
+## Theme colors
+
+The design system still uses the Material template palette (`purple80`/`pink40`).
+The **target** dark purple/yellow palette is specified in
+[`../THEME_COLORS.md`](../THEME_COLORS.md) and is **not yet wired into `Color.swift`**.
+
+Related docs: [`../android/AGENTS.md`](../android/AGENTS.md) (Android counterpart),
+[`../README.md`](../README.md) (project overview).
+
 ## Conventions
 
 - SwiftUI only; no storyboards. `#Preview` accompanies UI code.
