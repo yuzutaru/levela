@@ -7,8 +7,6 @@
 > and [`ios/Packages/Design/Sources/Design/Color.swift`](ios/Packages/Design/Sources/Design/Color.swift).
 > This document is the **target** palette to migrate to — treat the code as the
 > source of truth until the migration lands.
->
-> Design reference: [`assets/theme-colors/reference.png`](assets/theme-colors/reference.png)
 
 This document defines the extracted color palette using primitive scale names (e.g., `Purple950`, `Yellow100`), semantic theme tokens, and native setup code for **Android (Jetpack Compose)** and **iOS (SwiftUI & UIKit)**.
 
