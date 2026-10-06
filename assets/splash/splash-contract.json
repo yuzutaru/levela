@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "description": "Single source of truth for the Levela splash (launch welcome) flow. scripts/generate_splash_assets.sh derives the logo mark from the shared app-icon source; scripts/verify_splash_parity.sh checks that the Android and iOS Splash features expose the same stages, timings, copy and colours, and that the generated logo exists. Colour names refer to the primitive labels in THEME_COLORS.md. Change a value here, re-run the generator, and both platforms stay in sync.",
+  "source": "assets/app-icon/source.png",
+  "generator": "scripts/generate_splash_assets.sh",
+  "verifier": "scripts/verify_splash_parity.sh",
+  "themeReference": "THEME_COLORS.md",
+
+  "flow": {
+    "stages": ["brand", "welcome", "actions"],
+    "autoAdvanceMs": { "brand": 1200, "welcome": 1200 },
+    "showEveryLaunch": true
+  },
+
+  "text": {
+    "titleLine1": "Start your",
+    "titleLine2": "Fitness Journey",
+    "login": "Login",
+    "register": "Register",
+    "guest": "Continue as a guest"
+  },
+
+  "palette": {
+    "Purple800": "#483B52",
+    "Purple950": "#282237",
+    "Purple900": "#2C263A",
+    "Purple700": "#494357",
+    "Yellow100": "#EBF59F",
+    "Lavender200": "#C5BFCF",
+    "Gray200": "#DDDCDF"
+  },
+
+  "colors": {
+    "backgroundGradient": ["Purple800", "Purple950", "Purple900"],
+    "backgroundGlow": "Purple800",
+    "title": "White",
+    "logo": "Lavender200",
+    "loginBackground": "Purple700",
+    "loginText": "Gray200",
+    "registerBackground": "White",
+    "registerText": "Purple950",
+    "guestText": "Lavender200"
+  },
+
+  "logo": {
+    "runnerRegion": [910, 313, 144, 158],
+    "lumaThreshold": 155,
+    "canvas": 256,
+    "ringOuterRadius": 124,
+    "ringInnerRadius": 117,
+    "runnerBox": 150,
+    "opacity": 0.5,
+    "sizeDp": 64
+  },
+
+  "targets": {
+    "android": {
+      "module": ":splash",
+      "namespace": "com.yuzutaru.splash",
+      "tokensFile": "android/splash/src/main/java/com/yuzutaru/splash/SplashTokens.kt",
+      "designColorFile": "android/design/src/main/java/com/yuzutaru/design/ui/theme/Color.kt",
+      "drawableDirTemplate": "android/splash/src/main/res/drawable-{density}",
+      "file": "ic_splash_logo.png",
+      "densities": {
+        "mdpi": 64,
+        "hdpi": 96,
+        "xhdpi": 128,
+        "xxhdpi": 192,
+        "xxxhdpi": 256
+      }
+    },
+    "ios": {
+      "package": "Splash",
+      "tokensFile": "ios/Packages/Splash/Sources/Splash/SplashTokens.swift",
+      "designColorFile": "ios/Packages/Design/Sources/Design/Color.swift",
+      "path": "ios/Packages/Splash/Sources/Splash/Resources/ic_splash_logo.png",
+      "size": 192
+    }
+  }
+}
