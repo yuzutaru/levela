@@ -11,20 +11,23 @@ guide is at `../android/AGENTS.md`.
 
 ## Module layout
 
-Three Swift modules. The app and its two features are separate **local Swift
+Four Swift modules. The app and its feature packages are separate **local Swift
 packages**, so module boundaries are real compile boundaries — the iOS analogue
 of the Android Gradle modules.
 
 - **`Levela`** (app target) — the application shell.
   - `Levela/LevelaApp.swift` — `@main` entry; registers fonts, shows `LevelaRootView`.
   - `Levela/LevelaRootView.swift` — owns the `NavigationStack`, applies `.levelaTheme()`.
-  - Links the two local packages.
+  - Links the local packages.
 - **`Design`** — local Swift package at `Packages/Design`; the shared design system.
 - **`Onboarding`** — local Swift package at `Packages/Onboarding`; the onboarding
   feature. Depends on `Design`.
+- **`Splash`** — local Swift package at `Packages/Splash`; the launch welcome
+  flow. Depends on `Design`. The Android counterpart is the `:splash` module.
 
-Dependency direction: `Levela → Design`, `Levela → Onboarding`,
-`Onboarding → Design`. Features never depend on each other or on the app.
+Dependency direction: `Levela → Design`, `Levela → Onboarding`, `Levela → Splash`,
+`Onboarding → Design`, `Splash → Design`. Features never depend on each other or
+on the app.
 
 ## Build & run
 
@@ -38,7 +41,8 @@ Or open `Levela.xcodeproj` in Xcode and run.
 - Deployment target: iOS 18; Swift language mode 5 (`swiftLanguageModes: [.v5]`
   in each `Package.swift`, matching the app's `SWIFT_VERSION = 5.0`).
 - The packages are referenced from the project via `XCLocalSwiftPackageReference`
-  (`Packages/Design`, `Packages/Onboarding`) and linked to the `Levela` target.
+  (`Packages/Design`, `Packages/Onboarding`, `Packages/Splash`) and linked to the
+  `Levela` target.
 - The Xcode project uses file-system-synchronized groups: files under `Levela/`
   are picked up automatically — no need to edit `project.pbxproj` to add sources
   there. Adding a *new package* does require editing the project.
@@ -49,7 +53,7 @@ All theme code is in `Packages/Design/Sources/Design/`:
 
 | File | Contents |
 | --- | --- |
-| `Color.swift` | `Color` extensions: the brand palette (`purple80`, `pink40`, …). |
+| `Color.swift` | `Color` extensions: the brand palette (`purple80`, `pink40`, …) plus the `THEME_COLORS.md` primitive scale (`purple950`, `yellow100`, `lavender200`, …). |
 | `Fonts.swift` | `LevelaFontFamily`, `LevelaFontWeight`, `LevelaFonts.registerAll()`. |
 | `Typography.swift` | `LevelaTypography`: the type scale mapping roles → families. |
 | `Theme.swift` | `LevelaColors` (light/dark), the `levelaColors` environment value, and the `levelaTheme()` view modifier. |
@@ -96,9 +100,26 @@ tinted is opaque grayscale on black — matching Apple's iOS 18 requirements. Se
 
 ## Theme colors
 
-The design system still uses the Material template palette (`purple80`/`pink40`).
-The **target** dark purple/yellow palette is specified in
-[`../THEME_COLORS.md`](../THEME_COLORS.md) and is **not yet wired into `Color.swift`**.
+`Color.swift` carries two tiers: the legacy Material template palette
+(`purple80`/`pink40`) still used by `levelaTheme()`, and the primitive scale from
+[`../THEME_COLORS.md`](../THEME_COLORS.md) (`purple800/900/950`, `purple700`,
+`yellow100`, `lavender200`, `gray200`, `mint100`) consumed by features such as
+`Splash`. Migrating `levelaTheme()` onto the primitive scale is still pending.
+
+## Splash
+
+The launch welcome flow lives in the `Splash` package and is defined once, for
+both platforms, by the shared contract in `../assets/splash/`:
+
+```sh
+./scripts/generate_splash_assets.sh            # regenerate the logo + verify
+./scripts/verify_splash_parity.sh --strict     # require both platforms
+```
+
+`SplashView` auto-advances through `SplashStage` (`brand` → `welcome` →
+`actions`) and reports completion through `onFinished`. The Login / Register /
+guest actions are visual only for now. See
+[`../assets/splash/README.md`](../assets/splash/README.md).
 
 Related docs: [`../android/AGENTS.md`](../android/AGENTS.md) (Android counterpart),
 [`../README.md`](../README.md) (project overview).

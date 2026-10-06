@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		AA00000000000000000000D5 /* Design in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000D3 /* Design */; };
 		AA00000000000000000000D6 /* Onboarding in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000D4 /* Onboarding */; };
+		AA00000000000000000000D9 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000D8 /* Splash */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,7 @@
 			files = (
 				AA00000000000000000000D5 /* Design in Frameworks */,
 				AA00000000000000000000D6 /* Onboarding in Frameworks */,
+				AA00000000000000000000D9 /* Splash in Frameworks */,
 			);
 		};
 		21F13901306DD1B000DCCF15 /* Frameworks */ = {
@@ -113,6 +115,7 @@
 			packageProductDependencies = (
 				AA00000000000000000000D3 /* Design */,
 				AA00000000000000000000D4 /* Onboarding */,
+				AA00000000000000000000D8 /* Splash */,
 			);
 			productName = Levela;
 			productReference = 21F138F5306DD1AF00DCCF15 /* Levela.app */;
@@ -195,6 +198,7 @@
 			packageReferences = (
 				AA00000000000000000000D1 /* XCLocalSwiftPackageReference "Packages/Design" */,
 				AA00000000000000000000D2 /* XCLocalSwiftPackageReference "Packages/Onboarding" */,
+				AA00000000000000000000D7 /* XCLocalSwiftPackageReference "Packages/Splash" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 21F138F6306DD1AF00DCCF15 /* Products */;
@@ -573,6 +577,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/Onboarding;
 		};
+		AA00000000000000000000D7 /* XCLocalSwiftPackageReference "Packages/Splash" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Splash;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -583,6 +591,10 @@
 		AA00000000000000000000D4 /* Onboarding */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Onboarding;
+		};
+		AA00000000000000000000D8 /* Splash */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Splash;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
