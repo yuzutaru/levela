@@ -115,10 +115,12 @@ both platforms, by the shared contract in `../assets/splash/`:
 ./scripts/verify_splash_parity.sh --strict     # require both platforms
 ```
 
-`SplashView` shows the app icon (the `AppIcon` dark/alpha artwork, injected from
-the app target), auto-advances through `SplashStage` (`brand` → `welcome` →
-`actions`) and reports completion through `onFinished`. The Login / Register /
-guest actions are visual only for now. See
+`SplashView` shows the app icon, injected from the app target as
+`Image("SplashIcon")` — a normal imageset in `Levela/Assets.xcassets`, because
+iOS app icons (`AppIcon.appiconset`) are **not** loadable at runtime via
+`UIImage(named: "AppIcon")`. It auto-advances through `SplashStage` (`brand` →
+`welcome` → `actions`) and reports completion through `onFinished`. The Login /
+Register / guest actions are visual only for now. See
 [`../assets/splash/README.md`](../assets/splash/README.md).
 
 Related docs: [`../android/AGENTS.md`](../android/AGENTS.md) (Android counterpart),
