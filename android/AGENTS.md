@@ -95,11 +95,11 @@ The launch welcome flow lives in `:splash` and is defined once, for both
 platforms, by the shared contract in `../assets/splash/`:
 
 ```sh
-./scripts/generate_splash_assets.sh            # regenerate the logo + verify
 ./scripts/verify_splash_parity.sh --strict     # require both platforms
 ```
 
-`SplashView` auto-advances through `SplashStage` (`Brand` → `Welcome` →
+`SplashView` shows the app's launcher icon foreground (`ic_launcher_foreground`,
+injected from `:app`), auto-advances through `SplashStage` (`Brand` → `Welcome` →
 `Actions`) and reports completion through `onFinished`. The Login / Register /
 guest actions are visual only for now. See
 [`../assets/splash/README.md`](../assets/splash/README.md).

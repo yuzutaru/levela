@@ -29,7 +29,8 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -41,14 +42,18 @@ import kotlinx.coroutines.delay
 /**
  * The Levela splash (launch welcome) screen.
  *
- * Auto-advances through the [SplashStage]s in [SplashTokens]; the Login /
- * Register / guest actions are visual only for now, and the whole flow reports
- * completion through [onFinished] so the app can wire navigation later.
+ * Shows the app icon and auto-advances through the [SplashStage]s in
+ * [SplashTokens]; the Login / Register / guest actions are visual only for now,
+ * and the whole flow reports completion through [onFinished] so the app can wire
+ * navigation later.
  *
  * Mirrors the iOS `SplashView`.
+ *
+ * @param icon the app icon (`@drawable/ic_launcher_foreground`), injected by the app.
  */
 @Composable
 fun SplashView(
+    icon: Painter,
     modifier: Modifier = Modifier,
     onFinished: () -> Unit = {},
     viewModel: SplashViewModel = remember { SplashViewModel() },
@@ -92,9 +97,9 @@ fun SplashView(
             Spacer(Modifier.weight(1f))
 
             Image(
-                painter = painterResource(R.drawable.ic_splash_logo),
+                painter = icon,
                 contentDescription = null,
-                modifier = Modifier.size(SplashTokens.LogoSize),
+                modifier = Modifier.size(SplashTokens.IconSize),
             )
 
             AnimatedVisibility(
@@ -209,6 +214,6 @@ private fun SplashButton(
 @Composable
 private fun SplashViewPreview() {
     LevelaTheme {
-        SplashView()
+        SplashView(icon = ColorPainter(Color.White))
     }
 }
