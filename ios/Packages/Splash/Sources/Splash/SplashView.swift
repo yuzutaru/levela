@@ -3,17 +3,22 @@ import SwiftUI
 
 /// The Levela splash (launch welcome) screen.
 ///
-/// Auto-advances through the ``SplashStage``s in ``SplashTokens``; the Login /
-/// Register / guest actions are visual only for now, and the whole flow reports
-/// completion through `onFinished` so the app can wire navigation later.
+/// Shows the app icon and auto-advances through the ``SplashStage``s in
+/// ``SplashTokens``; the Login / Register / guest actions are visual only for
+/// now, and the whole flow reports completion through `onFinished` so the app
+/// can wire navigation later.
 ///
 /// Mirrors the Android `SplashView`.
+///
+/// - Parameter icon: the app icon, injected by the app.
 @MainActor
 public struct SplashView: View {
     @State private var viewModel = SplashViewModel()
+    private let icon: Image
     private let onFinished: () -> Void
 
-    public init(onFinished: @escaping () -> Void = {}) {
+    public init(icon: Image, onFinished: @escaping () -> Void = {}) {
+        self.icon = icon
         self.onFinished = onFinished
     }
 
@@ -68,10 +73,10 @@ public struct SplashView: View {
     }
 
     private var mark: some View {
-        Image("ic_splash_logo", bundle: .module)
+        icon
             .resizable()
             .interpolation(.high)
-            .frame(width: SplashTokens.logoSize, height: SplashTokens.logoSize)
+            .frame(width: SplashTokens.iconSize, height: SplashTokens.iconSize)
     }
 
     private var title: some View {
@@ -132,6 +137,6 @@ private struct SplashButton: View {
 }
 
 #Preview {
-    SplashView()
+    SplashView(icon: Image(systemName: "figure.run"))
         .levelaTheme()
 }
