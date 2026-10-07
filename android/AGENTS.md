@@ -10,16 +10,20 @@ The iOS app lives in `../ios/` (SwiftUI + SwiftData) and is out of scope here.
 
 ## Module layout
 
-Two Gradle modules, declared in `settings.gradle.kts`:
+Three Gradle modules, declared in `settings.gradle.kts`:
 
 - **`:app`** — the application. Entry point is
   `app/src/main/java/com/yuzutaru/levela/MainActivity.kt`
-  (`ComponentActivity` → `setContent` → `LevelaTheme` → `Scaffold` → `Greeting`).
+  (`ComponentActivity` → `setContent` → `LevelaTheme` → `SplashView`).
 - **`:design`** — a library module holding the shared design system under
   `design/src/main/java/com/yuzutaru/design/ui/theme/`. `:app` depends on
   `project(":design")`, so all theme primitives live here, not in `:app`.
+- **`:splash`** — the launch welcome flow under
+  `splash/src/main/java/com/yuzutaru/splash/`. Depends on `:design`; `:app`
+  depends on it. The iOS counterpart is the `Splash` Swift package.
 
-Namespaces: `com.yuzutaru.levela` (`:app`), `com.yuzutaru.design` (`:design`).
+Namespaces: `com.yuzutaru.levela` (`:app`), `com.yuzutaru.design` (`:design`),
+`com.yuzutaru.splash` (`:splash`).
 
 ## Build & run
 
@@ -43,7 +47,7 @@ All theme code is in `com/yuzutaru/design/ui/theme/`:
 
 | File | Contents |
 | --- | --- |
-| `Color.kt` | Raw `Color` values (`Purple80`, `Pink40`, …). |
+| `Color.kt` | Raw `Color` values (`Purple80`, `Pink40`, …) plus the `THEME_COLORS.md` primitive scale (`Purple950`, `Yellow100`, `Lavender200`, …). |
 | `Font.kt` | `FontFamily` definitions backed by `res/font/*.ttf`. |
 | `Type.kt` | The Material 3 `Typography` scale mapping styles → families. |
 | `Theme.kt` | `LevelaTheme` composable: color scheme + typography + dynamic color. |
@@ -78,9 +82,27 @@ monochrome layer. See [`../assets/app-icon/README.md`](../assets/app-icon/README
 
 ## Theme colors
 
-The design system still uses the Material template palette (`Purple80`/`Pink40`).
-The **target** dark purple/yellow palette is specified in
-[`../THEME_COLORS.md`](../THEME_COLORS.md) and is **not yet wired into `Color.kt`**.
+`Color.kt` carries two tiers: the legacy Material template palette
+(`Purple80`/`Pink40`) still used by `LevelaTheme`, and the primitive scale from
+[`../THEME_COLORS.md`](../THEME_COLORS.md) (`Purple800/900/950`, `Purple700`,
+`Yellow100`, `Lavender200`, `Gray200`, `White`, `Mint100`) consumed by features
+such as `:splash`. Migrating `LevelaTheme` onto the primitive scale is still
+pending.
+
+## Splash
+
+The launch welcome flow lives in `:splash` and is defined once, for both
+platforms, by the shared contract in `../assets/splash/`:
+
+```sh
+./scripts/verify_splash_parity.sh --strict     # require both platforms
+```
+
+`SplashView` shows the app's launcher icon foreground (`ic_launcher_foreground`,
+injected from `:app`), auto-advances through `SplashStage` (`Brand` → `Welcome` →
+`Actions`) and reports completion through `onFinished`. The Login / Register /
+guest actions are visual only for now. See
+[`../assets/splash/README.md`](../assets/splash/README.md).
 
 Related docs: [`../ios/AGENTS.md`](../ios/AGENTS.md) (iOS counterpart),
 [`../README.md`](../README.md) (project overview).

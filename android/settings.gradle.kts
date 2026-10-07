@@ -25,3 +25,4 @@ dependencyResolutionManagement {
 rootProject.name = "Levela"
 include(":app")
 include(":design")
+include(":splash")
