@@ -19,24 +19,24 @@
   },
 
   "palette": {
-    "Purple800": "#483B52",
-    "Purple950": "#282237",
-    "Purple900": "#2C263A",
-    "Purple700": "#494357",
-    "Yellow100": "#EBF59F",
-    "Lavender200": "#C5BFCF",
-    "Gray200": "#DDDCDF"
+    "Blue500": "#0078F0",
+    "Blue700": "#0058D0",
+    "LightBlue100": "#E6F6FE",
+    "LightBlue300": "#A0E0F8",
+    "Gray100": "#EEF2F7",
+    "Gray500": "#64748B",
+    "Navy900": "#0B1220"
   },
 
   "colors": {
-    "backgroundGradient": ["Purple800", "Purple950", "Purple900"],
-    "backgroundGlow": "Purple800",
-    "title": "White",
-    "loginBackground": "Purple700",
-    "loginText": "Gray200",
-    "registerBackground": "White",
-    "registerText": "Purple950",
-    "guestText": "Lavender200"
+    "backgroundGradient": ["White", "LightBlue100"],
+    "backgroundGlow": "LightBlue300",
+    "title": "Navy900",
+    "loginBackground": "Gray100",
+    "loginText": "Blue700",
+    "registerBackground": "Blue500",
+    "registerText": "White",
+    "guestText": "Gray500"
   },
 
   "icon": {

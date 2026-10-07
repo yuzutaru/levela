@@ -1,6 +1,5 @@
 package com.yuzutaru.design.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -11,33 +10,46 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+// Icon-derived schemes (see ../THEME_COLORS.md): white light background,
+// blue/green/orange accents, deep-navy dark theme.
+private val LightColorScheme = lightColorScheme(
+    primary = Blue500,
+    onPrimary = White,
+    secondary = Green500,
+    onSecondary = White,
+    tertiary = Orange500,
+    onTertiary = Navy900,
+    background = White,
+    onBackground = Navy900,
+    surface = White,
+    onSurface = Navy900,
+    surfaceVariant = Gray100,
+    onSurfaceVariant = Gray700,
+    outline = Gray200
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+private val DarkColorScheme = darkColorScheme(
+    primary = Blue300,
+    onPrimary = Navy900,
+    secondary = Green300,
+    onSecondary = Navy900,
+    tertiary = Orange300,
+    onTertiary = Navy900,
+    background = Navy900,
+    onBackground = Ink100,
+    surface = Navy800,
+    onSurface = Ink100,
+    surfaceVariant = Navy700,
+    onSurfaceVariant = Gray300,
+    outline = Gray700
 )
 
 @Composable
 fun LevelaTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    // Off by default so the app matches the icon on every device. Set true to
+    // opt into Material You dynamic colour on Android 12+.
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

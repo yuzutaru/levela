@@ -53,7 +53,7 @@ All theme code is in `Packages/Design/Sources/Design/`:
 
 | File | Contents |
 | --- | --- |
-| `Color.swift` | `Color` extensions: the brand palette (`purple80`, `pink40`, …) plus the `THEME_COLORS.md` primitive scale (`purple950`, `yellow100`, `lavender200`, …). |
+| `Color.swift` | `Color` extensions: the icon-derived primitive scale from `THEME_COLORS.md` (`blue500`, `green500`, `orange500`, `lightBlue*`, `gray*`, `navy*`, `ink100`). |
 | `Fonts.swift` | `LevelaFontFamily`, `LevelaFontWeight`, `LevelaFonts.registerAll()`. |
 | `Typography.swift` | `LevelaTypography`: the type scale mapping roles → families. |
 | `Theme.swift` | `LevelaColors` (light/dark), the `levelaColors` environment value, and the `levelaTheme()` view modifier. |
@@ -94,17 +94,17 @@ light, `-dark`, `-tinted`) comes from the shared contract in `../assets/app-icon
 ./scripts/generate_icons.sh --verify   # check without writing
 ```
 
-Light is opaque, dark has a transparent background (the system draws it), and
-tinted is opaque grayscale on black — matching Apple's iOS 18 requirements. See
-[`../assets/app-icon/README.md`](../assets/app-icon/README.md).
+Light is opaque white, dark is opaque navy (`#0B1220`, matching the dark app
+background), and tinted is opaque grayscale on black — matching Apple's iOS 18
+requirements. See [`../assets/app-icon/README.md`](../assets/app-icon/README.md).
 
 ## Theme colors
 
-`Color.swift` carries two tiers: the legacy Material template palette
-(`purple80`/`pink40`) still used by `levelaTheme()`, and the primitive scale from
-[`../THEME_COLORS.md`](../THEME_COLORS.md) (`purple800/900/950`, `purple700`,
-`yellow100`, `lavender200`, `gray200`, `mint100`) consumed by features such as
-`Splash`. Migrating `levelaTheme()` onto the primitive scale is still pending.
+`Color.swift` holds the icon-derived primitive scale from
+[`../THEME_COLORS.md`](../THEME_COLORS.md) (`blue500`, `green500`, `orange500`,
+`lightBlue*`, `gray*`, `navy*`, `ink100`). `LevelaColors` in `Theme.swift` maps
+these to semantic roles for light (white background, blue/green/orange accents)
+and dark (deep navy) appearances; `levelaTheme()` picks by system appearance.
 
 ## Splash
 

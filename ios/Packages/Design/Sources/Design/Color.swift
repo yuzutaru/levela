@@ -1,26 +1,51 @@
 import SwiftUI
 
-// Levela brand palette.
-// Mirrors Android `design/src/main/java/com/yuzutaru/design/ui/theme/Color.kt`.
+// Icon-derived palette (see THEME_COLORS.md).
+// Sampled from assets/app-icon/source.png. Mirrors Android Color.kt.
 public extension Color {
-    static let purple80 = Color(red: 0xD0 / 255, green: 0xBC / 255, blue: 0xFF / 255)
-    static let purpleGrey80 = Color(red: 0xCC / 255, green: 0xC2 / 255, blue: 0xDC / 255)
-    static let pink80 = Color(red: 0xEF / 255, green: 0xB8 / 255, blue: 0xC8 / 255)
+    // Blue — primary (running figure / mountain).
+    static let blue100 = Color(hex: 0xD6E9FF)
+    static let blue300 = Color(hex: 0x7FB6FF)
+    static let blue500 = Color(hex: 0x0078F0)
+    static let blue600 = Color(hex: 0x0064D6)
+    static let blue700 = Color(hex: 0x0058D0)
+    static let blue900 = Color(hex: 0x0B2A5B)
 
-    static let purple40 = Color(red: 0x66 / 255, green: 0x50 / 255, blue: 0xA4 / 255)
-    static let purpleGrey40 = Color(red: 0x62 / 255, green: 0x5B / 255, blue: 0x71 / 255)
-    static let pink40 = Color(red: 0x7D / 255, green: 0x52 / 255, blue: 0x60 / 255)
+    // Light blue — soft accent (person silhouette).
+    static let lightBlue100 = Color(hex: 0xE6F6FE)
+    static let lightBlue300 = Color(hex: 0xA0E0F8)
+    static let lightBlue500 = Color(hex: 0x5AC8FA)
 
-    // Primitive palette scale (see THEME_COLORS.md). Mirrors Android Color.kt.
-    static let purple950 = Color(hex: 0x282237)
-    static let purple900 = Color(hex: 0x2C263A)
-    static let purple800 = Color(hex: 0x483B52)
-    static let purple700 = Color(hex: 0x494357)
+    // Green — secondary (food / leaves).
+    static let green100 = Color(hex: 0xD9F7E6)
+    static let green300 = Color(hex: 0x7FE0A8)
+    static let green500 = Color(hex: 0x18B060)
+    static let green600 = Color(hex: 0x10A868)
+    static let green700 = Color(hex: 0x0E8F55)
 
-    static let yellow100 = Color(hex: 0xEBF59F)
-    static let lavender200 = Color(hex: 0xC5BFCF)
-    static let gray200 = Color(hex: 0xDDDCDF)
-    static let mint100 = Color(hex: 0xDEE9E9)
+    // Teal — leaf.
+    static let teal500 = Color(hex: 0x08A0A0)
+
+    // Orange — tertiary (clock).
+    static let orange100 = Color(hex: 0xFFF1D6)
+    static let orange300 = Color(hex: 0xFFD27F)
+    static let orange500 = Color(hex: 0xF8A800)
+    static let orange700 = Color(hex: 0xC97E00)
+
+    // Neutrals.
+    static let gray50 = Color(hex: 0xF7F9FC)
+    static let gray100 = Color(hex: 0xEEF2F7)
+    static let gray200 = Color(hex: 0xE2E8F0)
+    static let gray300 = Color(hex: 0xCBD5E1)
+    static let gray400 = Color(hex: 0x94A3B8)
+    static let gray500 = Color(hex: 0x64748B)
+    static let gray700 = Color(hex: 0x334155)
+    static let navy700 = Color(hex: 0x1E293B)
+    static let navy800 = Color(hex: 0x131C2E)
+    static let navy900 = Color(hex: 0x0B1220)
+
+    // Dark-mode text/foreground.
+    static let ink100 = Color(hex: 0xE6EDF7)
 }
 
 private extension Color {

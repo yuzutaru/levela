@@ -120,7 +120,7 @@ if [ "$VERIFY_ONLY" -eq 0 ]; then
 
   echo "  iOS:"
   full_flat  "$IOS_SIZE" "$IOS_SIZE" "$BG_LIGHT"  "$IOS_PATH/AppIcon-1024.png"          # Light (opaque)
-  full_alpha "$IOS_SIZE" "$IOS_SIZE"              "$IOS_PATH/AppIcon-1024-dark.png"     # Dark (transparent bg)
+  full_flat  "$IOS_SIZE" "$IOS_SIZE" "$BG_DARK"   "$IOS_PATH/AppIcon-1024-dark.png"     # Dark (opaque navy)
   full_flat  "$IOS_SIZE" "$IOS_SIZE" "$BG_TINTED" "$IOS_PATH/AppIcon-1024-tinted.png" "hue=s=0"
   echo "    light / dark / tinted -> $IOS_DIR/"
 
@@ -190,6 +190,21 @@ for t in c["targets"]["android"]:
             errors.append(f"{rel}: expected {size}x{size}, got {w}x{h}")
         if t["opaque"] and has_alpha:
             errors.append(f"{rel}: must be opaque (no alpha channel)")
+
+# Adaptive launcher background resources must mirror the contract backgrounds.
+for rel, key in (
+    ("android/app/src/main/res/values/colors.xml", "light"),
+    ("android/app/src/main/res/values-night/colors.xml", "dark"),
+):
+    try:
+        with open(f"{root}/{rel}", encoding="utf-8") as f:
+            text = f.read().lower().replace("#", "")
+    except OSError:
+        errors.append(f"missing launcher background resource: {rel}")
+        continue
+    expected = c["background"][key].lstrip("#").lower()
+    if expected not in text:
+        errors.append(f"{rel}: ic_launcher_background must be {c['background'][key]}")
 
 if errors:
     print("\nCONTRACT VALIDATION FAILED:")

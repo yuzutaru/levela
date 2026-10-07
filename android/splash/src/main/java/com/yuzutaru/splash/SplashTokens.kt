@@ -2,12 +2,13 @@ package com.yuzutaru.splash
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.yuzutaru.design.ui.theme.Gray200
-import com.yuzutaru.design.ui.theme.Lavender200
-import com.yuzutaru.design.ui.theme.Purple700
-import com.yuzutaru.design.ui.theme.Purple800
-import com.yuzutaru.design.ui.theme.Purple900
-import com.yuzutaru.design.ui.theme.Purple950
+import com.yuzutaru.design.ui.theme.Blue500
+import com.yuzutaru.design.ui.theme.Blue700
+import com.yuzutaru.design.ui.theme.Gray100
+import com.yuzutaru.design.ui.theme.Gray500
+import com.yuzutaru.design.ui.theme.LightBlue100
+import com.yuzutaru.design.ui.theme.LightBlue300
+import com.yuzutaru.design.ui.theme.Navy900
 import com.yuzutaru.design.ui.theme.White
 
 /**
@@ -36,14 +37,14 @@ object SplashTokens {
     const val Guest = "Continue as a guest"
 
     // Colours (design-system primitives, see THEME_COLORS.md)
-    val BackgroundGradient: List<Color> = listOf(Purple800, Purple950, Purple900)
-    val BackgroundGlow: Color = Purple800
-    val Title: Color = White
-    val LoginBackground: Color = Purple700
-    val LoginText: Color = Gray200
-    val RegisterBackground: Color = White
-    val RegisterText: Color = Purple950
-    val GuestText: Color = Lavender200
+    val BackgroundGradient: List<Color> = listOf(White, LightBlue100)
+    val BackgroundGlow: Color = LightBlue300
+    val Title: Color = Navy900
+    val LoginBackground: Color = Gray100
+    val LoginText: Color = Blue700
+    val RegisterBackground: Color = Blue500
+    val RegisterText: Color = White
+    val GuestText: Color = Gray500
 
     // Icon (the app's launcher icon foreground, injected by the app)
     val IconSize = 96.dp

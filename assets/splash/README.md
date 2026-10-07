@@ -9,13 +9,14 @@ scripts/verify_splash_parity.sh         # checks both platforms against the cont
 ```
 
 The colour tokens are the primitives from [`../../THEME_COLORS.md`](../../THEME_COLORS.md)
-(`Purple800/900/950`, `Purple700`, `Lavender200`, `Gray200`, `White`); the splash
-is the first feature to consume them.
+(`Blue500/700`, `LightBlue100/300`, `Gray100/500`, `Navy900`, `White`); the splash
+is the first feature to consume them. The splash is now light-themed: a white
+canvas with a soft light-blue glow and icon-blue actions.
 
 The splash **icon is the app's own launcher icon foreground**, not a generated
 asset: Android uses `@drawable/ic_launcher_foreground` (the adaptive-icon
-foreground) and iOS uses the `AppIcon` dark/alpha appearance. Both come from the
-app-icon pipeline, so there is nothing extra to generate or keep in sync.
+foreground) and iOS uses the `AppIcon` artwork. Both come from the app-icon
+pipeline, so there is nothing extra to generate or keep in sync.
 
 ## The flow
 
