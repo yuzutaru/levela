@@ -47,5 +47,5 @@ object SplashTokens {
     val GuestText: Color = Gray500
 
     // Icon (the app's launcher icon foreground, injected by the app)
-    val IconSize = 96.dp
+    val IconSize = 204.dp
 }
