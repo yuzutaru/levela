@@ -214,6 +214,6 @@ private fun SplashButton(
 @Composable
 private fun SplashViewPreview() {
     LevelaTheme {
-        SplashView(icon = ColorPainter(Color.White))
+        SplashView(icon = ColorPainter(Color(0xFF94A3B8)))
     }
 }

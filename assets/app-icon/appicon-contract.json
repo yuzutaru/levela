@@ -5,7 +5,7 @@
   "generator": "scripts/generate_icons.sh",
   "background": {
     "light": "#FFFFFF",
-    "dark": "#1C1C1E",
+    "dark": "#0B1220",
     "tinted": "#000000"
   },
   "android": {
@@ -28,7 +28,7 @@
   "targets": {
     "ios": [
       { "file": "AppIcon-1024.png", "appearance": "light", "size": 1024, "opaque": true },
-      { "file": "AppIcon-1024-dark.png", "appearance": "dark", "size": 1024, "opaque": false },
+      { "file": "AppIcon-1024-dark.png", "appearance": "dark", "size": 1024, "opaque": true },
       { "file": "AppIcon-1024-tinted.png", "appearance": "tinted", "size": 1024, "opaque": true }
     ],
     "android": [

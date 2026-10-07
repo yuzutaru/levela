@@ -35,7 +35,7 @@ mismatch. To check without writing anything:
 | File | Size | Alpha | Appearance |
 | --- | --- | --- | --- |
 | `AppIcon-1024.png` | 1024 | none (opaque) | Any / Light |
-| `AppIcon-1024-dark.png` | 1024 | yes | Dark (system draws the background) |
+| `AppIcon-1024-dark.png` | 1024 | none (opaque, navy `#0B1220`) | Dark |
 | `AppIcon-1024-tinted.png` | 1024 | none (opaque, grayscale on black) | Tinted |
 
 **Android** — `android/app/src/main/res/`
@@ -49,7 +49,8 @@ mismatch. To check without writing anything:
 
 The adaptive icon (`mipmap-anydpi-v26/ic_launcher{,_round}.xml`) composes:
 
-- **background** → `@color/ic_launcher_background` (`values/colors.xml`)
+- **background** → `@color/ic_launcher_background`
+  (`values/colors.xml` = light `#FFFFFF`, `values-night/colors.xml` = dark `#0B1220`)
 - **foreground** → the artwork, scaled to fit Android's 66dp safe zone of the 108dp canvas
 - **monochrome** → a white silhouette for Android 13+ themed icons
 

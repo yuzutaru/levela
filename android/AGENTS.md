@@ -47,10 +47,10 @@ All theme code is in `com/yuzutaru/design/ui/theme/`:
 
 | File | Contents |
 | --- | --- |
-| `Color.kt` | Raw `Color` values (`Purple80`, `Pink40`, …) plus the `THEME_COLORS.md` primitive scale (`Purple950`, `Yellow100`, `Lavender200`, …). |
+| `Color.kt` | The icon-derived primitive scale from `THEME_COLORS.md` (`Blue500`, `Green500`, `Orange500`, `LightBlue*`, `Gray*`, `Navy*`, `Ink100`, `White`). |
 | `Font.kt` | `FontFamily` definitions backed by `res/font/*.ttf`. |
 | `Type.kt` | The Material 3 `Typography` scale mapping styles → families. |
-| `Theme.kt` | `LevelaTheme` composable: color scheme + typography + dynamic color. |
+| `Theme.kt` | `LevelaTheme` composable: light/dark color schemes + typography + (opt-in) dynamic color. |
 
 Typography convention (kept in `Type.kt`):
 
@@ -59,8 +59,10 @@ Typography convention (kept in `Type.kt`):
 - **Plus Jakarta Sans** and **Urbanist** are also defined in `Font.kt` and are
   available for ad-hoc use — they are not wired into `Typography`.
 
-`LevelaTheme` enables **dynamic color** on Android 12+ (`Build.VERSION_CODES.S`);
-below that it falls back to the light/dark `ColorScheme`s in `Theme.kt`.
+`LevelaTheme` selects the light or dark `ColorScheme` from the system
+appearance. **Dynamic color is off by default** (`dynamicColor = false`) so the
+app matches the icon on every device; pass `dynamicColor = true` to opt into
+Material You on Android 12+ (`Build.VERSION_CODES.S`).
 
 Fonts live in `design/src/main/res/font/`. The raw font downloads are gitignored
 at the repo root; only the bundled `.ttf` files are tracked.
@@ -77,17 +79,17 @@ They come from the shared contract in `../assets/app-icon/`:
 ```
 
 The adaptive icon (`mipmap-anydpi-v26/ic_launcher{,_round}.xml`) composes
-`@color/ic_launcher_background`, the safe-zone foreground layer, and an Android 13
+`@color/ic_launcher_background` (white in `values/colors.xml`, navy in
+`values-night/colors.xml`), the safe-zone foreground layer, and an Android 13
 monochrome layer. See [`../assets/app-icon/README.md`](../assets/app-icon/README.md).
 
 ## Theme colors
 
-`Color.kt` carries two tiers: the legacy Material template palette
-(`Purple80`/`Pink40`) still used by `LevelaTheme`, and the primitive scale from
-[`../THEME_COLORS.md`](../THEME_COLORS.md) (`Purple800/900/950`, `Purple700`,
-`Yellow100`, `Lavender200`, `Gray200`, `White`, `Mint100`) consumed by features
-such as `:splash`. Migrating `LevelaTheme` onto the primitive scale is still
-pending.
+`Color.kt` holds the icon-derived primitive scale from
+[`../THEME_COLORS.md`](../THEME_COLORS.md) (`Blue500`, `Green500`, `Orange500`,
+`LightBlue*`, `Gray*`, `Navy*`, `Ink100`, `White`). `LevelaTheme` maps these onto
+the Material 3 light/dark `ColorScheme`s: a white light background with
+blue/green/orange accents, and a deep-navy dark theme.
 
 ## Splash
 

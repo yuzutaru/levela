@@ -1,260 +1,158 @@
 # App Theme Color Specification
 
-> **Status: proposed — not yet implemented.**
-> The Design system on both platforms still uses the Material template palette
-> (`Purple80`/`Purple40`, `PurpleGrey80`/`PurpleGrey40`, `Pink80`/`Pink40`) in
-> [`android/design/.../Color.kt`](android/design/src/main/java/com/yuzutaru/design/ui/theme/Color.kt)
-> and [`ios/Packages/Design/Sources/Design/Color.swift`](ios/Packages/Design/Sources/Design/Color.swift).
-> This document is the **target** palette to migrate to — treat the code as the
-> source of truth until the migration lands.
+> **Status: implemented.** The Design system on both platforms is wired to the
+> icon-derived palette below: white light background, blue/green/orange accents,
+> and a prepared deep-navy dark theme.
+> Source of truth: [`assets/app-icon/source.png`](assets/app-icon/source.png)
+> (see [`assets/app-icon/README.md`](assets/app-icon/README.md)). Android's
+> `LevelaTheme` no longer enables Material You dynamic color by default, so both
+> platforms render the exact same colours.
 
-This document defines the extracted color palette using primitive scale names (e.g., `Purple950`, `Yellow100`), semantic theme tokens, and native setup code for **Android (Jetpack Compose)** and **iOS (SwiftUI & UIKit)**.
+This document defines the extracted palette using primitive scale names (e.g.,
+`Blue500`, `Orange300`), semantic theme tokens, and native setup for
+**Android (Jetpack Compose)** and **iOS (SwiftUI & UIKit)**.
 
 ---
 
 ## 🎨 Color Palette & Primitive Tokens
 
 The design system uses a two-tier color structure:
-1. **Primitive Colors**: Named by color hue and shade value scale (100–950).
-2. **Semantic Tokens**: Logical mappings for UI roles (Background, Surface, Accent, Text, Action fills).
+1. **Primitive Colors** — named by hue and shade (100–900). Sampled from the app icon.
+2. **Semantic Tokens** — logical UI roles (Background, Surface, Accent, Text, Action fills).
 
 ### Primitive Palette Table
 
-| Primitive Name | Hex Code | RGB | HSL | Semantic Role |
-| :--- | :--- | :--- | :--- | :--- |
-| **`Purple950`** | `#282237` | `40, 34, 55` | `257°, 24%, 17%` | Main dark background surface |
-| **`Purple900`** | `#2C263A` | `44, 38, 58` | `258°, 21%, 19%` | Bottom gradient transition |
-| **`Purple800`** | `#483B52` | `72, 59, 82` | `274°, 16%, 28%` | Top radial glow lighting |
-| **`Purple700`** | `#494357` | `73, 67, 87` | `258°, 13%, 30%` | Secondary button container |
-| **`Yellow100`** | `#EBF59F` | `235, 245, 159` | `68°, 78%, 79%` | Accent highlight, icon borders |
-| **`Lavender200`**| `#C5BFCF` | `197, 191, 207` | `263°, 16%, 78%` | Secondary text, guest link |
-| **`Gray200`** | `#DDDCDF` | `221, 220, 223` | `260°, 5%, 87%` | Secondary button text |
-| **`White`** | `#FFFFFF` | `255, 255, 255` | `0°, 0%, 100%` | Primary text, primary button background |
-| **`Mint100`** | `#DEE9E9` | `222, 233, 233` | `180°, 18%, 89%` | Presentation outer canvas |
+Each hue comes from a region of the app icon: **Blue** from the running figure
+and mountain, **Light Blue** from the person silhouette, **Green/Teal** from the
+food plate and leaves, **Orange** from the clock.
+
+| Primitive | Hex | Icon source |
+| :--- | :--- | :--- |
+| **`Blue100`** | `#D6E9FF` | — |
+| **`Blue300`** | `#7FB6FF` | Dark-theme primary |
+| **`Blue500`** | `#0078F0` | Running figure — **primary** |
+| **`Blue600`** | `#0064D6` | — |
+| **`Blue700`** | `#0058D0` | Mountain |
+| **`Blue900`** | `#0B2A5B` | — |
+| **`LightBlue100`** | `#E6F6FE` | — |
+| **`LightBlue300`** | `#A0E0F8` | Person silhouette (glow) |
+| **`LightBlue500`** | `#5AC8FA` | Person silhouette |
+| **`Green100`** | `#D9F7E6` | — |
+| **`Green300`** | `#7FE0A8` | Dark-theme secondary |
+| **`Green500`** | `#18B060` | Food plate — **secondary** |
+| **`Green600`** | `#10A868` | Food plate |
+| **`Green700`** | `#0E8F55` | — |
+| **`Teal500`** | `#08A0A0` | Leaves |
+| **`Orange100`** | `#FFF1D6` | — |
+| **`Orange300`** | `#FFD27F` | Dark-theme tertiary |
+| **`Orange500`** | `#F8A800` | Clock — **tertiary** |
+| **`Orange700`** | `#C97E00` | — |
+| **`White`** | `#FFFFFF` | Background / highlights |
+| **`Gray50`** | `#F7F9FC` | — |
+| **`Gray100`** | `#EEF2F7` | Secondary button fill |
+| **`Gray200`** | `#E2E8F0` | Outline |
+| **`Gray300`** | `#CBD5E1` | Dark secondary text |
+| **`Gray400`** | `#94A3B8` | — |
+| **`Gray500`** | `#64748B` | Muted text |
+| **`Gray700`** | `#334155` | Outline (dark) |
+| **`Navy700`** | `#1E293B` | Dark surface variant |
+| **`Navy800`** | `#131C2E` | Dark surface |
+| **`Navy900`** | `#0B1220` | Dark background / primary text (light) |
+| **`Ink100`** | `#E6EDF7` | Dark-mode text/foreground |
+
+### Semantic Tokens
+
+| Role | Light | Dark |
+| :--- | :--- | :--- |
+| `background` | `White` | `Navy900` |
+| `surface` | `White` | `Navy800` |
+| `surfaceVariant` | `Gray100` | `Navy700` |
+| `primary` | `Blue500` | `Blue300` |
+| `secondary` | `Green500` | `Green300` |
+| `tertiary` | `Orange500` | `Orange300` |
+| `onPrimary` | `White` | `Navy900` |
+| `onBackground` / `onSurface` | `Navy900` | `Ink100` |
+| `outline` | `Gray200` | `Gray700` |
 
 ---
 
 ## 🤖 Android Implementation (Jetpack Compose)
 
-### 1. Primitive Color Tokens (`Color.kt`)
+Primitives live in
+[`android/design/.../Color.kt`](android/design/src/main/java/com/yuzutaru/design/ui/theme/Color.kt)
+and the schemes in
+[`Theme.kt`](android/design/src/main/java/com/yuzutaru/design/ui/theme/Theme.kt).
 
 ```kotlin
-package com.yuzutaru.design.ui.theme
+private val LightColorScheme = lightColorScheme(
+    primary = Blue500, onPrimary = White,
+    secondary = Green500, onSecondary = White,
+    tertiary = Orange500, onTertiary = Navy900,
+    background = White, onBackground = Navy900,
+    surface = White, onSurface = Navy900,
+    surfaceVariant = Gray100, onSurfaceVariant = Gray700,
+    outline = Gray200
+)
 
-import androidx.compose.ui.graphics.Color
-
-// Primitive Palette Scale
-val Purple950 = Color(0xFF282237)
-val Purple900 = Color(0xFF2C263A)
-val Purple800 = Color(0xFF483B52)
-val Purple700 = Color(0xFF494357)
-
-val Yellow100 = Color(0xFFEBF59F)
-val Lavender200 = Color(0xFFC5BFCF)
-val Gray200 = Color(0xFFDDDCDF)
-val White = Color(0xFFFFFFFF)
-val Mint100 = Color(0xFFDEE9E9)
-```
-
-### 2. Material 3 `ColorScheme` & Extended Theme Setup (`Theme.kt`)
-
-> The live composable is `LevelaTheme` in
-> [`android/design/.../Theme.kt`](android/design/src/main/java/com/yuzutaru/design/ui/theme/Theme.kt)
-> (light/dark schemes + Android 12+ dynamic color). The snippet below is the
-> **proposed** target shape (a dark-only scheme plus extended gradient colors).
-
-```kotlin
-package com.yuzutaru.design.ui.theme
-
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-
-// Material 3 Dark Color Scheme Mapping
 private val DarkColorScheme = darkColorScheme(
-    primary = White,
-    onPrimary = Purple950,
-    secondary = Purple700,
-    onSecondary = Gray200,
-    tertiary = Yellow100,
-    onTertiary = Purple950,
-    background = Purple950,
-    onBackground = White,
-    surface = Purple700,
-    onSurface = White,
-    outline = Yellow100
+    primary = Blue300, onPrimary = Navy900,
+    secondary = Green300, onSecondary = Navy900,
+    tertiary = Orange300, onTertiary = Navy900,
+    background = Navy900, onBackground = Ink100,
+    surface = Navy800, onSurface = Ink100,
+    surfaceVariant = Navy700, onSurfaceVariant = Gray300,
+    outline = Gray700
 )
-
-// Custom Semantic Extensions & Gradient Helpers
-@Immutable
-data class ExtendedColors(
-    val accentHighlight: Color = Yellow100,
-    val textSecondary: Color = Lavender200,
-    val backgroundBase: Color = Purple950,
-    val backgroundGlowTop: Color = Purple800,
-    val backgroundBottom: Color = Purple900,
-    val backgroundGradient: Brush = Brush.verticalGradient(
-        colors = listOf(Purple800, Purple950, Purple900)
-    )
-)
-
-val LocalExtendedColors = staticCompositionLocalOf { ExtendedColors() }
-
-@Composable
-fun AppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
-    val extendedColors = ExtendedColors()
-
-    CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
-        MaterialTheme(
-            colorScheme = DarkColorScheme,
-            content = content
-        )
-    }
-}
-
-object AppTheme {
-    val extendedColors: ExtendedColors
-        @Composable
-        get() = LocalExtendedColors.current
-}
 ```
+
+`LevelaTheme(darkTheme, dynamicColor = false, content)` selects a scheme from the
+system appearance. **Dynamic color is off by default** so every device matches the
+icon; pass `dynamicColor = true` to opt back into Material You on Android 12+.
 
 ---
 
-## 🍎 iOS Implementation (SwiftUI & UIKit)
+## 🍎 iOS Implementation (SwiftUI)
 
-> The live iOS theme is `LevelaColors` + `LevelaTheme` / `levelaTheme()` in
-> [`ios/Packages/Design/Sources/Design/Theme.swift`](ios/Packages/Design/Sources/Design/Theme.swift),
-> backed by the palette in
-> [`Color.swift`](ios/Packages/Design/Sources/Design/Color.swift). The snippets
-> below are the **proposed** semantic layer to add on top.
-
-### 1. Primitive Colors & Semantic Extension (`Color.swift` + `Theme.swift`)
+Primitives live in
+[`ios/Packages/Design/Sources/Design/Color.swift`](ios/Packages/Design/Sources/Design/Color.swift);
+the semantic layer is ``LevelaColors`` in
+[`Theme.swift`](ios/Packages/Design/Sources/Design/Theme.swift).
 
 ```swift
-import SwiftUI
+public static let light = LevelaColors(
+    primary: .blue500, secondary: .green500, tertiary: .orange500,
+    background: .white, surface: .white,
+    onPrimary: .white, onBackground: .navy900, onSurface: .navy900
+)
 
-// MARK: - Primitive Scale Color Tokens
-public extension Color {
-    static let purple950 = Color(hex: 0x282237)
-    static let purple900 = Color(hex: 0x2C263A)
-    static let purple800 = Color(hex: 0x483B52)
-    static let purple700 = Color(hex: 0x494357)
-
-    static let yellow100 = Color(hex: 0xEBF59F)
-    static let lavender200 = Color(hex: 0xC5BFCF)
-    static let gray200 = Color(hex: 0xDDDCDF)
-    static let mint100 = Color(hex: 0xDEE9E9)
-}
-
-// MARK: - Semantic Theme Mapping
-public extension Color {
-    static let themeBackground = Color.purple950
-    static let themeBackgroundGlow = Color.purple800
-    static let themeBackgroundBottom = Color.purple900
-
-    static let themeAccent = Color.yellow100
-    static let themeTextPrimary = Color.white
-    static let themeTextSecondary = Color.lavender200
-
-    static let themePrimaryButtonFill = Color.white
-    static let themePrimaryButtonText = Color.purple950
-
-    static let themeSecondaryButtonFill = Color.purple700
-    static let themeSecondaryButtonText = Color.gray200
-}
-
-// MARK: - Gradient Helpers
-public extension LinearGradient {
-    static var themeBackgroundGradient: LinearGradient {
-        LinearGradient(
-            colors: [.purple800, .purple950, .purple900],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-    }
-}
-
-public extension RadialGradient {
-    static var themeBackgroundRadialGlow: RadialGradient {
-        RadialGradient(
-            colors: [.purple800, .purple950],
-            center: .top,
-            startRadius: 10,
-            endRadius: 600
-        )
-    }
-}
-
-// MARK: - Hex Initializer
-private extension Color {
-    init(hex: UInt, alpha: Double = 1.0) {
-        self.init(
-            .sRGB,
-            red: Double((hex >> 16) & 0xFF) / 255.0,
-            green: Double((hex >> 8) & 0xFF) / 255.0,
-            blue: Double(hex & 0xFF) / 255.0,
-            opacity: alpha
-        )
-    }
-}
+public static let dark = LevelaColors(
+    primary: .blue300, secondary: .green300, tertiary: .orange300,
+    background: .navy900, surface: .navy800,
+    onPrimary: .navy900, onBackground: .ink100, onSurface: .ink100
+)
 ```
 
-### 2. UIKit Primitive & Semantic Extensions (`UIColor+Theme.swift` — not yet added)
+`levelaTheme()` resolves ``LevelaColors`` from the system light/dark appearance
+and injects it through the `\.levelaColors` environment value.
 
-```swift
-import UIKit
+---
 
-// MARK: - Primitive UIColor Tokens
-public extension UIColor {
-    static let purple950 = UIColor(hex: 0x282237)
-    static let purple900 = UIColor(hex: 0x2C263A)
-    static let purple800 = UIColor(hex: 0x483B52)
-    static let purple700 = UIColor(hex: 0x494357)
+## 🖼 App icon backgrounds
 
-    static let yellow100 = UIColor(hex: 0xEBF59F)
-    static let lavender200 = UIColor(hex: 0xC5BFCF)
-    static let gray200 = UIColor(hex: 0xDDDCDF)
-    static let mint100 = UIColor(hex: 0xDEE9E9)
-}
-
-// MARK: - Semantic UIKit Tokens
-public extension UIColor {
-    static let themeBackground = UIColor.purple950
-    static let themeAccent = UIColor.yellow100
-    static let themePrimaryButtonFill = UIColor.white
-    static let themePrimaryButtonText = UIColor.purple950
-    static let themeSecondaryButtonFill = UIColor.purple700
-    static let themeSecondaryButtonText = UIColor.gray200
-
-    convenience init(hex: UInt, alpha: CGFloat = 1.0) {
-        self.init(
-            red: CGFloat((hex >> 16) & 0xFF) / 255.0,
-            green: CGFloat((hex >> 8) & 0xFF) / 255.0,
-            blue: CGFloat(hex & 0xFF) / 255.0,
-            alpha: alpha
-        )
-    }
-}
-```
+The launcher icon backgrounds are aligned with the theme: light is `White`,
+dark is `Navy900` (`#0B1220`), matching the dark app background. This is defined
+in [`assets/app-icon/appicon-contract.json`](assets/app-icon/appicon-contract.json)
+and consumed by `scripts/generate_icons.sh`.
 
 ---
 
 ## ♿ Accessibility & Contrast Guidelines
 
-- **Primary Button (`White` on `Purple950`)**: Contrast ratio **13.5:1** (Passes WCAG AAA).
-- **Secondary Button Text (`Gray200` on `Purple700`)**: Contrast ratio **7.2:1** (Passes WCAG AAA).
-- **Accent Yellow (`Yellow100` on `Purple950`)**: Contrast ratio **12.1:1** (Passes WCAG AAA).
-- **Guest Link (`Lavender200` on `Purple950`)**: Contrast ratio **8.9:1** (Passes WCAG AAA).
+- **Primary button (`White` on `Blue500`)**: ~4.3:1 — passes WCAG AA for normal text.
+- **Primary text (`Navy900` on `White`)**: ~17:1 — passes WCAG AAA.
+- **Dark foreground (`Ink100` on `Navy900`)**: ~15:1 — passes WCAG AAA.
+- **Tertiary (`Navy900` on `Orange500`)**: ~9:1 — passes WCAG AAA.
+- **Muted text (`Gray500` on `White`)**: ~5.9:1 — passes WCAG AA.
 
 ---
 
@@ -264,3 +162,4 @@ public extension UIColor {
 - [`android/AGENTS.md`](android/AGENTS.md) — Android module layout and conventions.
 - [`ios/AGENTS.md`](ios/AGENTS.md) — iOS module layout and conventions.
 - [`assets/app-icon/README.md`](assets/app-icon/README.md) — shared app-icon contract.
+- [`assets/splash/README.md`](assets/splash/README.md) — shared splash contract.

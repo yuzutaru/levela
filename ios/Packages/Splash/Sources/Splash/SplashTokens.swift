@@ -20,14 +20,14 @@ public enum SplashTokens {
     public static let guest = "Continue as a guest"
 
     // Colours (design-system primitives, see THEME_COLORS.md)
-    public static let backgroundGradient: [Color] = [Color.purple800, Color.purple950, Color.purple900]
-    public static let backgroundGlow = Color.purple800
-    public static let title = Color.white
-    public static let loginBackground = Color.purple700
-    public static let loginText = Color.gray200
-    public static let registerBackground = Color.white
-    public static let registerText = Color.purple950
-    public static let guestText = Color.lavender200
+    public static let backgroundGradient: [Color] = [.white, Color.lightBlue100]
+    public static let backgroundGlow = Color.lightBlue300
+    public static let title = Color.navy900
+    public static let loginBackground = Color.gray100
+    public static let loginText = Color.blue700
+    public static let registerBackground = Color.blue500
+    public static let registerText = Color.white
+    public static let guestText = Color.gray500
 
     // Icon (the app's launcher icon foreground, injected by the app)
     public static let iconSize: CGFloat = 96
