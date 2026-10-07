@@ -17,9 +17,6 @@ let package = Package(
             name: "Splash",
             dependencies: [
                 .product(name: "Design", package: "Design")
-            ],
-            resources: [
-                .process("Resources")
             ]
         ),
         .testTarget(
