@@ -15,7 +15,7 @@ import com.yuzutaru.design.ui.theme.White
  *
  * Mirrors `assets/splash/splash-contract.json` and the iOS `SplashTokens`.
  * Do not hand-edit: change the contract and run
- * `scripts/generate_splash_assets.sh` / `scripts/verify_splash_parity.sh`.
+ * `scripts/verify_splash_parity.sh`.
  */
 object SplashTokens {
     // Flow — stages: brand, welcome, actions
@@ -39,13 +39,12 @@ object SplashTokens {
     val BackgroundGradient: List<Color> = listOf(Purple800, Purple950, Purple900)
     val BackgroundGlow: Color = Purple800
     val Title: Color = White
-    val Logo: Color = Lavender200
     val LoginBackground: Color = Purple700
     val LoginText: Color = Gray200
     val RegisterBackground: Color = White
     val RegisterText: Color = Purple950
     val GuestText: Color = Lavender200
 
-    // Logo
-    val LogoSize = 64.dp
+    // Icon (the app's launcher icon foreground, injected by the app)
+    val IconSize = 96.dp
 }
