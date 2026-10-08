@@ -75,9 +75,10 @@ def check_platform(key):
         if isinstance(name, str) and name.lower() not in low:
             errors.append(f"{tokens_rel}: missing colour token '{name}'")
 
-    # icon dp size
-    if str(c["icon"]["sizeDp"]) not in tokens:
-        errors.append(f"{tokens_rel}: missing icon size '{c['icon']['sizeDp']}'")
+    # icon dp size (per platform)
+    size_dp = c["icon"]["sizeDp"][key]
+    if str(size_dp) not in tokens:
+        errors.append(f"{tokens_rel}: missing icon size '{size_dp}'")
 
     # palette hexes must live in the platform design-system Color file
     design_low = read(design_rel).lower().replace("0x", "").replace("#", "")

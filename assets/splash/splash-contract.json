@@ -41,8 +41,8 @@
   },
 
   "icon": {
-    "sizeDp": 96,
-    "note": "The app's own launcher icon foreground: Android @drawable/ic_launcher_foreground, iOS AppIcon (dark/alpha appearance). Not generated."
+    "sizeDp": { "android": 204, "ios": 96 },
+    "note": "The app's own launcher icon foreground: Android @drawable/ic_launcher_foreground, iOS AppIcon (dark/alpha appearance). Not generated. Sized per platform (Android 204dp, iOS 96pt)."
   },
 
   "targets": {
