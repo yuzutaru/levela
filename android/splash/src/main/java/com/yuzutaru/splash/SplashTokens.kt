@@ -29,6 +29,10 @@ object SplashTokens {
     const val AutoAdvanceWelcomeMs = 1200L
     const val ShowEveryLaunch = true
 
+    // Accounts are deferred (offline-first): the Login / Register buttons and
+    // their copy stay defined, but are hidden until the auth flow lands.
+    const val ShowAuthActions = false
+
     // Copy
     const val TitleLine1 = "Start your"
     const val TitleLine2 = "Fitness Journey"

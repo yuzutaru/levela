@@ -26,11 +26,16 @@ Three stages, auto-advancing (timings in the contract):
 | --- | --- |
 | `brand` | app icon only |
 | `welcome` | app icon + **Start your / Fitness Journey** |
-| `actions` | app icon + heading + **Login** / **Register** buttons + **Continue as a guest** |
+| `actions` | app icon + heading + **Continue as a guest** (+ hidden **Login** / **Register**) |
 
 Buttons are visual only in this iteration; the feature exposes a single
 `onFinished` callback that the app wires up later. The splash shows on every
 launch (there is no persistence yet).
+
+The Login / Register buttons are **hidden, not removed**: their copy and colours
+stay in the contract and both platforms' `SplashTokens`, gated by
+`flow.showAuthActions` (currently `false`). Flip it to `true` in
+`splash-contract.json` to show them again once accounts land.
 
 ## Change the splash
 

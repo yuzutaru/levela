@@ -4,9 +4,10 @@ import SwiftUI
 /// The Levela splash (launch welcome) screen.
 ///
 /// Shows the app icon and auto-advances through the ``SplashStage``s in
-/// ``SplashTokens``; the Login / Register / guest actions are visual only for
-/// now, and the whole flow reports completion through `onFinished` so the app
-/// can wire navigation later.
+/// ``SplashTokens``; the actions are visual only for now, and the whole flow
+/// reports completion through `onFinished` so the app can wire navigation later.
+/// The Login / Register buttons are defined but hidden while accounts are
+/// deferred (offline-first) — see ``SplashTokens/showAuthActions``.
 ///
 /// Mirrors the Android `SplashView`.
 ///
@@ -92,18 +93,20 @@ public struct SplashView: View {
 
     private var actions: some View {
         VStack(spacing: 0) {
-            SplashButton(
-                title: SplashTokens.login,
-                background: SplashTokens.loginBackground,
-                foreground: SplashTokens.loginText
-            ) {}
+            if SplashTokens.showAuthActions {
+                SplashButton(
+                    title: SplashTokens.login,
+                    background: SplashTokens.loginBackground,
+                    foreground: SplashTokens.loginText
+                ) {}
 
-            SplashButton(
-                title: SplashTokens.register,
-                background: SplashTokens.registerBackground,
-                foreground: SplashTokens.registerText
-            ) {}
-            .padding(.top, 12)
+                SplashButton(
+                    title: SplashTokens.register,
+                    background: SplashTokens.registerBackground,
+                    foreground: SplashTokens.registerText
+                ) {}
+                .padding(.top, 12)
+            }
 
             Text(SplashTokens.guest)
                 .font(LevelaTypography.labelMedium)

@@ -43,9 +43,10 @@ import kotlinx.coroutines.delay
  * The Levela splash (launch welcome) screen.
  *
  * Shows the app icon and auto-advances through the [SplashStage]s in
- * [SplashTokens]; the Login / Register / guest actions are visual only for now,
- * and the whole flow reports completion through [onFinished] so the app can wire
- * navigation later.
+ * [SplashTokens]; the actions are visual only for now, and the whole flow reports
+ * completion through [onFinished] so the app can wire navigation later. The Login
+ * / Register buttons are defined but hidden while accounts are deferred
+ * (offline-first) — see [SplashTokens.ShowAuthActions].
  *
  * Mirrors the iOS `SplashView`.
  *
@@ -160,20 +161,22 @@ private fun SplashActions(
             .padding(bottom = 28.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        SplashButton(
-            text = SplashTokens.Login,
-            background = SplashTokens.LoginBackground,
-            textColor = SplashTokens.LoginText,
-            onClick = onLogin,
-        )
-        Spacer(Modifier.height(12.dp))
-        SplashButton(
-            text = SplashTokens.Register,
-            background = SplashTokens.RegisterBackground,
-            textColor = SplashTokens.RegisterText,
-            onClick = onRegister,
-        )
-        Spacer(Modifier.height(18.dp))
+        if (SplashTokens.ShowAuthActions) {
+            SplashButton(
+                text = SplashTokens.Login,
+                background = SplashTokens.LoginBackground,
+                textColor = SplashTokens.LoginText,
+                onClick = onLogin,
+            )
+            Spacer(Modifier.height(12.dp))
+            SplashButton(
+                text = SplashTokens.Register,
+                background = SplashTokens.RegisterBackground,
+                textColor = SplashTokens.RegisterText,
+                onClick = onRegister,
+            )
+            Spacer(Modifier.height(18.dp))
+        }
         Text(
             text = SplashTokens.Guest,
             style = MaterialTheme.typography.labelMedium,

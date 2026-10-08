@@ -61,6 +61,10 @@ def check_platform(key):
     if str(c["flow"]["showEveryLaunch"]).lower() not in low:
         errors.append(f"{tokens_rel}: missing showEveryLaunch={c['flow']['showEveryLaunch']}")
 
+    # show-auth-actions flag
+    if str(c["flow"]["showAuthActions"]).lower() not in low:
+        errors.append(f"{tokens_rel}: missing showAuthActions={c['flow']['showAuthActions']}")
+
     # copy
     for field, value in c["text"].items():
         if value not in tokens:

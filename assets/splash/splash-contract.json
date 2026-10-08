@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "description": "Single source of truth for the Levela splash (launch welcome) flow. scripts/verify_splash_parity.sh checks that the Android and iOS Splash features expose the same stages, timings, copy and colours. The splash icon is the app's own launcher icon foreground (no generated asset). Colour names refer to the primitive labels in THEME_COLORS.md.",
   "verifier": "scripts/verify_splash_parity.sh",
   "themeReference": "THEME_COLORS.md",
@@ -7,7 +7,8 @@
   "flow": {
     "stages": ["brand", "welcome", "actions"],
     "autoAdvanceMs": { "brand": 1200, "welcome": 1200 },
-    "showEveryLaunch": true
+    "showEveryLaunch": true,
+    "showAuthActions": false
   },
 
   "text": {
