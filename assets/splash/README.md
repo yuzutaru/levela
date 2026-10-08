@@ -28,7 +28,7 @@ Three stages, auto-advancing (timings in the contract):
 | --- | --- |
 | `brand` | app icon only |
 | `welcome` | app icon + **Start your / Fitness Journey** |
-| `actions` | app icon + heading + **Continue as a guest** (+ hidden **Login** / **Register**) |
+| `actions` | app icon + heading + **Continue as a guest** button (+ hidden **Login** / **Register** buttons, hidden guest link) |
 
 Buttons are visual only in this iteration; the feature exposes a single
 `onFinished` callback that the app wires up later. The splash shows on every
@@ -38,6 +38,12 @@ The Login / Register buttons are **hidden, not removed**: their copy and colours
 stay in the contract and both platforms' `SplashTokens`, gated by
 `flow.showAuthActions` (currently `false`). Flip it to `true` in
 `splash-contract.json` to show them again once accounts land.
+
+The guest entry is now a primary **Continue as a guest** button, styled like the
+old Register button (Blue500 / White), gated by `flow.showGuestButton`
+(currently `true`). The previous underlined text link is **hidden, not removed**,
+gated by `flow.showGuestLink` (currently `false`). Both use the same `guest`
+copy and the existing `registerBackground` / `registerText` colours.
 
 ## Change the splash
 

@@ -46,7 +46,9 @@ import kotlinx.coroutines.delay
  * [SplashTokens]; the actions are visual only for now, and the whole flow reports
  * completion through [onFinished] so the app can wire navigation later. The Login
  * / Register buttons are defined but hidden while accounts are deferred
- * (offline-first) — see [SplashTokens.ShowAuthActions].
+ * (offline-first) — see [SplashTokens.ShowAuthActions]. The guest entry is a
+ * primary button ([SplashTokens.ShowGuestButton]); the old underlined link is
+ * defined but hidden ([SplashTokens.ShowGuestLink]).
  *
  * Mirrors the iOS `SplashView`.
  *
@@ -177,15 +179,25 @@ private fun SplashActions(
             )
             Spacer(Modifier.height(18.dp))
         }
-        Text(
-            text = SplashTokens.Guest,
-            style = MaterialTheme.typography.labelMedium,
-            color = SplashTokens.GuestText,
-            textDecoration = TextDecoration.Underline,
-            modifier = Modifier
-                .clickable(onClick = onGuest)
-                .padding(4.dp),
-        )
+        if (SplashTokens.ShowGuestButton) {
+            SplashButton(
+                text = SplashTokens.Guest,
+                background = SplashTokens.RegisterBackground,
+                textColor = SplashTokens.RegisterText,
+                onClick = onGuest,
+            )
+        }
+        if (SplashTokens.ShowGuestLink) {
+            Text(
+                text = SplashTokens.Guest,
+                style = MaterialTheme.typography.labelMedium,
+                color = SplashTokens.GuestText,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier
+                    .clickable(onClick = onGuest)
+                    .padding(4.dp),
+            )
+        }
     }
 }
 

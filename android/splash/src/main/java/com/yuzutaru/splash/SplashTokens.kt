@@ -33,6 +33,11 @@ object SplashTokens {
     // their copy stay defined, but are hidden until the auth flow lands.
     const val ShowAuthActions = false
 
+    // The guest entry is a primary button now; the old underlined link stays
+    // defined but hidden. Both use the `guest` copy.
+    const val ShowGuestLink = false
+    const val ShowGuestButton = true
+
     // Copy
     const val TitleLine1 = "Start your"
     const val TitleLine2 = "Fitness Journey"
