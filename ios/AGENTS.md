@@ -120,7 +120,9 @@ both platforms, by the shared contract in `../assets/splash/`:
 iOS app icons (`AppIcon.appiconset`) are **not** loadable at runtime via
 `UIImage(named: "AppIcon")`. It auto-advances through `SplashStage` (`brand` →
 `welcome` → `actions`) and reports completion through `onFinished`. The Login /
-Register / guest actions are visual only for now. See
+Register buttons are defined but hidden while accounts are deferred
+(offline-first), gated by `SplashTokens.showAuthActions`; the guest action is
+visual only for now. See
 [`../assets/splash/README.md`](../assets/splash/README.md).
 
 Related docs: [`../android/AGENTS.md`](../android/AGENTS.md) (Android counterpart),

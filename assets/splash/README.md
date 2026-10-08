@@ -16,7 +16,9 @@ canvas with a soft light-blue glow and icon-blue actions.
 The splash **icon is the app's own launcher icon foreground**, not a generated
 asset: Android uses `@drawable/ic_launcher_foreground` (the adaptive-icon
 foreground) and iOS uses the `AppIcon` artwork. Both come from the app-icon
-pipeline, so there is nothing extra to generate or keep in sync.
+pipeline, so there is nothing extra to generate or keep in sync. Its size is
+**per platform** in the contract (`icon.sizeDp`: `android` 204, `ios` 96); the
+verifier checks each platform against its own value.
 
 ## The flow
 
@@ -26,11 +28,16 @@ Three stages, auto-advancing (timings in the contract):
 | --- | --- |
 | `brand` | app icon only |
 | `welcome` | app icon + **Start your / Fitness Journey** |
-| `actions` | app icon + heading + **Login** / **Register** buttons + **Continue as a guest** |
+| `actions` | app icon + heading + **Continue as a guest** (+ hidden **Login** / **Register**) |
 
 Buttons are visual only in this iteration; the feature exposes a single
 `onFinished` callback that the app wires up later. The splash shows on every
 launch (there is no persistence yet).
+
+The Login / Register buttons are **hidden, not removed**: their copy and colours
+stay in the contract and both platforms' `SplashTokens`, gated by
+`flow.showAuthActions` (currently `false`). Flip it to `true` in
+`splash-contract.json` to show them again once accounts land.
 
 ## Change the splash
 
@@ -48,7 +55,7 @@ launch (there is no persistence yet).
 `verify_splash_parity.sh` fails (non-zero) if either platform drifts from the
 contract:
 
-- a stage name, auto-advance timing, copy string or icon size differs;
+- a stage name, auto-advance timing, copy string or icon size (per platform) differs;
 - a colour token is renamed or missing;
 - the design-system `Color` file stops defining a contracted palette hex.
 

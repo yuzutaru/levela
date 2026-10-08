@@ -102,8 +102,10 @@ platforms, by the shared contract in `../assets/splash/`:
 
 `SplashView` shows the app's launcher icon foreground (`ic_launcher_foreground`,
 injected from `:app`), auto-advances through `SplashStage` (`Brand` → `Welcome` →
-`Actions`) and reports completion through `onFinished`. The Login / Register /
-guest actions are visual only for now. See
+`Actions`) and reports completion through `onFinished`. The Login / Register
+buttons are defined but hidden while accounts are deferred (offline-first),
+gated by `SplashTokens.ShowAuthActions`; the guest action is visual only for now.
+See
 [`../assets/splash/README.md`](../assets/splash/README.md).
 
 Related docs: [`../ios/AGENTS.md`](../ios/AGENTS.md) (iOS counterpart),

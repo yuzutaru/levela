@@ -12,6 +12,10 @@ public enum SplashTokens {
     public static let autoAdvanceWelcomeMs = 1200
     public static let showEveryLaunch = true
 
+    /// Accounts are deferred (offline-first): the Login / Register buttons and
+    /// their copy stay defined, but are hidden until the auth flow lands.
+    public static let showAuthActions = false
+
     // Copy
     public static let titleLine1 = "Start your"
     public static let titleLine2 = "Fitness Journey"
