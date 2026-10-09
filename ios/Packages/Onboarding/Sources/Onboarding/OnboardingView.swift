@@ -10,6 +10,9 @@ import SwiftUI
 @MainActor
 public struct OnboardingView: View {
     @State private var viewModel = OnboardingViewModel()
+    /// 1 when moving forward through the steps, -1 when going back; drives the
+    /// slide direction of the step transition.
+    @State private var direction: Int = 1
     private let onFinished: () -> Void
 
     public init(onFinished: @escaping () -> Void = {}) {
@@ -21,15 +24,52 @@ public struct OnboardingView: View {
             StepProgress(current: viewModel.stepIndex, count: viewModel.stepCount)
                 .padding(.top, 20)
 
-            if viewModel.step == .welcome {
-                welcomeStep
-            } else {
-                valueStep
+            ZStack {
+                Group {
+                    if viewModel.step == .welcome {
+                        welcomeStep
+                    } else {
+                        valueStep
+                    }
+                }
+                // A new id per step so the transition fires even between weight
+                // and height, which share the same `valueStep` view.
+                .id(viewModel.step)
+                .transition(stepTransition)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .animation(.easeInOut(duration: 0.3), value: viewModel.step)
         }
         .padding(.horizontal, 24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(OnboardingTokens.background)
+    }
+
+    /// Push forward (next): the new step enters from the right, the old one
+    /// leaves to the left. Going back mirrors it: in from the left, out to the
+    /// right.
+    private var stepTransition: AnyTransition {
+        direction > 0
+            ? .asymmetric(
+                insertion: .move(edge: .trailing).combined(with: .opacity),
+                removal: .move(edge: .leading).combined(with: .opacity)
+            )
+            : .asymmetric(
+                insertion: .move(edge: .leading).combined(with: .opacity),
+                removal: .move(edge: .trailing).combined(with: .opacity)
+            )
+    }
+
+    /// Advances a step, sliding forward.
+    private func goNext() {
+        direction = 1
+        viewModel.next()
+    }
+
+    /// Returns a step, sliding back.
+    private func goBack() {
+        direction = -1
+        viewModel.back()
     }
 
     /// The intro step: headline + subtitle + hero illustration + a primary "Let's start" button.
@@ -61,7 +101,7 @@ public struct OnboardingView: View {
                 .padding(.top, 24)
 
             NextButton(label: OnboardingTokens.start, showChevrons: false) {
-                viewModel.next()
+                goNext()
             }
             .padding(.top, 16)
             .padding(.bottom, 24)
@@ -86,12 +126,12 @@ public struct OnboardingView: View {
             Spacer(minLength: 16)
 
             HStack(spacing: 12) {
-                BackButton(action: viewModel.back)
+                BackButton(action: goBack)
                 NextButton(label: OnboardingTokens.next) {
                     if viewModel.isLastStep {
                         onFinished()
                     } else {
-                        viewModel.next()
+                        goNext()
                     }
                 }
             }
