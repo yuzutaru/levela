@@ -23,13 +23,17 @@ import com.yuzutaru.design.ui.theme.White
 object OnboardingTokens {
     // Flow — steps: weight, height
     val steps: List<OnboardingStep> = listOf(
+        OnboardingStep.Welcome,
         OnboardingStep.Weight,
         OnboardingStep.Height,
     )
 
     // Copy
+    const val WelcomeTitle = "Start your Fitness Journey"
+    const val WelcomeSubtitle = "Start your fitness journey with our app's guidance and support"
     const val WeightTitle = "What is your weight?"
     const val HeightTitle = "What is your height?"
+    const val Start = "Let's start"
     const val Next = "Next"
     const val Back = "Back"
 
@@ -60,6 +64,7 @@ object OnboardingTokens {
     // Colours (design-system primitives, see THEME_COLORS.md)
     val Background: Color = White
     val Title: Color = Navy900
+    val Subtitle: Color = Gray500
     val Value: Color = Navy900
     val ActiveSegment: Color = Blue500
     val InactiveSegment: Color = Gray200

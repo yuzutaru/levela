@@ -8,10 +8,10 @@ import org.junit.Test
 class OnboardingViewModelTest {
 
     @Test
-    fun startsOnWeightStepWithDefaultUnits() {
+    fun startsOnWelcomeStepWithDefaultUnits() {
         val viewModel = OnboardingViewModel()
 
-        assertEquals(OnboardingStep.Weight, viewModel.step)
+        assertEquals(OnboardingStep.Welcome, viewModel.step)
         assertEquals(OnboardingTokens.defaultWeightUnit, viewModel.weightUnit)
         assertEquals(OnboardingTokens.defaultHeightUnit, viewModel.heightUnit)
         assertEquals(OnboardingTokens.weightKgDefault, viewModel.weightDisplay)
@@ -21,15 +21,19 @@ class OnboardingViewModelTest {
     }
 
     @Test
-    fun exposesTwoSteps() {
+    fun exposesThreeSteps() {
         val viewModel = OnboardingViewModel()
 
-        assertEquals(2, viewModel.stepCount)
+        assertEquals(3, viewModel.stepCount)
         assertEquals(0, viewModel.stepIndex)
 
         viewModel.next()
-        assertEquals(OnboardingStep.Height, viewModel.step)
+        assertEquals(OnboardingStep.Weight, viewModel.step)
         assertEquals(1, viewModel.stepIndex)
+
+        viewModel.next()
+        assertEquals(OnboardingStep.Height, viewModel.step)
+        assertEquals(2, viewModel.stepIndex)
         assertTrue(viewModel.isLastStep)
 
         viewModel.back()
@@ -41,8 +45,9 @@ class OnboardingViewModelTest {
         val viewModel = OnboardingViewModel()
 
         viewModel.back()
-        assertEquals(OnboardingStep.Weight, viewModel.step)
+        assertEquals(OnboardingStep.Welcome, viewModel.step)
 
+        viewModel.next()
         viewModel.next()
         viewModel.next()
         assertEquals(OnboardingStep.Height, viewModel.step)

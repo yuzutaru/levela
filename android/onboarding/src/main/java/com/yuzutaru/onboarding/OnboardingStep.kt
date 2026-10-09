@@ -8,6 +8,7 @@ package com.yuzutaru.onboarding
  * (enforced by `scripts/verify_onboarding_parity.sh`).
  */
 enum class OnboardingStep {
+    Welcome,
     Weight,
     Height,
 }

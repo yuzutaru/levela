@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,11 +39,12 @@ import com.yuzutaru.design.ui.theme.Gray200
 import com.yuzutaru.design.ui.theme.LevelaTheme
 
 /**
- * The Levela post-guest onboarding flow (weight, height).
+ * The Levela post-guest onboarding flow (welcome, weight, height).
  *
- * Shown after the user taps **Continue as a guest** on the splash. Two steps,
- * each with a draggable ruler picker and a unit toggle; the last step reports
- * completion through [onFinished]. Mirrors the iOS `OnboardingView`.
+ * Shown after the user taps **Continue as a guest** on the splash. Three steps:
+ * a welcome intro, then weight and height — the latter pair each using a
+ * draggable ruler picker and a unit toggle. The last step reports completion
+ * through [onFinished]. Mirrors the iOS `OnboardingView`.
  *
  * @param onFinished called when the user taps Next on the final step.
  */
@@ -64,75 +66,122 @@ fun OnboardingView(
 
         StepProgress(current = viewModel.stepIndex, count = viewModel.stepCount)
 
-        Spacer(Modifier.height(28.dp))
+        when (viewModel.step) {
+            OnboardingStep.Welcome -> WelcomeStep(onStart = viewModel::next)
+            OnboardingStep.Weight -> ValueStep(viewModel, onFinished)
+            OnboardingStep.Height -> ValueStep(viewModel, onFinished)
+        }
+    }
+}
 
-        Text(
-            text = when (viewModel.step) {
-                OnboardingStep.Weight -> OnboardingTokens.WeightTitle
-                OnboardingStep.Height -> OnboardingTokens.HeightTitle
-            },
-            style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-            color = OnboardingTokens.Title,
-            textAlign = TextAlign.Center,
+/** The intro step: headline + subtitle + a primary "Let's start" button. */
+@Composable
+private fun ColumnScope.WelcomeStep(onStart: () -> Unit) {
+    Spacer(Modifier.height(48.dp))
+
+    Text(
+        text = OnboardingTokens.WelcomeTitle,
+        style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+        color = OnboardingTokens.Title,
+        textAlign = TextAlign.Center,
+    )
+
+    Spacer(Modifier.height(12.dp))
+
+    Text(
+        text = OnboardingTokens.WelcomeSubtitle,
+        style = MaterialTheme.typography.bodyLarge,
+        color = OnboardingTokens.Subtitle,
+        textAlign = TextAlign.Center,
+    )
+
+    Spacer(Modifier.weight(1f))
+
+    NextButton(
+        label = OnboardingTokens.Start,
+        onClick = onStart,
+        showChevrons = false,
+        modifier = Modifier.fillMaxWidth(),
+    )
+
+    Spacer(Modifier.height(24.dp))
+}
+
+/** A weight or height step: title + unit toggle + value card + back / Next. */
+@Composable
+private fun ColumnScope.ValueStep(
+    viewModel: OnboardingViewModel,
+    onFinished: () -> Unit,
+) {
+    Spacer(Modifier.height(28.dp))
+
+    Text(
+        text = when (viewModel.step) {
+            OnboardingStep.Welcome -> OnboardingTokens.WelcomeTitle
+            OnboardingStep.Weight -> OnboardingTokens.WeightTitle
+            OnboardingStep.Height -> OnboardingTokens.HeightTitle
+        },
+        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+        color = OnboardingTokens.Title,
+        textAlign = TextAlign.Center,
+    )
+
+    Spacer(Modifier.height(20.dp))
+
+    when (viewModel.step) {
+        OnboardingStep.Weight -> UnitToggle(
+            units = OnboardingTokens.weightUnits,
+            selected = viewModel.weightUnit,
+            onSelect = viewModel::selectWeightUnit,
         )
 
-        Spacer(Modifier.height(20.dp))
-
-        when (viewModel.step) {
-            OnboardingStep.Weight -> UnitToggle(
-                units = OnboardingTokens.weightUnits,
-                selected = viewModel.weightUnit,
-                onSelect = viewModel::selectWeightUnit,
-            )
-
-            OnboardingStep.Height -> UnitToggle(
-                units = OnboardingTokens.heightUnits,
-                selected = viewModel.heightUnit,
-                onSelect = viewModel::selectHeightUnit,
-            )
-        }
-
-        Spacer(Modifier.height(28.dp))
-
-        when (viewModel.step) {
-            OnboardingStep.Weight -> ValueCard(
-                value = viewModel.weightDisplay,
-                unit = viewModel.weightUnit,
-                scale = weightScale(viewModel.weightUnit),
-                onValueChange = viewModel::setWeightDisplay,
-                background = OnboardingTokens.CardWeight,
-                accent = OnboardingTokens.CardWeightAccent,
-            )
-
-            OnboardingStep.Height -> ValueCard(
-                value = viewModel.heightDisplay,
-                unit = viewModel.heightUnit,
-                scale = heightScale(viewModel.heightUnit),
-                onValueChange = viewModel::setHeightDisplay,
-                background = OnboardingTokens.CardHeight,
-                accent = OnboardingTokens.CardHeightAccent,
-            )
-        }
-
-        Spacer(Modifier.weight(1f))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            BackButton(onClick = viewModel::back)
-            Spacer(Modifier.width(12.dp))
-            NextButton(
-                label = OnboardingTokens.Next,
-                onClick = {
-                    if (viewModel.isLastStep) onFinished() else viewModel.next()
-                },
-                modifier = Modifier.weight(1f),
-            )
-        }
-
-        Spacer(Modifier.height(24.dp))
+        else -> UnitToggle(
+            units = OnboardingTokens.heightUnits,
+            selected = viewModel.heightUnit,
+            onSelect = viewModel::selectHeightUnit,
+        )
     }
+
+    Spacer(Modifier.height(28.dp))
+
+    when (viewModel.step) {
+        OnboardingStep.Weight -> ValueCard(
+            value = viewModel.weightDisplay,
+            unit = viewModel.weightUnit,
+            scale = weightScale(viewModel.weightUnit),
+            onValueChange = viewModel::setWeightDisplay,
+            background = OnboardingTokens.CardWeight,
+            accent = OnboardingTokens.CardWeightAccent,
+        )
+
+        else -> ValueCard(
+            value = viewModel.heightDisplay,
+            unit = viewModel.heightUnit,
+            scale = heightScale(viewModel.heightUnit),
+            onValueChange = viewModel::setHeightDisplay,
+            background = OnboardingTokens.CardHeight,
+            accent = OnboardingTokens.CardHeightAccent,
+        )
+    }
+
+    Spacer(Modifier.weight(1f))
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        BackButton(onClick = viewModel::back)
+        Spacer(Modifier.width(12.dp))
+        NextButton(
+            label = OnboardingTokens.Next,
+            onClick = {
+                if (viewModel.isLastStep) onFinished() else viewModel.next()
+            },
+            modifier = Modifier.weight(1f),
+        )
+    }
+
+    Spacer(Modifier.height(24.dp))
 }
 
 /** The tick scale for a value card, in the currently displayed unit. */
@@ -193,6 +242,7 @@ private fun NextButton(
     label: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    showChevrons: Boolean = true,
 ) {
     Row(
         modifier = modifier
@@ -209,8 +259,10 @@ private fun NextButton(
             style = MaterialTheme.typography.labelLarge,
             color = OnboardingTokens.NextText,
         )
-        Spacer(Modifier.width(10.dp))
-        Chevrons(color = OnboardingTokens.NextText, count = 3)
+        if (showChevrons) {
+            Spacer(Modifier.width(10.dp))
+            Chevrons(color = OnboardingTokens.NextText, count = 3)
+        }
     }
 }
 
