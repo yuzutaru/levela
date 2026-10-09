@@ -1,6 +1,7 @@
 package com.yuzutaru.onboarding
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -31,6 +32,8 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -74,7 +77,7 @@ fun OnboardingView(
     }
 }
 
-/** The intro step: headline + subtitle + a primary "Let's start" button. */
+/** The intro step: headline + subtitle + hero illustration + a primary "Let's start" button. */
 @Composable
 private fun ColumnScope.WelcomeStep(onStart: () -> Unit) {
     Spacer(Modifier.height(48.dp))
@@ -95,7 +98,19 @@ private fun ColumnScope.WelcomeStep(onStart: () -> Unit) {
         textAlign = TextAlign.Center,
     )
 
-    Spacer(Modifier.weight(1f))
+    Spacer(Modifier.height(24.dp))
+
+    Image(
+        painter = painterResource(R.drawable.welcome_illustration),
+        contentDescription = null,
+        contentScale = ContentScale.Fit,
+        modifier = Modifier
+            .fillMaxWidth()
+            .weight(1f, fill = false)
+            .clip(RoundedCornerShape(OnboardingTokens.WelcomeIllustrationCorner.dp)),
+    )
+
+    Spacer(Modifier.height(16.dp))
 
     NextButton(
         label = OnboardingTokens.Start,
