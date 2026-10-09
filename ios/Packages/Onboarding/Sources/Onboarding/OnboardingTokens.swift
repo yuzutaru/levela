@@ -44,18 +44,19 @@ public enum OnboardingTokens {
     public static let background = Color.white
     public static let title = Color.navy900
     public static let value = Color.navy900
-    public static let activeSegment = Color.navy900
+    public static let activeSegment = Color.blue500
     public static let inactiveSegment = Color.gray200
     public static let rulerTick = Color.gray300
     public static let rulerLabel = Color.gray500
-    public static let cardWeight = Color.orange100
-    public static let cardWeightAccent = Color.orange300
-    public static let cardHeight = Color.lightBlue100
-    public static let cardHeightAccent = Color.lightBlue300
-    public static let nextBackground = Color.navy900
+    public static let rulerAccent = Color.blue500
+    public static let cardWeight = Color.lightBlue100
+    public static let cardWeightAccent = Color.lightBlue300
+    public static let cardHeight = Color.blue100
+    public static let cardHeightAccent = Color.blue300
+    public static let nextBackground = Color.blue500
     public static let nextText = Color.white
     public static let toggleTrack = Color.gray100
-    public static let toggleSelectedBackground = Color.navy900
+    public static let toggleSelectedBackground = Color.blue500
     public static let toggleSelectedText = Color.white
     public static let toggleUnselectedText = Color.gray500
 }

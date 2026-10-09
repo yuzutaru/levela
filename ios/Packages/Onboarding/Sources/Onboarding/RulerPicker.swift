@@ -30,7 +30,7 @@ public struct RulerPicker: View {
         step: Int,
         tickSpacing: CGFloat = 14,
         majorEvery: Int = 10,
-        activeColor: Color = OnboardingTokens.value,
+        activeColor: Color = OnboardingTokens.rulerAccent,
         accentColor: Color = OnboardingTokens.cardWeightAccent,
         tickColor: Color = OnboardingTokens.rulerTick,
         labelColor: Color = OnboardingTokens.rulerLabel,
