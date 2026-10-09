@@ -17,16 +17,18 @@ tinted light blue (`LightBlue100` for weight, `Blue100` for height).
 
 ## The flow
 
-Two steps, shown after the user taps **Continue as a guest** on the splash:
+Three steps, shown after the user taps **Continue as a guest** on the splash:
 
 | Step | Shown |
 | --- | --- |
+| `welcome` | progress segments + **Start your Fitness Journey** + subtitle + **Let's start** |
 | `weight` | progress segments + **What is your weight?** + `lb` / `kg` toggle + value card (ruler picker) |
 | `height` | progress segments + **What is your height?** + `inches` / `cm` toggle + value card (ruler picker) |
 
-Each step has a circular back button and a primary **Next** button; the last
-step reports completion through `onFinished`. The progress indicator has one
-segment per step (two).
+The welcome step has a single primary **Let's start** button. The weight and
+height steps each have a circular back button and a primary **Next** button; the
+last step reports completion through `onFinished`. The progress indicator has one
+segment per step (three).
 
 The ruler picker is draggable and snaps to the nearest step; the big value
 updates live. Switching unit converts the canonical value (kg ⇄ lb,

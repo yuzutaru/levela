@@ -5,12 +5,15 @@
   "themeReference": "THEME_COLORS.md",
 
   "flow": {
-    "steps": ["weight", "height"]
+    "steps": ["welcome", "weight", "height"]
   },
 
   "text": {
+    "welcomeTitle": "Start your Fitness Journey",
+    "welcomeSubtitle": "Start your fitness journey with our app's guidance and support",
     "weightTitle": "What is your weight?",
     "heightTitle": "What is your height?",
+    "start": "Let's start",
     "next": "Next",
     "back": "Back"
   },
@@ -52,6 +55,7 @@
   "colors": {
     "background": "White",
     "title": "Navy900",
+    "subtitle": "Gray500",
     "value": "Navy900",
     "activeSegment": "Blue500",
     "inactiveSegment": "Gray200",
