@@ -10,20 +10,24 @@ The iOS app lives in `../ios/` (SwiftUI + SwiftData) and is out of scope here.
 
 ## Module layout
 
-Three Gradle modules, declared in `settings.gradle.kts`:
+Four Gradle modules, declared in `settings.gradle.kts`:
 
 - **`:app`** — the application. Entry point is
   `app/src/main/java/com/yuzutaru/levela/MainActivity.kt`
-  (`ComponentActivity` → `setContent` → `LevelaTheme` → `SplashView`).
+  (`ComponentActivity` → `setContent` → `LevelaTheme` → `SplashView`, then
+  `OnboardingView` after the guest entry).
 - **`:design`** — a library module holding the shared design system under
   `design/src/main/java/com/yuzutaru/design/ui/theme/`. `:app` depends on
   `project(":design")`, so all theme primitives live here, not in `:app`.
+- **`:onboarding`** — the post-guest onboarding flow (weight, height) under
+  `onboarding/src/main/java/com/yuzutaru/onboarding/`. Depends on `:design`; the
+  iOS counterpart is the `Onboarding` Swift package.
 - **`:splash`** — the launch welcome flow under
   `splash/src/main/java/com/yuzutaru/splash/`. Depends on `:design`; `:app`
   depends on it. The iOS counterpart is the `Splash` Swift package.
 
 Namespaces: `com.yuzutaru.levela` (`:app`), `com.yuzutaru.design` (`:design`),
-`com.yuzutaru.splash` (`:splash`).
+`com.yuzutaru.onboarding` (`:onboarding`), `com.yuzutaru.splash` (`:splash`).
 
 ## Build & run
 
@@ -102,12 +106,29 @@ platforms, by the shared contract in `../assets/splash/`:
 
 `SplashView` shows the app's launcher icon foreground (`ic_launcher_foreground`,
 injected from `:app`), auto-advances through `SplashStage` (`Brand` → `Welcome` →
-`Actions`) and reports completion through `onFinished`. The Login / Register
-buttons are defined but hidden while accounts are deferred (offline-first),
-gated by `SplashTokens.ShowAuthActions`; the guest entry is a primary
+`Actions`) and reports completion through `onFinished` when the guest button is
+tapped (the app then shows the onboarding flow). The Login / Register buttons are
+defined but hidden while accounts are deferred (offline-first), gated by
+`SplashTokens.ShowAuthActions`; the guest entry is a primary
 `Continue as a guest` button (`SplashTokens.ShowGuestButton`), with the old text
 link defined but hidden (`SplashTokens.ShowGuestLink`). See
 [`../assets/splash/README.md`](../assets/splash/README.md).
+
+## Onboarding
+
+The post-guest onboarding flow lives in `:onboarding` and is defined once, for
+both platforms, by the shared contract in `../assets/onboarding/`:
+
+```sh
+./scripts/verify_onboarding_parity.sh --strict     # require both platforms
+```
+
+`OnboardingView` shows the weight and height steps (progress segments, unit
+toggle, a draggable snapping ruler picker on a tinted value card, back + Next
+buttons) and reports completion through `onFinished`. Canonical values are stored
+in kg / cm; switching units converts them. It is shown from `:app` after the
+splash guest entry. See
+[`../assets/onboarding/README.md`](../assets/onboarding/README.md).
 
 Related docs: [`../ios/AGENTS.md`](../ios/AGENTS.md) (iOS counterpart),
 [`../README.md`](../README.md) (project overview).
@@ -115,6 +136,9 @@ Related docs: [`../ios/AGENTS.md`](../ios/AGENTS.md) (iOS counterpart),
 ## Conventions
 
 - Compose-only UI; no XML layouts. `@Preview` composables accompany UI code.
+- Commits are platform-separated: the tracked `pre-commit` hook
+  (`scripts/install-hooks.sh`) rejects a commit that stages changes under both
+  `android/` and `ios/`. Keep Android and iOS changes in separate commits.
 - Tests are the generated Compose/AndroidX stubs (`ExampleUnitTest`,
   `ExampleInstrumentedTest`) — replace them with real tests as features land.
 - `android/gradlew` is the Gradle wrapper shell script; do not hand-edit it.

@@ -119,12 +119,29 @@ both platforms, by the shared contract in `../assets/splash/`:
 `Image("SplashIcon")` — a normal imageset in `Levela/Assets.xcassets`, because
 iOS app icons (`AppIcon.appiconset`) are **not** loadable at runtime via
 `UIImage(named: "AppIcon")`. It auto-advances through `SplashStage` (`brand` →
-`welcome` → `actions`) and reports completion through `onFinished`. The Login /
+`welcome` → `actions`) and reports completion through `onFinished` when the guest
+button is tapped (the app then shows the onboarding flow). The Login /
 Register buttons are defined but hidden while accounts are deferred
 (offline-first), gated by `SplashTokens.showAuthActions`; the guest entry is a
 primary `Continue as a guest` button (`SplashTokens.showGuestButton`), with the
 old text link defined but hidden (`SplashTokens.showGuestLink`). See
 [`../assets/splash/README.md`](../assets/splash/README.md).
+
+## Onboarding
+
+The post-guest onboarding flow lives in the `Onboarding` package and is defined
+once, for both platforms, by the shared contract in `../assets/onboarding/`:
+
+```sh
+./scripts/verify_onboarding_parity.sh --strict     # require both platforms
+```
+
+`OnboardingView` shows the weight and height steps (progress segments, unit
+toggle, a draggable snapping ruler picker on a tinted value card, back + Next
+buttons) and reports completion through `onFinished`. Canonical values are stored
+in kg / cm; switching units converts them. It is shown from `LevelaRootView`
+after the splash guest entry. See
+[`../assets/onboarding/README.md`](../assets/onboarding/README.md).
 
 Related docs: [`../android/AGENTS.md`](../android/AGENTS.md) (Android counterpart),
 [`../README.md`](../README.md) (project overview).
@@ -132,6 +149,9 @@ Related docs: [`../android/AGENTS.md`](../android/AGENTS.md) (Android counterpar
 ## Conventions
 
 - SwiftUI only; no storyboards. `#Preview` accompanies UI code.
+- Commits are platform-separated: the tracked `pre-commit` hook
+  (`scripts/install-hooks.sh`) rejects a commit that stages changes under both
+  `android/` and `ios/`. Keep iOS and Android changes in separate commits.
 - Cross-module symbols must be `public` (Swift packages do not expose internals).
 - Feature view models are `@Observable @MainActor` and held by the view with
   `@State` — the iOS counterpart to Android's Hilt + `ViewModel`. There is no DI

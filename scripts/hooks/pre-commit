@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+#
+# Reject commits that mix Android and iOS changes, so the two platforms'
+# commits stay separate. Enabled by `scripts/install-hooks.sh`
+# (git config core.hooksPath scripts/hooks).
+#
+set -euo pipefail
+
+android=0
+ios=0
+while IFS= read -r file; do
+    case "$file" in
+        android/*) android=1 ;;
+        ios/*)     ios=1 ;;
+    esac
+done < <(git diff --cached --name-only)
+
+if (( android && ios )); then
+    echo "error: this commit mixes Android and iOS changes." >&2
+    echo "       Commit android/ and ios/ changes separately." >&2
+    echo "       (Unstage with: git restore --staged <paths>)" >&2
+    exit 1
+fi
+
+exit 0
