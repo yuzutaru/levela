@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "description": "Single source of truth for the Levela post-guest onboarding flow (weight, height). scripts/verify_onboarding_parity.sh checks that the Android and iOS Onboarding features expose the same steps, copy, units, defaults, value ranges and colours. Colour names refer to the primitive labels in THEME_COLORS.md.",
+  "verifier": "scripts/verify_onboarding_parity.sh",
+  "themeReference": "THEME_COLORS.md",
+
+  "flow": {
+    "steps": ["weight", "height"]
+  },
+
+  "text": {
+    "weightTitle": "What is your weight?",
+    "heightTitle": "What is your height?",
+    "next": "Next",
+    "back": "Back"
+  },
+
+  "units": {
+    "weight": ["lb", "kg"],
+    "height": ["inches", "cm"]
+  },
+
+  "defaults": {
+    "weightUnit": "kg",
+    "heightUnit": "cm"
+  },
+
+  "values": {
+    "weight": {
+      "kg": { "min": 30, "max": 160, "step": 1, "default": 70 },
+      "lb": { "min": 66, "max": 352, "step": 1, "default": 154 }
+    },
+    "height": {
+      "cm": { "min": 120, "max": 220, "step": 1, "default": 170 },
+      "inches": { "min": 47, "max": 87, "step": 1, "default": 67 }
+    }
+  },
+
+  "palette": {
+    "Navy900": "#0B1220",
+    "Gray100": "#EEF2F7",
+    "Gray200": "#E2E8F0",
+    "Gray300": "#CBD5E1",
+    "Gray500": "#64748B",
+    "Orange100": "#FFF1D6",
+    "Orange300": "#FFD27F",
+    "LightBlue100": "#E6F6FE",
+    "LightBlue300": "#A0E0F8"
+  },
+
+  "colors": {
+    "background": "White",
+    "title": "Navy900",
+    "value": "Navy900",
+    "activeSegment": "Navy900",
+    "inactiveSegment": "Gray200",
+    "rulerTick": "Gray300",
+    "rulerLabel": "Gray500",
+    "cardWeight": "Orange100",
+    "cardWeightAccent": "Orange300",
+    "cardHeight": "LightBlue100",
+    "cardHeightAccent": "LightBlue300",
+    "nextBackground": "Navy900",
+    "nextText": "White",
+    "toggleTrack": "Gray100",
+    "toggleSelectedBackground": "Navy900",
+    "toggleSelectedText": "White",
+    "toggleUnselectedText": "Gray500"
+  },
+
+  "targets": {
+    "android": {
+      "module": ":onboarding",
+      "namespace": "com.yuzutaru.onboarding",
+      "tokensFile": "android/onboarding/src/main/java/com/yuzutaru/onboarding/OnboardingTokens.kt",
+      "designColorFile": "android/design/src/main/java/com/yuzutaru/design/ui/theme/Color.kt"
+    },
+    "ios": {
+      "package": "Onboarding",
+      "tokensFile": "ios/Packages/Onboarding/Sources/Onboarding/OnboardingTokens.swift",
+      "designColorFile": "ios/Packages/Design/Sources/Design/Color.swift"
+    }
+  }
+}

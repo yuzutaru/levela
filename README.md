@@ -25,12 +25,23 @@ xcodebuild -scheme Levela -destination 'platform=iOS Simulator,name=iPhone 17' b
 
 Or open `ios/Levela.xcodeproj` in Xcode and run.
 
+## Git hooks
+
+Commits are kept platform-separated: the tracked `pre-commit` hook rejects any
+commit that stages changes under both `android/` and `ios/`. Enable it once per
+clone:
+
+```sh
+./scripts/install-hooks.sh
+```
+
 ## Project layout
 
-- `android/` — Android application (Kotlin, Jetpack Compose). Modules: `:app`, `:design`.
-- `ios/` — iOS application (SwiftUI). Modules: `Levela` app + local packages `Design`, `Onboarding`.
+- `android/` — Android application (Kotlin, Jetpack Compose). Modules: `:app`, `:design`, `:onboarding`, `:splash`.
+- `ios/` — iOS application (SwiftUI). Modules: `Levela` app + local packages `Design`, `Onboarding`, `Splash`.
 - `assets/app-icon/` — master app icon + the contract that drives both platforms' icons.
-- `scripts/` — repo tooling, including `generate_icons.sh`.
+- `assets/splash/`, `assets/onboarding/` — shared flow contracts mirrored by both platforms.
+- `scripts/` — repo tooling, including `generate_icons.sh` and the parity verifiers.
 - `THEME_COLORS.md` — the icon-derived app color palette (light + dark).
 - `android/AGENTS.md`, `ios/AGENTS.md` — per-platform agent guides.
 
