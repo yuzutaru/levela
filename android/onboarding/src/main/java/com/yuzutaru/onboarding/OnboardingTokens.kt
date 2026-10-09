@@ -1,6 +1,9 @@
 package com.yuzutaru.onboarding
 
 import androidx.compose.ui.graphics.Color
+import com.yuzutaru.design.ui.theme.Blue100
+import com.yuzutaru.design.ui.theme.Blue300
+import com.yuzutaru.design.ui.theme.Blue500
 import com.yuzutaru.design.ui.theme.Gray100
 import com.yuzutaru.design.ui.theme.Gray200
 import com.yuzutaru.design.ui.theme.Gray300
@@ -8,8 +11,6 @@ import com.yuzutaru.design.ui.theme.Gray500
 import com.yuzutaru.design.ui.theme.LightBlue100
 import com.yuzutaru.design.ui.theme.LightBlue300
 import com.yuzutaru.design.ui.theme.Navy900
-import com.yuzutaru.design.ui.theme.Orange100
-import com.yuzutaru.design.ui.theme.Orange300
 import com.yuzutaru.design.ui.theme.White
 
 /**
@@ -60,18 +61,19 @@ object OnboardingTokens {
     val Background: Color = White
     val Title: Color = Navy900
     val Value: Color = Navy900
-    val ActiveSegment: Color = Navy900
+    val ActiveSegment: Color = Blue500
     val InactiveSegment: Color = Gray200
     val RulerTick: Color = Gray300
     val RulerLabel: Color = Gray500
-    val CardWeight: Color = Orange100
-    val CardWeightAccent: Color = Orange300
-    val CardHeight: Color = LightBlue100
-    val CardHeightAccent: Color = LightBlue300
-    val NextBackground: Color = Navy900
+    val RulerAccent: Color = Blue500
+    val CardWeight: Color = LightBlue100
+    val CardWeightAccent: Color = LightBlue300
+    val CardHeight: Color = Blue100
+    val CardHeightAccent: Color = Blue300
+    val NextBackground: Color = Blue500
     val NextText: Color = White
     val ToggleTrack: Color = Gray100
-    val ToggleSelectedBackground: Color = Navy900
+    val ToggleSelectedBackground: Color = Blue500
     val ToggleSelectedText: Color = White
     val ToggleUnselectedText: Color = Gray500
 

@@ -41,7 +41,7 @@ fun RulerPicker(
     modifier: Modifier = Modifier,
     tickSpacing: Dp = 14.dp,
     majorEvery: Int = 10,
-    activeColor: Color = OnboardingTokens.Value,
+    activeColor: Color = OnboardingTokens.RulerAccent,
     accentColor: Color = OnboardingTokens.CardWeightAccent,
     tickColor: Color = OnboardingTokens.RulerTick,
     labelColor: Color = OnboardingTokens.RulerLabel,
