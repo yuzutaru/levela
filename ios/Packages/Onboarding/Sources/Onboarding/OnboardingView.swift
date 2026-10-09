@@ -38,7 +38,6 @@ public struct OnboardingView: View {
                 .transition(stepTransition)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .animation(.easeInOut(duration: 0.3), value: viewModel.step)
         }
         .padding(.horizontal, 24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -60,16 +59,18 @@ public struct OnboardingView: View {
             )
     }
 
-    /// Advances a step, sliding forward.
+    /// Advances a step, sliding forward. `direction` is committed before the
+    /// animated step change so the transition reads the correct direction.
     private func goNext() {
         direction = 1
-        viewModel.next()
+        withAnimation(.easeInOut(duration: 0.3)) { viewModel.next() }
     }
 
-    /// Returns a step, sliding back.
+    /// Returns a step, sliding back (previous step in from the left, current one
+    /// out to the right). `direction` is committed before the animated change.
     private func goBack() {
         direction = -1
-        viewModel.back()
+        withAnimation(.easeInOut(duration: 0.3)) { viewModel.back() }
     }
 
     /// The intro step: headline + subtitle + hero illustration + a primary "Let's start" button.
