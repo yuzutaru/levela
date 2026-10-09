@@ -38,35 +38,33 @@ public struct OnboardingView: View {
                 .transition(stepTransition)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .animation(.easeInOut(duration: 0.3), value: viewModel.step)
+            .animation(.easeOut(duration: 0.26), value: viewModel.step)
         }
         .padding(.horizontal, 24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(OnboardingTokens.background)
     }
 
-    /// Push forward (next): the new step enters from the right, the old one
-    /// leaves to the left. Going back mirrors it: in from the left, out to the
-    /// right.
+    /// Push forward (next): the new step floats up into place while the old one
+    /// fades. Going back mirrors it: the new step drifts down from above. Each
+    /// step also scales up slightly (0.96 → 1.0) so the motion reads as a lift
+    /// rather than a slide.
     private var stepTransition: AnyTransition {
-        direction > 0
-            ? .asymmetric(
-                insertion: .move(edge: .trailing).combined(with: .opacity),
-                removal: .move(edge: .leading).combined(with: .opacity)
-            )
-            : .asymmetric(
-                insertion: .move(edge: .leading).combined(with: .opacity),
-                removal: .move(edge: .trailing).combined(with: .opacity)
-            )
+        let up = AnyTransition.offset(y: 24).combined(with: .opacity)
+        let down = AnyTransition.offset(y: -24).combined(with: .opacity)
+        let zoom = AnyTransition.scale(scale: 0.96).combined(with: .opacity)
+        return direction > 0
+            ? .asymmetric(insertion: up.combined(with: zoom), removal: down)
+            : .asymmetric(insertion: down.combined(with: zoom), removal: up)
     }
 
-    /// Advances a step, sliding forward.
+    /// Advances a step, floating the next one up into place.
     private func goNext() {
         direction = 1
         viewModel.next()
     }
 
-    /// Returns a step, sliding back.
+    /// Returns a step, drifting the previous one back down.
     private func goBack() {
         direction = -1
         viewModel.back()
