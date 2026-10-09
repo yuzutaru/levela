@@ -17,6 +17,9 @@ let package = Package(
             name: "Onboarding",
             dependencies: [
                 .product(name: "Design", package: "Design")
+            ],
+            resources: [
+                .process("Resources")
             ]
         ),
         .testTarget(

@@ -32,7 +32,7 @@ public struct OnboardingView: View {
         .background(OnboardingTokens.background)
     }
 
-    /// The intro step: headline + subtitle + a primary "Let's start" button.
+    /// The intro step: headline + subtitle + hero illustration + a primary "Let's start" button.
     private var welcomeStep: some View {
         VStack(spacing: 0) {
             Text(OnboardingTokens.welcomeTitle)
@@ -47,11 +47,23 @@ public struct OnboardingView: View {
                 .multilineTextAlignment(.center)
                 .padding(.top, 12)
 
-            Spacer(minLength: 16)
+            Image("WelcomeIllustration", bundle: .module)
+                .resizable()
+                .interpolation(.high)
+                .scaledToFit()
+                .clipShape(
+                    RoundedRectangle(
+                        cornerRadius: CGFloat(OnboardingTokens.welcomeIllustrationCorner),
+                        style: .continuous
+                    )
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(.top, 24)
 
             NextButton(label: OnboardingTokens.start, showChevrons: false) {
                 viewModel.next()
             }
+            .padding(.top, 16)
             .padding(.bottom, 24)
         }
     }

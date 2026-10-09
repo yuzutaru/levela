@@ -85,4 +85,5 @@ object OnboardingTokens {
     // Layout
     val HorizontalPadding = 24
     val CardCorner = 28
+    val WelcomeIllustrationCorner = 28
 }
