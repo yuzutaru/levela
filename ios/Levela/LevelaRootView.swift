@@ -17,20 +17,19 @@ struct LevelaRootView: View {
     var body: some View {
         NavigationStack {
             // Splash is the launch screen; tapping "Continue as a guest"
-            // reports completion and moves on to the onboarding flow with a
-            // push-style slide (in from the right, splash out to the left).
+            // reports completion and crossfades into the onboarding flow.
             ZStack {
                 if showOnboarding {
                     OnboardingView()
-                        .transition(.move(edge: .trailing).combined(with: .opacity))
+                        .transition(.opacity)
                 } else {
                     SplashView(icon: Image("SplashIcon")) {
                         showOnboarding = true
                     }
-                    .transition(.move(edge: .leading).combined(with: .opacity))
+                    .transition(.opacity)
                 }
             }
-            .animation(.easeInOut(duration: 0.3), value: showOnboarding)
+            .animation(.easeOut(duration: 0.25), value: showOnboarding)
         }
         .levelaTheme()
     }
