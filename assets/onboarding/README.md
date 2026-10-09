@@ -10,10 +10,10 @@ scripts/verify_onboarding_parity.sh          # checks both platforms against the
 ```
 
 The colour tokens are the primitives from [`../../THEME_COLORS.md`](../../THEME_COLORS.md)
-(`Navy900`, `White`, `Gray100/200/300/500`, `Orange100/300`, `LightBlue100/300`).
-The mockup's dark accents are toned to the app palette: a white canvas, navy
-primary actions and the value cards tinted with the accent hue (orange for
-weight, light blue for height).
+(`Blue100/300/500`, `LightBlue100/300`, `Navy900`, `White`, `Gray100/200/300/500`).
+The mockup's dark accents are toned to the app palette: a white canvas with
+`Navy900` text and `Blue500` actions (matching the splash), and the value cards
+tinted light blue (`LightBlue100` for weight, `Blue100` for height).
 
 ## The flow
 
