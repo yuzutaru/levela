@@ -63,4 +63,7 @@ public enum OnboardingTokens {
     public static let toggleSelectedBackground = Color.blue500
     public static let toggleSelectedText = Color.white
     public static let toggleUnselectedText = Color.gray500
+
+    // Layout
+    public static let welcomeIllustrationCorner = 28
 }

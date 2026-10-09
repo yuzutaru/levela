@@ -136,11 +136,14 @@ once, for both platforms, by the shared contract in `../assets/onboarding/`:
 ./scripts/verify_onboarding_parity.sh --strict     # require both platforms
 ```
 
-`OnboardingView` shows the weight and height steps (progress segments, unit
-toggle, a draggable snapping ruler picker on a tinted value card, back + Next
-buttons) and reports completion through `onFinished`. Canonical values are stored
-in kg / cm; switching units converts them. It is shown from `LevelaRootView`
-after the splash guest entry. See
+`OnboardingView` shows the welcome step (title, subtitle, hero illustration) and
+the weight and height steps (progress segments, unit toggle, a draggable snapping
+ruler picker on a tinted value card, back + Next buttons) and reports completion
+through `onFinished`. The welcome illustration is bundled from
+`Sources/Onboarding/Resources/Assets.xcassets/WelcomeIllustration.imageset`
+(generated from `assets/onboarding/welcome-illustration.png`). Canonical values
+are stored in kg / cm; switching units converts them. It is shown from
+`LevelaRootView` after the splash guest entry. See
 [`../assets/onboarding/README.md`](../assets/onboarding/README.md).
 
 Related docs: [`../android/AGENTS.md`](../android/AGENTS.md) (Android counterpart),
