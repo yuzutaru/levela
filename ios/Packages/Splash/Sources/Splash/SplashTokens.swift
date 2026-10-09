@@ -16,6 +16,11 @@ public enum SplashTokens {
     /// their copy stay defined, but are hidden until the auth flow lands.
     public static let showAuthActions = false
 
+    /// The guest entry is a primary button now; the old underlined link stays
+    /// defined but hidden. Both use the `guest` copy.
+    public static let showGuestLink = false
+    public static let showGuestButton = true
+
     // Copy
     public static let titleLine1 = "Start your"
     public static let titleLine2 = "Fitness Journey"

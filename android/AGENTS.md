@@ -104,8 +104,9 @@ platforms, by the shared contract in `../assets/splash/`:
 injected from `:app`), auto-advances through `SplashStage` (`Brand` → `Welcome` →
 `Actions`) and reports completion through `onFinished`. The Login / Register
 buttons are defined but hidden while accounts are deferred (offline-first),
-gated by `SplashTokens.ShowAuthActions`; the guest action is visual only for now.
-See
+gated by `SplashTokens.ShowAuthActions`; the guest entry is a primary
+`Continue as a guest` button (`SplashTokens.ShowGuestButton`), with the old text
+link defined but hidden (`SplashTokens.ShowGuestLink`). See
 [`../assets/splash/README.md`](../assets/splash/README.md).
 
 Related docs: [`../ios/AGENTS.md`](../ios/AGENTS.md) (iOS counterpart),

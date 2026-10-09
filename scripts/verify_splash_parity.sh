@@ -65,6 +65,11 @@ def check_platform(key):
     if str(c["flow"]["showAuthActions"]).lower() not in low:
         errors.append(f"{tokens_rel}: missing showAuthActions={c['flow']['showAuthActions']}")
 
+    # guest entry visibility flags
+    for flag in ("showGuestLink", "showGuestButton"):
+        if str(c["flow"][flag]).lower() not in low:
+            errors.append(f"{tokens_rel}: missing {flag}={c['flow'][flag]}")
+
     # copy
     for field, value in c["text"].items():
         if value not in tokens:

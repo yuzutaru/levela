@@ -7,7 +7,9 @@ import SwiftUI
 /// ``SplashTokens``; the actions are visual only for now, and the whole flow
 /// reports completion through `onFinished` so the app can wire navigation later.
 /// The Login / Register buttons are defined but hidden while accounts are
-/// deferred (offline-first) — see ``SplashTokens/showAuthActions``.
+/// deferred (offline-first) — see ``SplashTokens/showAuthActions``. The guest
+/// entry is a primary button (``SplashTokens/showGuestButton``); the old
+/// underlined link is defined but hidden (``SplashTokens/showGuestLink``).
 ///
 /// Mirrors the Android `SplashView`.
 ///
@@ -108,12 +110,22 @@ public struct SplashView: View {
                 .padding(.top, 12)
             }
 
-            Text(SplashTokens.guest)
-                .font(LevelaTypography.labelMedium)
-                .foregroundStyle(SplashTokens.guestText)
-                .underline()
-                .padding(.top, 18)
-                .onTapGesture {}
+            if SplashTokens.showGuestButton {
+                SplashButton(
+                    title: SplashTokens.guest,
+                    background: SplashTokens.registerBackground,
+                    foreground: SplashTokens.registerText
+                ) {}
+            }
+
+            if SplashTokens.showGuestLink {
+                Text(SplashTokens.guest)
+                    .font(LevelaTypography.labelMedium)
+                    .foregroundStyle(SplashTokens.guestText)
+                    .underline()
+                    .padding(.top, 18)
+                    .onTapGesture {}
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.bottom, 28)
