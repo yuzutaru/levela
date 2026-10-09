@@ -18,6 +18,10 @@ let package = Package(
             dependencies: [
                 .product(name: "Design", package: "Design")
             ]
+        ),
+        .testTarget(
+            name: "OnboardingTests",
+            dependencies: ["Onboarding"]
         )
     ],
     swiftLanguageModes: [.v5]

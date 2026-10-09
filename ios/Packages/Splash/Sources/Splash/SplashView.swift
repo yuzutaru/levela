@@ -54,9 +54,6 @@ public struct SplashView: View {
             try? await Task.sleep(for: .milliseconds(delayMs))
             viewModel.advance()
         }
-        .onChange(of: viewModel.isFinished) { _, finished in
-            if finished { onFinished() }
-        }
     }
 
     private var background: some View {
@@ -114,8 +111,9 @@ public struct SplashView: View {
                 SplashButton(
                     title: SplashTokens.guest,
                     background: SplashTokens.registerBackground,
-                    foreground: SplashTokens.registerText
-                ) {}
+                    foreground: SplashTokens.registerText,
+                    action: onFinished
+                )
             }
 
             if SplashTokens.showGuestLink {
