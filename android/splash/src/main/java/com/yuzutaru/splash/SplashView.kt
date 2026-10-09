@@ -43,12 +43,12 @@ import kotlinx.coroutines.delay
  * The Levela splash (launch welcome) screen.
  *
  * Shows the app icon and auto-advances through the [SplashStage]s in
- * [SplashTokens]; the actions are visual only for now, and the whole flow reports
- * completion through [onFinished] so the app can wire navigation later. The Login
- * / Register buttons are defined but hidden while accounts are deferred
- * (offline-first) — see [SplashTokens.ShowAuthActions]. The guest entry is a
- * primary button ([SplashTokens.ShowGuestButton]); the old underlined link is
- * defined but hidden ([SplashTokens.ShowGuestLink]).
+ * [SplashTokens]; the actions are visual only for now, and tapping the guest
+ * button reports completion through [onFinished] so the app can navigate to the
+ * onboarding flow. The Login / Register buttons are defined but hidden while
+ * accounts are deferred (offline-first) — see [SplashTokens.ShowAuthActions].
+ * The guest entry is a primary button ([SplashTokens.ShowGuestButton]); the old
+ * underlined link is defined but hidden ([SplashTokens.ShowGuestLink]).
  *
  * Mirrors the iOS `SplashView`.
  *
@@ -64,14 +64,15 @@ fun SplashView(
     val stage = viewModel.stage
     val currentOnFinished by rememberUpdatedState(onFinished)
 
-    // Advance through the timed stages once, then report completion.
+    // Advance through the timed stages once and stop on the actions stage.
+    // Completion is reported when the guest button is tapped, so the app can
+    // navigate to the onboarding flow.
     LaunchedEffect(viewModel) {
         while (true) {
             val delayMs = viewModel.nextDelayMs() ?: break
             delay(delayMs)
             viewModel.advance()
         }
-        currentOnFinished()
     }
 
     Box(
@@ -126,7 +127,7 @@ fun SplashView(
                 SplashActions(
                     onLogin = {},
                     onRegister = {},
-                    onGuest = {},
+                    onGuest = currentOnFinished,
                 )
             }
         }
