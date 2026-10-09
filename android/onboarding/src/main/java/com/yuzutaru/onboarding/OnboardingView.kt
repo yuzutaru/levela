@@ -1,14 +1,10 @@
 package com.yuzutaru.onboarding
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -88,37 +84,17 @@ fun OnboardingView(
             transitionSpec = {
                 val forward = OnboardingTokens.steps.indexOf(targetState) >
                     OnboardingTokens.steps.indexOf(initialState)
-                // The incoming step fades in while floating up into place and
-                // scaling up slightly; the outgoing step fades while sinking
-                // away. Going back mirrors the vertical drift. Vertical motion
-                // reads as a lift and avoids the monotony of a repeated
-                // horizontal slide.
-                val enterUp = fadeIn(tween(260, easing = FastOutSlowInEasing)) +
-                    slideInVertically(tween(260, easing = FastOutSlowInEasing)) { it / 24 } +
-                    scaleIn(
-                        initialScale = 0.96f,
-                        animationSpec = tween(260, easing = FastOutSlowInEasing),
-                    )
-                val exitDown = fadeOut(tween(180, easing = FastOutSlowInEasing)) +
-                    slideOutVertically(tween(180, easing = FastOutSlowInEasing)) { -it / 24 } +
-                    scaleOut(
-                        targetScale = 0.96f,
-                        animationSpec = tween(180, easing = FastOutSlowInEasing),
-                    )
-                val enterDown = fadeIn(tween(260, easing = FastOutSlowInEasing)) +
-                    slideInVertically(tween(260, easing = FastOutSlowInEasing)) { -it / 24 } +
-                    scaleIn(
-                        initialScale = 0.96f,
-                        animationSpec = tween(260, easing = FastOutSlowInEasing),
-                    )
-                val exitUp = fadeOut(tween(180, easing = FastOutSlowInEasing)) +
-                    slideOutVertically(tween(180, easing = FastOutSlowInEasing)) { it / 24 } +
-                    scaleOut(
-                        targetScale = 0.96f,
-                        animationSpec = tween(180, easing = FastOutSlowInEasing),
-                    )
-                if (forward) enterUp togetherWith exitDown
-                else enterDown togetherWith exitUp
+                if (forward) {
+                    // Push forward: the new step enters from the right while the
+                    // old one leaves to the left.
+                    (slideInHorizontally { it } + fadeIn()) togetherWith
+                        (slideOutHorizontally { -it } + fadeOut())
+                } else {
+                    // Go back: the previous step enters from the left while the
+                    // current one leaves to the right.
+                    (slideInHorizontally { -it } + fadeIn()) togetherWith
+                        (slideOutHorizontally { it } + fadeOut())
+                }
             },
             label = "onboarding-step",
         ) { step ->
