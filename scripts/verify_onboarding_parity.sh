@@ -5,8 +5,9 @@
 # Contract enforcement for the Levela post-guest onboarding flow. Reads
 # assets/onboarding/onboarding-contract.json and checks that each platform's
 # OnboardingTokens file carries the same steps, copy, units, defaults, value
-# ranges and colour tokens, and that its design-system Color file defines the
-# contracted palette.
+# ranges and colour tokens, that its design-system Color file defines the
+# contracted palette, and that the welcome illustration ships on both
+# platforms at the contracted sizes.
 #
 # A platform is only checked once its OnboardingTokens file exists, so the
 # Android and iOS pull requests pass independently. Pass --strict to require
@@ -27,7 +28,7 @@ command -v python3 >/dev/null 2>&1 || { echo "error: 'python3' is required but n
 [ -f "$CONTRACT" ] || { echo "error: contract not found: $CONTRACT" >&2; exit 1; }
 
 exec python3 - "$CONTRACT" "$ROOT" "$@" <<'PY'
-import json, os, sys
+import json, os, struct, sys
 
 contract_path, root = sys.argv[1], sys.argv[2]
 strict = "--strict" in sys.argv[3:]
@@ -38,6 +39,53 @@ errors, checked = [], []
 def read(rel):
     with open(f"{root}/{rel}", "r", encoding="utf-8") as f:
         return f.read()
+
+def png_size(rel):
+    """Return (width, height) from a PNG header, or None if not a PNG/missing."""
+    path = f"{root}/{rel}"
+    if not os.path.isfile(path):
+        return None
+    with open(path, "rb") as f:
+        head = f.read(26)
+    if head[:8] != b"\x89PNG\r\n\x1a\n":
+        return None
+    return struct.unpack(">II", head[16:24])
+
+def check_illustration(key):
+    """The welcome hero illustration: one source, per-platform renditions."""
+    ill = c.get("illustration")
+    if not ill:
+        return
+    size = ill.get("masterSize")
+    dims = png_size(ill["source"])
+    if dims is None:
+        errors.append(f"{ill['source']}: missing/invalid illustration source")
+    elif size and dims != (size, size):
+        errors.append(f"{ill['source']}: expected {size}x{size}, got {dims[0]}x{dims[1]}")
+
+    if key == "android":
+        a = ill["android"]
+        for density, px in a["densities"].items():
+            rel = f"android/onboarding/src/main/res/drawable-{density}/{a['drawable']}.png"
+            dims = png_size(rel)
+            if dims is None:
+                errors.append(f"{rel}: missing/invalid illustration ({px}px)")
+            elif dims != (px, px):
+                errors.append(f"{rel}: expected {px}x{px}, got {dims[0]}x{dims[1]}")
+    else:
+        i = ill["ios"]
+        base = (f"ios/Packages/Onboarding/Sources/Onboarding/Resources/"
+                f"Assets.xcassets/{i['imageset']}.imageset")
+        if not os.path.isfile(f"{root}/{base}/Contents.json"):
+            errors.append(f"{base}/Contents.json: missing iOS imageset Contents.json")
+        suffix = {"1x": "", "2x": "@2x", "3x": "@3x"}
+        for scale, px in i["scales"].items():
+            rel = f"{base}/welcome-illustration{suffix[scale]}.png"
+            dims = png_size(rel)
+            if dims is None:
+                errors.append(f"{rel}: missing/invalid illustration ({px}px)")
+            elif dims != (px, px):
+                errors.append(f"{rel}: expected {px}x{px}, got {dims[0]}x{dims[1]}")
 
 def check_platform(key):
     t = c["targets"][key]
@@ -81,6 +129,16 @@ def check_platform(key):
     for name, hexv in c["palette"].items():
         if hexv.lstrip("#").lower() not in design_low:
             errors.append(f"{design_rel}: missing palette {name} = {hexv}")
+
+    # welcome illustration: source size + per-platform renditions
+    ill = c.get("illustration")
+    if ill:
+        token = ill.get("cornerRadiusToken")
+        if token and token.lower() not in low:
+            errors.append(f"{tokens_rel}: missing illustration token '{token}'")
+        if str(ill.get("cornerRadiusDp")) not in tokens:
+            errors.append(f"{tokens_rel}: missing illustration cornerRadiusDp = {ill.get('cornerRadiusDp')}")
+        check_illustration(key)
 
     checked.extend([tokens_rel, design_rel])
 

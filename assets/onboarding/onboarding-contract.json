@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "description": "Single source of truth for the Levela post-guest onboarding flow (weight, height). scripts/verify_onboarding_parity.sh checks that the Android and iOS Onboarding features expose the same steps, copy, units, defaults, value ranges and colours. Colour names refer to the primitive labels in THEME_COLORS.md.",
+  "version": 2,
+  "description": "Single source of truth for the Levela post-guest onboarding flow (welcome, weight, height). scripts/verify_onboarding_parity.sh checks that the Android and iOS Onboarding features expose the same steps, copy, units, defaults, value ranges, colours and welcome illustration. Colour names refer to the primitive labels in THEME_COLORS.md.",
   "verifier": "scripts/verify_onboarding_parity.sh",
   "themeReference": "THEME_COLORS.md",
 
@@ -72,6 +72,22 @@
     "toggleSelectedBackground": "Blue500",
     "toggleSelectedText": "White",
     "toggleUnselectedText": "Gray500"
+  },
+
+  "illustration": {
+    "source": "assets/onboarding/welcome-illustration.png",
+    "masterSize": 1280,
+    "cornerRadiusDp": 28,
+    "cornerRadiusToken": "welcomeIllustrationCorner",
+    "note": "Hero illustration on the welcome step, between the subtitle and the primary button. Rounded corners match the value cards. Android ships density buckets that fill the available width (24dp horizontal padding); iOS ships 1x/2x/3x.",
+    "android": {
+      "drawable": "welcome_illustration",
+      "densities": { "mdpi": 312, "hdpi": 468, "xhdpi": 624, "xxhdpi": 936, "xxxhdpi": 1248 }
+    },
+    "ios": {
+      "imageset": "WelcomeIllustration",
+      "scales": { "1x": 312, "2x": 624, "3x": 936 }
+    }
   },
 
   "targets": {
