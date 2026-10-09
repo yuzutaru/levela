@@ -1,11 +1,12 @@
 import Design
 import SwiftUI
 
-/// The Levela post-guest onboarding flow (weight, height).
+/// The Levela post-guest onboarding flow (welcome, weight, height).
 ///
-/// Shown after the user taps **Continue as a guest** on the splash. Two steps,
-/// each with a draggable ruler picker and a unit toggle; the last step reports
-/// completion through `onFinished`. Mirrors the Android `OnboardingView`.
+/// Shown after the user taps **Continue as a guest** on the splash. Three steps:
+/// a welcome intro, then weight and height — the latter pair each using a
+/// draggable ruler picker and a unit toggle. The last step reports completion
+/// through `onFinished`. Mirrors the Android `OnboardingView`.
 @MainActor
 public struct OnboardingView: View {
     @State private var viewModel = OnboardingViewModel()
@@ -20,6 +21,44 @@ public struct OnboardingView: View {
             StepProgress(current: viewModel.stepIndex, count: viewModel.stepCount)
                 .padding(.top, 20)
 
+            if viewModel.step == .welcome {
+                welcomeStep
+            } else {
+                valueStep
+            }
+        }
+        .padding(.horizontal, 24)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(OnboardingTokens.background)
+    }
+
+    /// The intro step: headline + subtitle + a primary "Let's start" button.
+    private var welcomeStep: some View {
+        VStack(spacing: 0) {
+            Text(OnboardingTokens.welcomeTitle)
+                .font(LevelaTypography.headlineLarge.bold())
+                .foregroundStyle(OnboardingTokens.title)
+                .multilineTextAlignment(.center)
+                .padding(.top, 48)
+
+            Text(OnboardingTokens.welcomeSubtitle)
+                .font(LevelaTypography.bodyLarge)
+                .foregroundStyle(OnboardingTokens.subtitle)
+                .multilineTextAlignment(.center)
+                .padding(.top, 12)
+
+            Spacer(minLength: 16)
+
+            NextButton(label: OnboardingTokens.start, showChevrons: false) {
+                viewModel.next()
+            }
+            .padding(.bottom, 24)
+        }
+    }
+
+    /// A weight or height step: title + unit toggle + value card + back / Next.
+    private var valueStep: some View {
+        VStack(spacing: 0) {
             Text(title)
                 .font(LevelaTypography.headlineMedium.bold())
                 .foregroundStyle(OnboardingTokens.title)
@@ -46,13 +85,11 @@ public struct OnboardingView: View {
             }
             .padding(.bottom, 24)
         }
-        .padding(.horizontal, 24)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(OnboardingTokens.background)
     }
 
     private var title: String {
         switch viewModel.step {
+        case .welcome: OnboardingTokens.welcomeTitle
         case .weight: OnboardingTokens.weightTitle
         case .height: OnboardingTokens.heightTitle
         }
@@ -67,7 +104,7 @@ public struct OnboardingView: View {
                 selected: viewModel.weightUnit,
                 onSelect: viewModel.selectWeightUnit
             )
-        case .height:
+        default:
             UnitToggle(
                 units: OnboardingTokens.heightUnits,
                 selected: viewModel.heightUnit,
@@ -88,7 +125,7 @@ public struct OnboardingView: View {
                 accent: OnboardingTokens.cardWeightAccent,
                 onValueChange: viewModel.setWeightDisplay
             )
-        case .height:
+        default:
             ValueCard(
                 value: viewModel.heightDisplay,
                 unit: viewModel.heightUnit,
@@ -179,6 +216,7 @@ private struct BackButton: View {
 
 private struct NextButton: View {
     let label: String
+    var showChevrons: Bool = true
     let action: () -> Void
 
     var body: some View {
@@ -187,10 +225,12 @@ private struct NextButton: View {
                 Text(label)
                     .font(LevelaTypography.labelLarge)
 
-                HStack(spacing: 3) {
-                    ForEach(0..<3, id: \.self) { _ in
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 11, weight: .semibold))
+                if showChevrons {
+                    HStack(spacing: 3) {
+                        ForEach(0..<3, id: \.self) { _ in
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 11, weight: .semibold))
+                        }
                     }
                 }
             }

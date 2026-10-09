@@ -8,11 +8,14 @@ import SwiftUI
 /// `scripts/verify_onboarding_parity.sh`.
 public enum OnboardingTokens {
     // Flow — steps: weight, height
-    public static let steps: [OnboardingStep] = [.weight, .height]
+    public static let steps: [OnboardingStep] = [.welcome, .weight, .height]
 
     // Copy
+    public static let welcomeTitle = "Start your Fitness Journey"
+    public static let welcomeSubtitle = "Start your fitness journey with our app's guidance and support"
     public static let weightTitle = "What is your weight?"
     public static let heightTitle = "What is your height?"
+    public static let start = "Let's start"
     public static let next = "Next"
     public static let back = "Back"
 
@@ -43,6 +46,7 @@ public enum OnboardingTokens {
     // Colours (design-system primitives, see THEME_COLORS.md)
     public static let background = Color.white
     public static let title = Color.navy900
+    public static let subtitle = Color.gray500
     public static let value = Color.navy900
     public static let activeSegment = Color.blue500
     public static let inactiveSegment = Color.gray200

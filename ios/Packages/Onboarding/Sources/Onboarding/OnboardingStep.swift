@@ -6,6 +6,7 @@ import Foundation
 /// `flow.steps` in `assets/onboarding/onboarding-contract.json`
 /// (enforced by `scripts/verify_onboarding_parity.sh`).
 public enum OnboardingStep: String, CaseIterable, Hashable, Sendable {
+    case welcome
     case weight
     case height
 }

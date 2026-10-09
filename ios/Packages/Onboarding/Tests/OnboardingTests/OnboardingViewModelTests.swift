@@ -4,10 +4,10 @@ import XCTest
 @MainActor
 final class OnboardingViewModelTests: XCTestCase {
 
-    func testStartsOnWeightStepWithDefaultUnits() {
+    func testStartsOnWelcomeStepWithDefaultUnits() {
         let viewModel = OnboardingViewModel()
 
-        XCTAssertEqual(viewModel.step, .weight)
+        XCTAssertEqual(viewModel.step, .welcome)
         XCTAssertEqual(viewModel.weightUnit, OnboardingTokens.defaultWeightUnit)
         XCTAssertEqual(viewModel.heightUnit, OnboardingTokens.defaultHeightUnit)
         XCTAssertEqual(viewModel.weightDisplay, OnboardingTokens.weightKgDefault)
@@ -16,15 +16,19 @@ final class OnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isLastStep)
     }
 
-    func testExposesTwoSteps() {
+    func testExposesThreeSteps() {
         let viewModel = OnboardingViewModel()
 
-        XCTAssertEqual(viewModel.stepCount, 2)
+        XCTAssertEqual(viewModel.stepCount, 3)
         XCTAssertEqual(viewModel.stepIndex, 0)
 
         viewModel.next()
-        XCTAssertEqual(viewModel.step, .height)
+        XCTAssertEqual(viewModel.step, .weight)
         XCTAssertEqual(viewModel.stepIndex, 1)
+
+        viewModel.next()
+        XCTAssertEqual(viewModel.step, .height)
+        XCTAssertEqual(viewModel.stepIndex, 2)
         XCTAssertTrue(viewModel.isLastStep)
 
         viewModel.back()
@@ -35,8 +39,9 @@ final class OnboardingViewModelTests: XCTestCase {
         let viewModel = OnboardingViewModel()
 
         viewModel.back()
-        XCTAssertEqual(viewModel.step, .weight)
+        XCTAssertEqual(viewModel.step, .welcome)
 
+        viewModel.next()
         viewModel.next()
         viewModel.next()
         XCTAssertEqual(viewModel.step, .height)
