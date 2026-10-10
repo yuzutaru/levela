@@ -30,7 +30,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -104,8 +108,38 @@ fun OnboardingView(
             ) {
                 when (step) {
                     OnboardingStep.Welcome -> WelcomeStep(onStart = viewModel::next)
-                    OnboardingStep.Weight -> ValueStep(viewModel, onFinished)
-                    OnboardingStep.Height -> ValueStep(viewModel, onFinished)
+                    OnboardingStep.Weight ->
+                        ValueStep(
+                            step = step,
+                            weightUnit = viewModel.weightUnit,
+                            selectWeightUnit = viewModel::selectWeightUnit,
+                            heightUnit = viewModel.heightUnit,
+                            selectHeightUnit = viewModel::selectHeightUnit,
+                            weightDisplay = viewModel.weightDisplay,
+                            setWeightDisplay = viewModel::setWeightDisplay,
+                            heightDisplay = viewModel.heightDisplay,
+                            setHeightDisplay = viewModel::setHeightDisplay,
+                            backOnClicked = viewModel::back,
+                            isLastStep = viewModel.isLastStep,
+                            next = viewModel::next,
+                            onFinished = onFinished
+                        )
+                    OnboardingStep.Height ->
+                        ValueStep(
+                            step = step,
+                            weightUnit = viewModel.weightUnit,
+                            selectWeightUnit = viewModel::selectWeightUnit,
+                            heightUnit = viewModel.heightUnit,
+                            selectHeightUnit = viewModel::selectHeightUnit,
+                            weightDisplay = viewModel.weightDisplay,
+                            setWeightDisplay = viewModel::setWeightDisplay,
+                            heightDisplay = viewModel.heightDisplay,
+                            setHeightDisplay = viewModel::setHeightDisplay,
+                            backOnClicked = viewModel::back,
+                            isLastStep = viewModel.isLastStep,
+                            next = viewModel::next,
+                            onFinished = onFinished
+                        )
                 }
             }
         }
@@ -160,13 +194,24 @@ private fun ColumnScope.WelcomeStep(onStart: () -> Unit) {
 /** A weight or height step: title + unit toggle + value card + back / Next. */
 @Composable
 private fun ColumnScope.ValueStep(
-    viewModel: OnboardingViewModel,
+    step: OnboardingStep,
+    weightUnit: String,
+    selectWeightUnit: (String) -> Unit,
+    heightUnit: String,
+    selectHeightUnit: (String) -> Unit,
+    weightDisplay: Int,
+    setWeightDisplay: (Int) -> Unit,
+    heightDisplay: Int,
+    setHeightDisplay: (Int) -> Unit,
+    backOnClicked: () -> Unit,
+    isLastStep: Boolean,
+    next: () -> Unit,
     onFinished: () -> Unit,
 ) {
     Spacer(Modifier.height(28.dp))
 
     Text(
-        text = when (viewModel.step) {
+        text = when (step) {
             OnboardingStep.Welcome -> OnboardingTokens.WelcomeTitle
             OnboardingStep.Weight -> OnboardingTokens.WeightTitle
             OnboardingStep.Height -> OnboardingTokens.HeightTitle
@@ -178,37 +223,37 @@ private fun ColumnScope.ValueStep(
 
     Spacer(Modifier.height(20.dp))
 
-    when (viewModel.step) {
+    when (step) {
         OnboardingStep.Weight -> UnitToggle(
             units = OnboardingTokens.weightUnits,
-            selected = viewModel.weightUnit,
-            onSelect = viewModel::selectWeightUnit,
+            selected = weightUnit,
+            onSelect = selectWeightUnit,
         )
 
         else -> UnitToggle(
             units = OnboardingTokens.heightUnits,
-            selected = viewModel.heightUnit,
-            onSelect = viewModel::selectHeightUnit,
+            selected = heightUnit,
+            onSelect = selectHeightUnit,
         )
     }
 
     Spacer(Modifier.height(28.dp))
 
-    when (viewModel.step) {
+    when (step) {
         OnboardingStep.Weight -> ValueCard(
-            value = viewModel.weightDisplay,
-            unit = viewModel.weightUnit,
-            scale = weightScale(viewModel.weightUnit),
-            onValueChange = viewModel::setWeightDisplay,
+            value = weightDisplay,
+            unit = weightUnit,
+            scale = weightScale(weightUnit),
+            onValueChange = setWeightDisplay,
             background = OnboardingTokens.CardWeight,
             accent = OnboardingTokens.CardWeightAccent,
         )
 
         else -> ValueCard(
-            value = viewModel.heightDisplay,
-            unit = viewModel.heightUnit,
-            scale = heightScale(viewModel.heightUnit),
-            onValueChange = viewModel::setHeightDisplay,
+            value = heightDisplay,
+            unit = heightUnit,
+            scale = heightScale(heightUnit),
+            onValueChange = setHeightDisplay,
             background = OnboardingTokens.CardHeight,
             accent = OnboardingTokens.CardHeightAccent,
         )
@@ -220,12 +265,12 @@ private fun ColumnScope.ValueStep(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        BackButton(onClick = viewModel::back)
+        BackButton(onClick = backOnClicked)
         Spacer(Modifier.width(12.dp))
         NextButton(
             label = OnboardingTokens.Next,
             onClick = {
-                if (viewModel.isLastStep) onFinished() else viewModel.next()
+                if (isLastStep) onFinished() else next()
             },
             modifier = Modifier.weight(1f),
         )
@@ -387,5 +432,67 @@ private fun Chevron(
 private fun OnboardingViewPreview() {
     LevelaTheme {
         OnboardingView()
+    }
+}
+
+@Preview(showBackground = true, heightDp = 900)
+@Composable
+private fun ValueStepWeightPreview() {
+    LevelaTheme {
+        var weightUnit by remember { mutableStateOf(OnboardingTokens.defaultWeightUnit) }
+        var heightUnit by remember { mutableStateOf(OnboardingTokens.defaultHeightUnit) }
+        var weightDisplay by remember { mutableIntStateOf(OnboardingTokens.weightKgDefault) }
+        var heightDisplay by remember { mutableIntStateOf(OnboardingTokens.heightCmDefault) }
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            ValueStep(
+                step = OnboardingStep.Weight,
+                weightUnit = weightUnit,
+                selectWeightUnit = { weightUnit = it },
+                heightUnit = heightUnit,
+                selectHeightUnit = { heightUnit = it },
+                weightDisplay = weightDisplay,
+                setWeightDisplay = { weightDisplay = it },
+                heightDisplay = heightDisplay,
+                setHeightDisplay = { heightDisplay = it },
+                backOnClicked = {},
+                isLastStep = false,
+                next = {},
+                onFinished = {},
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, heightDp = 900)
+@Composable
+private fun ValueStepHeightPreview() {
+    LevelaTheme {
+        var weightUnit by remember { mutableStateOf(OnboardingTokens.defaultWeightUnit) }
+        var heightUnit by remember { mutableStateOf(OnboardingTokens.defaultHeightUnit) }
+        var weightDisplay by remember { mutableIntStateOf(OnboardingTokens.weightKgDefault) }
+        var heightDisplay by remember { mutableIntStateOf(OnboardingTokens.heightCmDefault) }
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            ValueStep(
+                step = OnboardingStep.Height,
+                weightUnit = weightUnit,
+                selectWeightUnit = { weightUnit = it },
+                heightUnit = heightUnit,
+                selectHeightUnit = { heightUnit = it },
+                weightDisplay = weightDisplay,
+                setWeightDisplay = { weightDisplay = it },
+                heightDisplay = heightDisplay,
+                setHeightDisplay = { heightDisplay = it },
+                backOnClicked = {},
+                isLastStep = true,
+                next = {},
+                onFinished = {},
+            )
+        }
     }
 }
