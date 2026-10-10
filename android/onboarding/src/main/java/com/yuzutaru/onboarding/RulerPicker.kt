@@ -41,6 +41,7 @@ fun RulerPicker(
     modifier: Modifier = Modifier,
     tickSpacing: Dp = 14.dp,
     majorEvery: Int = 10,
+    labelFormatter: (Int) -> String = { it.toString() },
     activeColor: Color = OnboardingTokens.RulerAccent,
     accentColor: Color = OnboardingTokens.CardWeightAccent,
     tickColor: Color = OnboardingTokens.RulerTick,
@@ -113,7 +114,7 @@ fun RulerPicker(
 
             if (isMajor || isCenter) {
                 val layout = textMeasurer.measure(
-                    text = tickValue.toString(),
+                    text = labelFormatter(tickValue),
                     style = if (isCenter) activeLabelStyle else labelStyle,
                 )
                 drawText(
