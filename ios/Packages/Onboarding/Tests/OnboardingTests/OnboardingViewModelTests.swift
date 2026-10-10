@@ -55,10 +55,19 @@ final class OnboardingViewModelTests: XCTestCase {
         viewModel.selectWeightUnit("kg")
         XCTAssertEqual(viewModel.weightDisplay, 70)
 
-        viewModel.selectHeightUnit("inches")
+        viewModel.selectHeightUnit("ft/in")
         XCTAssertEqual(viewModel.heightDisplay, 67)
+        XCTAssertEqual(viewModel.heightDisplayText, "5'7\"")
         viewModel.selectHeightUnit("cm")
         XCTAssertEqual(viewModel.heightDisplay, 170)
+        XCTAssertEqual(viewModel.heightDisplayText, "170")
+    }
+
+    func testFormatsImperialHeightAsFeetAndInches() {
+        XCTAssertEqual(OnboardingViewModel.formatFtIn(47), "3'11\"")
+        XCTAssertEqual(OnboardingViewModel.formatFtIn(60), "5'0\"")
+        XCTAssertEqual(OnboardingViewModel.formatFtIn(67), "5'7\"")
+        XCTAssertEqual(OnboardingViewModel.formatFtIn(87), "7'3\"")
     }
 
     func testIgnoresUnknownUnits() {
@@ -79,7 +88,7 @@ final class OnboardingViewModelTests: XCTestCase {
         viewModel.selectWeightUnit("kg")
         XCTAssertEqual(viewModel.weightDisplay, OnboardingViewModel.lbToKg(200))
 
-        viewModel.selectHeightUnit("inches")
+        viewModel.selectHeightUnit("ft/in")
         viewModel.setHeightDisplay(60)
         viewModel.selectHeightUnit("cm")
         XCTAssertEqual(viewModel.heightDisplay, OnboardingViewModel.inToCm(60))

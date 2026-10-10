@@ -14,6 +14,7 @@ public struct RulerPicker: View {
     private let step: Int
     private let tickSpacing: CGFloat
     private let majorEvery: Int
+    private let labelFormatter: (Int) -> String
     private let activeColor: Color
     private let accentColor: Color
     private let tickColor: Color
@@ -30,6 +31,7 @@ public struct RulerPicker: View {
         step: Int,
         tickSpacing: CGFloat = 14,
         majorEvery: Int = 10,
+        labelFormatter: @escaping (Int) -> String = { "\($0)" },
         activeColor: Color = OnboardingTokens.rulerAccent,
         accentColor: Color = OnboardingTokens.cardWeightAccent,
         tickColor: Color = OnboardingTokens.rulerTick,
@@ -42,6 +44,7 @@ public struct RulerPicker: View {
         self.step = step
         self.tickSpacing = tickSpacing
         self.majorEvery = majorEvery
+        self.labelFormatter = labelFormatter
         self.activeColor = activeColor
         self.accentColor = accentColor
         self.tickColor = tickColor
@@ -111,7 +114,7 @@ public struct RulerPicker: View {
             )
 
             if isMajor || isCenter {
-                let label = Text("\(tickValue)")
+                let label = Text(labelFormatter(tickValue))
                     .font(LevelaTypography.labelSmall)
                     .foregroundStyle(isCenter ? activeColor : labelColor)
                 context.draw(label, at: CGPoint(x: x, y: baseline + 8), anchor: .top)
