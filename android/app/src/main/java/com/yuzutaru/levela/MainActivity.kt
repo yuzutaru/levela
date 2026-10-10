@@ -8,8 +8,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,14 +25,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             LevelaTheme {
                 // Splash is the launch screen; tapping "Continue as a guest"
-                // reports completion and moves on to the onboarding flow with a
-                // push-style slide (in from the right, splash out to the left).
+                // reports completion and crossfades into the onboarding flow.
                 var showOnboarding by remember { mutableStateOf(false) }
                 AnimatedContent(
                     targetState = showOnboarding,
                     transitionSpec = {
-                        (slideInHorizontally { it } + fadeIn(tween(250))) togetherWith
-                            (slideOutHorizontally { -it } + fadeOut(tween(250)))
+                        fadeIn(tween(250)) togetherWith fadeOut(tween(250))
                     },
                     label = "splash-to-onboarding",
                 ) { isOnboarding ->

@@ -1,5 +1,11 @@
 package com.yuzutaru.onboarding
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -70,10 +76,38 @@ fun OnboardingView(
 
         StepProgress(current = viewModel.stepIndex, count = viewModel.stepCount)
 
-        when (viewModel.step) {
-            OnboardingStep.Welcome -> WelcomeStep(onStart = viewModel::next)
-            OnboardingStep.Weight -> ValueStep(viewModel, onFinished)
-            OnboardingStep.Height -> ValueStep(viewModel, onFinished)
+        AnimatedContent(
+            targetState = viewModel.step,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            transitionSpec = {
+                val forward = OnboardingTokens.steps.indexOf(targetState) >
+                    OnboardingTokens.steps.indexOf(initialState)
+                if (forward) {
+                    // Push forward: the new step enters from the right while the
+                    // old one leaves to the left.
+                    (slideInHorizontally { it } + fadeIn()) togetherWith
+                        (slideOutHorizontally { -it } + fadeOut())
+                } else {
+                    // Go back: the previous step enters from the left while the
+                    // current one leaves to the right.
+                    (slideInHorizontally { -it } + fadeIn()) togetherWith
+                        (slideOutHorizontally { it } + fadeOut())
+                }
+            },
+            label = "onboarding-step",
+        ) { step ->
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                when (step) {
+                    OnboardingStep.Welcome -> WelcomeStep(onStart = viewModel::next)
+                    OnboardingStep.Weight -> ValueStep(viewModel, onFinished)
+                    OnboardingStep.Height -> ValueStep(viewModel, onFinished)
+                }
+            }
         }
     }
 }
