@@ -28,8 +28,13 @@ public final class OnboardingViewModel {
     /// The weight in the currently selected unit.
     public var weightDisplay: Int { weightUnit == "kg" ? weightKg : Self.kgToLb(weightKg) }
 
-    /// The height in the currently selected unit.
+    /// The height value shown on the ruler: cm, or total inches when imperial.
     public var heightDisplay: Int { heightUnit == "cm" ? heightCm : Self.cmToIn(heightCm) }
+
+    /// The height formatted for the value card: `170` for cm, `5'7"` for ft/in.
+    public var heightDisplayText: String {
+        heightUnit == "cm" ? "\(heightCm)" : Self.formatFtIn(Self.cmToIn(heightCm))
+    }
 
     /// Advances to the next step, staying on the last step.
     public func next() {
@@ -48,7 +53,7 @@ public final class OnboardingViewModel {
         if OnboardingTokens.weightUnits.contains(unit) { weightUnit = unit }
     }
 
-    /// Selects `inches` or `cm`; ignores unknown units.
+    /// Selects `ft/in` or `cm`; ignores unknown units.
     public func selectHeightUnit(_ unit: String) {
         if OnboardingTokens.heightUnits.contains(unit) { heightUnit = unit }
     }
@@ -67,4 +72,7 @@ public final class OnboardingViewModel {
     static func lbToKg(_ lb: Int) -> Int { Int((Double(lb) / 2.20462).rounded()) }
     static func cmToIn(_ cm: Int) -> Int { Int((Double(cm) / 2.54).rounded()) }
     static func inToCm(_ inches: Int) -> Int { Int((Double(inches) * 2.54).rounded()) }
+
+    /// Formats a total-inches height as feet'inches", e.g. 67 → `5'7"`.
+    static func formatFtIn(_ inches: Int) -> String { "\(inches / 12)'\(inches % 12)\"" }
 }

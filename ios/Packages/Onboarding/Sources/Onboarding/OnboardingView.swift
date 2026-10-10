@@ -172,6 +172,7 @@ public struct OnboardingView: View {
         case .weight:
             ValueCard(
                 value: viewModel.weightDisplay,
+                displayText: "\(viewModel.weightDisplay)",
                 unit: viewModel.weightUnit,
                 scale: Self.weightScale(viewModel.weightUnit),
                 background: OnboardingTokens.cardWeight,
@@ -181,6 +182,7 @@ public struct OnboardingView: View {
         default:
             ValueCard(
                 value: viewModel.heightDisplay,
+                displayText: viewModel.heightDisplayText,
                 unit: viewModel.heightUnit,
                 scale: Self.heightScale(viewModel.heightUnit),
                 background: OnboardingTokens.cardHeight,
@@ -201,8 +203,15 @@ public struct OnboardingView: View {
     /// The tick scale for the height card, in the currently displayed unit.
     static func heightScale(_ unit: String) -> Scale {
         switch unit {
-        case "inches": Scale(start: OnboardingTokens.heightInMin, end: OnboardingTokens.heightInMax, step: OnboardingTokens.heightInStep)
-        default: Scale(start: OnboardingTokens.heightCmMin, end: OnboardingTokens.heightCmMax, step: OnboardingTokens.heightCmStep)
+        case "cm": Scale(start: OnboardingTokens.heightCmMin, end: OnboardingTokens.heightCmMax, step: OnboardingTokens.heightCmStep)
+        default: Scale(
+            start: OnboardingTokens.heightInMin,
+            end: OnboardingTokens.heightInMax,
+            step: OnboardingTokens.heightInStep,
+            // A label on every foot boundary (total inches), e.g. 60 → 5'0".
+            majorEvery: 12,
+            label: OnboardingViewModel.formatFtIn
+        )
         }
     }
 }
@@ -212,10 +221,13 @@ struct Scale {
     let start: Int
     let end: Int
     let step: Int
+    var majorEvery: Int = 10
+    var label: (Int) -> String = { "\($0)" }
 }
 
 private struct ValueCard: View {
     let value: Int
+    let displayText: String
     let unit: String
     let scale: Scale
     let background: Color
@@ -224,7 +236,7 @@ private struct ValueCard: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Text("\(value)")
+            Text(displayText)
                 .font(LevelaTypography.displayMedium.bold())
                 .foregroundStyle(OnboardingTokens.value)
 
@@ -233,6 +245,8 @@ private struct ValueCard: View {
                 rangeStart: scale.start,
                 rangeEnd: scale.end,
                 step: scale.step,
+                majorEvery: scale.majorEvery,
+                labelFormatter: scale.label,
                 accentColor: accent,
                 onValueChange: onValueChange
             )
