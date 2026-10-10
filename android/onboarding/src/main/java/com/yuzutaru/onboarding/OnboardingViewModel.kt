@@ -1,6 +1,7 @@
 package com.yuzutaru.onboarding
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import kotlin.math.roundToInt
@@ -22,8 +23,8 @@ class OnboardingViewModel {
     var heightUnit: String by mutableStateOf(OnboardingTokens.defaultHeightUnit)
         private set
 
-    private var weightKg: Int = OnboardingTokens.weightKgDefault
-    private var heightCm: Int = OnboardingTokens.heightCmDefault
+    private var weightKg by mutableIntStateOf(OnboardingTokens.weightKgDefault)
+    private var heightCm by mutableIntStateOf(OnboardingTokens.heightCmDefault)
 
     val stepIndex: Int get() = OnboardingTokens.steps.indexOf(step)
     val stepCount: Int get() = OnboardingTokens.steps.size
