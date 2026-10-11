@@ -118,6 +118,7 @@ fun OnboardingView(
                             weightDisplay = viewModel.weightDisplay,
                             setWeightDisplay = viewModel::setWeightDisplay,
                             heightDisplay = viewModel.heightDisplay,
+                            heightDisplayText = viewModel.heightDisplayText,
                             setHeightDisplay = viewModel::setHeightDisplay,
                             backOnClicked = viewModel::back,
                             isLastStep = viewModel.isLastStep,
@@ -134,6 +135,7 @@ fun OnboardingView(
                             weightDisplay = viewModel.weightDisplay,
                             setWeightDisplay = viewModel::setWeightDisplay,
                             heightDisplay = viewModel.heightDisplay,
+                            heightDisplayText = viewModel.heightDisplayText,
                             setHeightDisplay = viewModel::setHeightDisplay,
                             backOnClicked = viewModel::back,
                             isLastStep = viewModel.isLastStep,
@@ -202,6 +204,7 @@ private fun ColumnScope.ValueStep(
     weightDisplay: Int,
     setWeightDisplay: (Int) -> Unit,
     heightDisplay: Int,
+    heightDisplayText: String,
     setHeightDisplay: (Int) -> Unit,
     backOnClicked: () -> Unit,
     isLastStep: Boolean,
@@ -242,6 +245,7 @@ private fun ColumnScope.ValueStep(
     when (step) {
         OnboardingStep.Weight -> ValueCard(
             value = weightDisplay,
+            displayText = weightDisplay.toString(),
             unit = weightUnit,
             scale = weightScale(weightUnit),
             onValueChange = setWeightDisplay,
@@ -251,6 +255,7 @@ private fun ColumnScope.ValueStep(
 
         else -> ValueCard(
             value = heightDisplay,
+            displayText = heightDisplayText,
             unit = heightUnit,
             scale = heightScale(heightUnit),
             onValueChange = setHeightDisplay,
@@ -280,7 +285,13 @@ private fun ColumnScope.ValueStep(
 }
 
 /** The tick scale for a value card, in the currently displayed unit. */
-private data class Scale(val start: Int, val end: Int, val step: Int)
+private data class Scale(
+    val start: Int,
+    val end: Int,
+    val step: Int,
+    val majorEvery: Int = 10,
+    val label: (Int) -> String = { it.toString() },
+)
 
 private fun weightScale(unit: String): Scale = when (unit) {
     "lb" -> Scale(OnboardingTokens.weightLbMin, OnboardingTokens.weightLbMax, OnboardingTokens.weightLbStep)
@@ -288,13 +299,21 @@ private fun weightScale(unit: String): Scale = when (unit) {
 }
 
 private fun heightScale(unit: String): Scale = when (unit) {
-    "inches" -> Scale(OnboardingTokens.heightInMin, OnboardingTokens.heightInMax, OnboardingTokens.heightInStep)
-    else -> Scale(OnboardingTokens.heightCmMin, OnboardingTokens.heightCmMax, OnboardingTokens.heightCmStep)
+    "cm" -> Scale(OnboardingTokens.heightCmMin, OnboardingTokens.heightCmMax, OnboardingTokens.heightCmStep)
+    else -> Scale(
+        OnboardingTokens.heightInMin,
+        OnboardingTokens.heightInMax,
+        OnboardingTokens.heightInStep,
+        // A label on every foot boundary (total inches), e.g. 60 → 5'0".
+        majorEvery = 12,
+        label = ::formatFtIn,
+    )
 }
 
 @Composable
 private fun ValueCard(
     value: Int,
+    displayText: String,
     unit: String,
     scale: Scale,
     onValueChange: (Int) -> Unit,
@@ -310,7 +329,7 @@ private fun ValueCard(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = value.toString(),
+            text = displayText,
             style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
             color = OnboardingTokens.Value,
         )
@@ -321,6 +340,8 @@ private fun ValueCard(
             rangeEnd = scale.end,
             step = scale.step,
             onValueChange = onValueChange,
+            majorEvery = scale.majorEvery,
+            labelFormatter = scale.label,
             accentColor = accent,
         )
         Spacer(Modifier.height(2.dp))
@@ -456,6 +477,7 @@ private fun ValueStepWeightPreview() {
                 weightDisplay = weightDisplay,
                 setWeightDisplay = { weightDisplay = it },
                 heightDisplay = heightDisplay,
+                heightDisplayText = heightDisplay.toString(),
                 setHeightDisplay = { heightDisplay = it },
                 backOnClicked = {},
                 isLastStep = false,
@@ -487,6 +509,7 @@ private fun ValueStepHeightPreview() {
                 weightDisplay = weightDisplay,
                 setWeightDisplay = { weightDisplay = it },
                 heightDisplay = heightDisplay,
+                heightDisplayText = heightDisplay.toString(),
                 setHeightDisplay = { heightDisplay = it },
                 backOnClicked = {},
                 isLastStep = true,

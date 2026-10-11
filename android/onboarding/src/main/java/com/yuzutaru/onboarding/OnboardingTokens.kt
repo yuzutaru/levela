@@ -39,7 +39,7 @@ object OnboardingTokens {
 
     // Units
     val weightUnits = listOf("lb", "kg")
-    val heightUnits = listOf("inches", "cm")
+    val heightUnits = listOf("ft/in", "cm")
     const val defaultWeightUnit = "kg"
     const val defaultHeightUnit = "cm"
 
@@ -56,6 +56,7 @@ object OnboardingTokens {
     const val heightCmMax = 220
     const val heightCmStep = 1
     const val heightCmDefault = 170
+    // Imperial height range is in total inches, displayed as feet'inches" (47–87 in = 3'11"–7'3").
     const val heightInMin = 47
     const val heightInMax = 87
     const val heightInStep = 1

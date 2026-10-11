@@ -62,10 +62,20 @@ class OnboardingViewModelTest {
         viewModel.selectWeightUnit("kg")
         assertEquals(70, viewModel.weightDisplay)
 
-        viewModel.selectHeightUnit("inches")
+        viewModel.selectHeightUnit("ft/in")
         assertEquals(67, viewModel.heightDisplay)
+        assertEquals("5'7\"", viewModel.heightDisplayText)
         viewModel.selectHeightUnit("cm")
         assertEquals(170, viewModel.heightDisplay)
+        assertEquals("170", viewModel.heightDisplayText)
+    }
+
+    @Test
+    fun formatsImperialHeightAsFeetAndInches() {
+        assertEquals("3'11\"", formatFtIn(47))
+        assertEquals("5'0\"", formatFtIn(60))
+        assertEquals("5'7\"", formatFtIn(67))
+        assertEquals("7'3\"", formatFtIn(87))
     }
 
     @Test
@@ -88,7 +98,7 @@ class OnboardingViewModelTest {
         viewModel.selectWeightUnit("kg")
         assertEquals(lbToKg(200), viewModel.weightDisplay)
 
-        viewModel.selectHeightUnit("inches")
+        viewModel.selectHeightUnit("ft/in")
         viewModel.setHeightDisplay(60)
         viewModel.selectHeightUnit("cm")
         assertEquals(inToCm(60), viewModel.heightDisplay)

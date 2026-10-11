@@ -34,8 +34,12 @@ class OnboardingViewModel {
     /** The weight in the currently selected unit. */
     val weightDisplay: Int get() = if (weightUnit == "kg") weightKg else kgToLb(weightKg)
 
-    /** The height in the currently selected unit. */
+    /** The height value shown on the ruler: cm, or total inches when imperial. */
     val heightDisplay: Int get() = if (heightUnit == "cm") heightCm else cmToIn(heightCm)
+
+    /** The height formatted for the value card: `170` for cm, `5'7"` for ft/in. */
+    val heightDisplayText: String
+        get() = if (heightUnit == "cm") heightCm.toString() else formatFtIn(cmToIn(heightCm))
 
     /** Advances to the next step, staying on the last step. */
     fun next() {
@@ -54,7 +58,7 @@ class OnboardingViewModel {
         if (unit in OnboardingTokens.weightUnits) weightUnit = unit
     }
 
-    /** Selects `inches` or `cm`; ignores unknown units. */
+    /** Selects `ft/in` or `cm`; ignores unknown units. */
     fun selectHeightUnit(unit: String) {
         if (unit in OnboardingTokens.heightUnits) heightUnit = unit
     }
@@ -77,3 +81,6 @@ internal fun lbToKg(lb: Int): Int = (lb / 2.20462).roundToInt()
 internal fun cmToIn(cm: Int): Int = (cm / 2.54).roundToInt()
 
 internal fun inToCm(inches: Int): Int = (inches * 2.54).roundToInt()
+
+/** Formats a total-inches height as feet'inches", e.g. 67 → `5'7"`. */
+internal fun formatFtIn(inches: Int): String = "${inches / 12}'${inches % 12}\""

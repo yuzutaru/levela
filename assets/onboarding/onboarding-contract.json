@@ -20,7 +20,7 @@
 
   "units": {
     "weight": ["lb", "kg"],
-    "height": ["inches", "cm"]
+    "height": ["ft/in", "cm"]
   },
 
   "defaults": {
@@ -35,7 +35,7 @@
     },
     "height": {
       "cm": { "min": 120, "max": 220, "step": 1, "default": 170 },
-      "inches": { "min": 47, "max": 87, "step": 1, "default": 67 }
+      "ft/in": { "min": 47, "max": 87, "step": 1, "default": 67 }
     }
   },
 

@@ -21,7 +21,7 @@ public enum OnboardingTokens {
 
     // Units
     public static let weightUnits = ["lb", "kg"]
-    public static let heightUnits = ["inches", "cm"]
+    public static let heightUnits = ["ft/in", "cm"]
     public static let defaultWeightUnit = "kg"
     public static let defaultHeightUnit = "cm"
 
@@ -38,6 +38,7 @@ public enum OnboardingTokens {
     public static let heightCmMax = 220
     public static let heightCmStep = 1
     public static let heightCmDefault = 170
+    // Imperial height range is in total inches, displayed as feet'inches" (47–87 in = 3'11"–7'3").
     public static let heightInMin = 47
     public static let heightInMax = 87
     public static let heightInStep = 1

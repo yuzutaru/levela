@@ -23,7 +23,7 @@ Three steps, shown after the user taps **Continue as a guest** on the splash:
 | --- | --- |
 | `welcome` | progress segments + hero illustration + **Start your Fitness Journey** + subtitle + **Let's start** |
 | `weight` | progress segments + **What is your weight?** + `lb` / `kg` toggle + value card (ruler picker) |
-| `height` | progress segments + **What is your height?** + `inches` / `cm` toggle + value card (ruler picker) |
+| `height` | progress segments + **What is your height?** + `ft/in` / `cm` toggle + value card (ruler picker) |
 
 The welcome step has a single primary **Let's start** button. The weight and
 height steps each have a circular back button and a primary **Next** button; the
@@ -63,9 +63,11 @@ done
 size.
 
 The ruler picker is draggable and snaps to the nearest step; the big value
-updates live. Switching unit converts the canonical value (kg ⇄ lb,
-cm ⇄ inches) and re-scales the ruler. The canonical value lives in
-`kg` / `cm`; the UI always shows the selected unit's value.
+updates live. Switching unit converts the canonical value (kg ⇄ lb, cm ⇄ ft/in)
+and re-scales the ruler. The canonical value lives in `kg` / `cm`; the UI always
+shows the selected unit's value — imperial height is stored as total inches
+underneath and displayed as feet'inches" (e.g. 67 → `5'7"`), with a label on each
+foot boundary.
 
 ## Change the onboarding
 
