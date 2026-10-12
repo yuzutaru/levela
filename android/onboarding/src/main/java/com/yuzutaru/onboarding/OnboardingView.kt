@@ -48,6 +48,7 @@ import com.yuzutaru.design.ui.theme.LevelaTheme
 import com.yuzutaru.onboarding.widget.BackButton
 import com.yuzutaru.onboarding.widget.NextButton
 import com.yuzutaru.onboarding.widget.RulerPicker
+import com.yuzutaru.onboarding.widget.StepProgress
 import com.yuzutaru.onboarding.widget.ValueStep
 
 /**

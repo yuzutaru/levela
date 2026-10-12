@@ -1,4 +1,4 @@
-package com.yuzutaru.onboarding
+package com.yuzutaru.onboarding.widget
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LevelaTheme
+import com.yuzutaru.onboarding.OnboardingTokens
 
 /**
  * The segmented step indicator at the top of the onboarding flow: one segment
