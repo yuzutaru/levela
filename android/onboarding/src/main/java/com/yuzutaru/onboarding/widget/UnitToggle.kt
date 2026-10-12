@@ -1,5 +1,6 @@
-package com.yuzutaru.onboarding
+package com.yuzutaru.onboarding.widget
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,11 +11,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.yuzutaru.design.ui.theme.LevelaTheme
+import com.yuzutaru.onboarding.OnboardingTokens
 
 /**
  * A two-option pill toggle (e.g. `lb` / `kg`). The selected option is filled
@@ -57,6 +65,28 @@ fun UnitToggle(
                     },
                 )
             }
+        }
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Composable
+private fun UnitTogglePreviewLight() = UnitTogglePreviewContent()
+
+@Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun UnitTogglePreviewDark() = UnitTogglePreviewContent()
+
+@Composable
+private fun UnitTogglePreviewContent() {
+    LevelaTheme {
+        var selected by remember { mutableStateOf(OnboardingTokens.defaultWeightUnit) }
+        Box(modifier = Modifier.padding(16.dp)) {
+            UnitToggle(
+                units = OnboardingTokens.weightUnits,
+                selected = selected,
+                onSelect = { selected = it },
+            )
         }
     }
 }

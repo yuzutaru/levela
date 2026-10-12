@@ -45,6 +45,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LevelaTheme
+import com.yuzutaru.onboarding.widget.BackButton
+import com.yuzutaru.onboarding.widget.NextButton
+import com.yuzutaru.onboarding.widget.RulerPicker
+import com.yuzutaru.onboarding.widget.ValueStep
 
 /**
  * The Levela post-guest onboarding flow (welcome, goal, profile, weight, height,

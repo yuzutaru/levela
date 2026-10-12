@@ -1,13 +1,17 @@
-package com.yuzutaru.onboarding
+package com.yuzutaru.onboarding.widget
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -19,8 +23,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.yuzutaru.design.ui.theme.LevelaTheme
+import com.yuzutaru.onboarding.OnboardingTokens
 import kotlin.math.roundToInt
 
 /**
@@ -131,5 +138,29 @@ fun RulerPicker(
             end = Offset(centerX, baseline + 2.dp.toPx()),
             strokeWidth = 2.dp.toPx(),
         )
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Composable
+private fun RulerPickerPreviewLight() = RulerPickerPreviewContent()
+
+@Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun RulerPickerPreviewDark() = RulerPickerPreviewContent()
+
+@Composable
+private fun RulerPickerPreviewContent() {
+    LevelaTheme {
+        var value by remember { mutableIntStateOf(OnboardingTokens.weightKgDefault) }
+        Column(modifier = Modifier.padding(16.dp)) {
+            RulerPicker(
+                value = value,
+                rangeStart = OnboardingTokens.weightKgMin,
+                rangeEnd = OnboardingTokens.weightKgMax,
+                step = OnboardingTokens.weightKgStep,
+                onValueChange = { value = it },
+            )
+        }
     }
 }
