@@ -21,10 +21,11 @@ import com.yuzutaru.design.ui.theme.White
  * `scripts/verify_onboarding_parity.sh`.
  */
 object OnboardingTokens {
-    // Flow — steps: welcome, goal, weight, height
+    // Flow — steps: welcome, goal, profile, weight, height
     val steps: List<OnboardingStep> = listOf(
         OnboardingStep.Welcome,
         OnboardingStep.Goal,
+        OnboardingStep.Profile,
         OnboardingStep.Weight,
         OnboardingStep.Height,
     )
@@ -33,6 +34,9 @@ object OnboardingTokens {
     const val WelcomeTitle = "Start your Fitness Journey"
     const val WelcomeSubtitle = "Start your fitness journey with our app's guidance and support"
     const val GoalTitle = "What is your goal?"
+    const val ProfileTitle = "Tell us about you"
+    const val AgeTitle = "Age"
+    const val SexTitle = "Biological sex"
     const val WeightTitle = "What is your weight?"
     const val HeightTitle = "What is your height?"
     const val Start = "Let's start"
@@ -50,11 +54,21 @@ object OnboardingTokens {
         GoalOption("Train for an event", "Prepare for a race or competition"),
     )
 
+    // Biological sex — the single-select options.
+    val sexOptions = listOf("Female", "Male", "Prefer not to say")
+
     // Units
     val weightUnits = listOf("lb", "kg")
     val heightUnits = listOf("ft/in", "cm")
     const val defaultWeightUnit = "kg"
     const val defaultHeightUnit = "cm"
+    const val ageUnit = "years"
+
+    // Age (single unit: years). Range/default are in years.
+    const val ageMin = 13
+    const val ageMax = 100
+    const val ageStep = 1
+    const val ageDefault = 30
 
     // Values (see onboarding-contract.json). Ranges/defaults are per display unit.
     const val weightKgMin = 30

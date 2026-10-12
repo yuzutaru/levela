@@ -22,10 +22,10 @@ class OnboardingViewModelTest {
     }
 
     @Test
-    fun exposesFourSteps() {
+    fun exposesFiveSteps() {
         val viewModel = OnboardingViewModel()
 
-        assertEquals(4, viewModel.stepCount)
+        assertEquals(5, viewModel.stepCount)
         assertEquals(0, viewModel.stepIndex)
 
         viewModel.next()
@@ -33,12 +33,16 @@ class OnboardingViewModelTest {
         assertEquals(1, viewModel.stepIndex)
 
         viewModel.next()
-        assertEquals(OnboardingStep.Weight, viewModel.step)
+        assertEquals(OnboardingStep.Profile, viewModel.step)
         assertEquals(2, viewModel.stepIndex)
 
         viewModel.next()
-        assertEquals(OnboardingStep.Height, viewModel.step)
+        assertEquals(OnboardingStep.Weight, viewModel.step)
         assertEquals(3, viewModel.stepIndex)
+
+        viewModel.next()
+        assertEquals(OnboardingStep.Height, viewModel.step)
+        assertEquals(4, viewModel.stepIndex)
         assertTrue(viewModel.isLastStep)
 
         viewModel.back()
@@ -77,6 +81,30 @@ class OnboardingViewModelTest {
         // Unknown titles are ignored.
         viewModel.selectGoal("Not a goal")
         assertEquals("Lose fat", viewModel.goal)
+    }
+
+    @Test
+    fun startsProfileWithDefaultAgeAndNoSex() {
+        val viewModel = OnboardingViewModel()
+
+        assertEquals(OnboardingTokens.ageDefault, viewModel.age)
+        assertNull(viewModel.sex)
+        assertFalse(viewModel.hasSex)
+
+        viewModel.selectSex("Female")
+        assertEquals("Female", viewModel.sex)
+        assertTrue(viewModel.hasSex)
+
+        // Selecting another option replaces the previous one (single-select).
+        viewModel.selectSex("Prefer not to say")
+        assertEquals("Prefer not to say", viewModel.sex)
+
+        // Unknown options are ignored.
+        viewModel.selectSex("Not an option")
+        assertEquals("Prefer not to say", viewModel.sex)
+
+        viewModel.setAge(42)
+        assertEquals(42, viewModel.age)
     }
 
     @Test
