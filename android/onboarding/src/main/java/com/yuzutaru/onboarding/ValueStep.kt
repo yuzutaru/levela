@@ -56,6 +56,7 @@ internal fun ColumnScope.ValueStep(
             OnboardingStep.Profile -> OnboardingTokens.ProfileTitle
             OnboardingStep.Weight -> OnboardingTokens.WeightTitle
             OnboardingStep.Height -> OnboardingTokens.HeightTitle
+            OnboardingStep.Activity -> OnboardingTokens.ActivityTitle
         },
         style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
         color = OnboardingTokens.Title,

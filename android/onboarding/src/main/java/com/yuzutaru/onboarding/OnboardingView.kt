@@ -47,13 +47,15 @@ import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LevelaTheme
 
 /**
- * The Levela post-guest onboarding flow (welcome, goal, profile, weight, height).
+ * The Levela post-guest onboarding flow (welcome, goal, profile, weight, height,
+ * activity).
  *
- * Shown after the user taps **Continue as a guest** on the splash. Five steps:
+ * Shown after the user taps **Continue as a guest** on the splash. Six steps:
  * a welcome intro, a single-select goal step, a profile step (age + biological
  * sex), then weight and height — the latter pair each using a draggable ruler
- * picker and a unit toggle. The last step reports completion through
- * [onFinished]. Mirrors the iOS `OnboardingView`.
+ * picker and a unit toggle — and finally a single-select activity-level step.
+ * The last step reports completion through [onFinished]. Mirrors the iOS
+ * `OnboardingView`.
  *
  * @param onFinished called when the user taps Next on the final step.
  */
@@ -154,6 +156,16 @@ fun OnboardingView(
                             isLastStep = viewModel.isLastStep,
                             next = viewModel::next,
                             onFinished = onFinished
+                        )
+                    OnboardingStep.Activity ->
+                        ActivityStep(
+                            selectedActivity = viewModel.activityLevel,
+                            selectActivity = viewModel::selectActivity,
+                            hasActivity = viewModel.hasActivity,
+                            backOnClicked = viewModel::back,
+                            isLastStep = viewModel.isLastStep,
+                            next = viewModel::next,
+                            onFinished = onFinished,
                         )
                 }
             }
@@ -420,6 +432,67 @@ private fun ColumnScope.ProfileStep(
     Spacer(Modifier.height(24.dp))
 }
 
+/**
+ * The activity step: title + a scrollable list of single-select activity-level
+ * cards + back / Next. Next stays disabled until a level is chosen.
+ */
+@Composable
+private fun ColumnScope.ActivityStep(
+    selectedActivity: String?,
+    selectActivity: (String) -> Unit,
+    hasActivity: Boolean,
+    backOnClicked: () -> Unit,
+    isLastStep: Boolean,
+    next: () -> Unit,
+    onFinished: () -> Unit,
+) {
+    Spacer(Modifier.height(28.dp))
+
+    Text(
+        text = OnboardingTokens.ActivityTitle,
+        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+        color = OnboardingTokens.Title,
+        textAlign = TextAlign.Center,
+    )
+
+    Spacer(Modifier.height(20.dp))
+
+    Column(
+        modifier = Modifier
+            .weight(1f)
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        OnboardingTokens.activityLevels.forEach { level ->
+            OptionCard(
+                title = level.title,
+                subtitle = level.subtitle,
+                isSelected = level.title == selectedActivity,
+                onClick = { selectActivity(level.title) },
+            )
+        }
+    }
+
+    Spacer(Modifier.height(20.dp))
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        BackButton(onClick = backOnClicked)
+        Spacer(Modifier.width(12.dp))
+        NextButton(
+            label = OnboardingTokens.Next,
+            onClick = { if (isLastStep) onFinished() else next() },
+            enabled = hasActivity,
+            modifier = Modifier.weight(1f),
+        )
+    }
+
+    Spacer(Modifier.height(24.dp))
+}
+
 /** The age ruler card: the value + a single `years` scale + a unit label. */
 @Composable
 private fun AgeCard(
@@ -504,6 +577,28 @@ private fun ProfileStepPreview() {
                 hasSex = sex != null,
                 backOnClicked = {},
                 next = {},
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, heightDp = 900)
+@Composable
+private fun ActivityStepPreview() {
+    LevelaTheme {
+        var activity by remember { mutableStateOf<String?>("Moderately active") }
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            ActivityStep(
+                selectedActivity = activity,
+                selectActivity = { activity = it },
+                hasActivity = activity != null,
+                backOnClicked = {},
+                isLastStep = true,
+                next = {},
+                onFinished = {},
             )
         }
     }

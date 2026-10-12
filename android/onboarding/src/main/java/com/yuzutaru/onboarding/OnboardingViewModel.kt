@@ -43,6 +43,12 @@ class OnboardingViewModel {
 
     val hasSex: Boolean get() = sex != null
 
+    /** The chosen activity level (card title), or null until one is selected. */
+    var activityLevel: String? by mutableStateOf(null)
+        private set
+
+    val hasActivity: Boolean get() = activityLevel != null
+
     val stepIndex: Int get() = OnboardingTokens.steps.indexOf(step)
     val stepCount: Int get() = OnboardingTokens.steps.size
     val isFirstStep: Boolean get() = stepIndex == 0
@@ -83,6 +89,11 @@ class OnboardingViewModel {
     /** Selects a biological-sex option; ignores unknown options. */
     fun selectSex(option: String) {
         if (option in OnboardingTokens.sexOptions) sex = option
+    }
+
+    /** Selects an activity-level card by title; ignores unknown titles. */
+    fun selectActivity(level: String) {
+        if (OnboardingTokens.activityLevels.any { it.title == level }) activityLevel = level
     }
 
     /** Sets the age in years. */
