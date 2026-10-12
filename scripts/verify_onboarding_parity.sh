@@ -103,6 +103,13 @@ def check_platform(key):
         if value not in tokens:
             errors.append(f"{tokens_rel}: missing text '{field}' = \"{value}\"")
 
+    # goal options (title + subtitle copy), single-select cards
+    for i, goal in enumerate(c.get("goals", [])):
+        for field in ("title", "subtitle"):
+            value = goal.get(field)
+            if value and value not in tokens:
+                errors.append(f"{tokens_rel}: missing goals[{i}].{field} = \"{value}\"")
+
     # unit labels + defaults
     for group, units in c["units"].items():
         for unit in units:
