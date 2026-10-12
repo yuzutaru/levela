@@ -1,11 +1,11 @@
 {
-  "version": 2,
-  "description": "Single source of truth for the Levela post-guest onboarding flow (welcome, goal, profile, weight, height). scripts/verify_onboarding_parity.sh checks that the Android and iOS Onboarding features expose the same steps, copy, units, defaults, value ranges, goals, sex options, colours and welcome illustration. Colour names refer to the primitive labels in THEME_COLORS.md.",
+  "version": 3,
+  "description": "Single source of truth for the Levela post-guest onboarding flow (welcome, goal, profile, weight, height, activity). scripts/verify_onboarding_parity.sh checks that the Android and iOS Onboarding features expose the same steps, copy, units, defaults, value ranges, goals, sex options, activity levels, colours and welcome illustration. Colour names refer to the primitive labels in THEME_COLORS.md.",
   "verifier": "scripts/verify_onboarding_parity.sh",
   "themeReference": "THEME_COLORS.md",
 
   "flow": {
-    "steps": ["welcome", "goal", "profile", "weight", "height"]
+    "steps": ["welcome", "goal", "profile", "weight", "height", "activity"]
   },
 
   "text": {
@@ -17,6 +17,7 @@
     "sexTitle": "Biological sex",
     "weightTitle": "What is your weight?",
     "heightTitle": "What is your height?",
+    "activityTitle": "What is your activity level?",
     "start": "Let's start",
     "next": "Next",
     "back": "Back"
@@ -30,6 +31,14 @@
     { "title": "Improve performance", "subtitle": "Get stronger, faster and more athletic" },
     { "title": "Fast consistently", "subtitle": "Stick to a regular fasting routine" },
     { "title": "Train for an event", "subtitle": "Prepare for a race or competition" }
+  ],
+
+  "activityLevels": [
+    { "title": "Sedentary", "subtitle": "Little to no daily activity or a desk job" },
+    { "title": "Lightly active", "subtitle": "Light daily activity or walking 1–3 days a week" },
+    { "title": "Moderately active", "subtitle": "Moderate daily activity 3–5 days a week" },
+    { "title": "Very active", "subtitle": "Daily activity 6–7 days a week" },
+    { "title": "Extra active", "subtitle": "A physical job plus daily activity" }
   ],
 
   "sex": ["Female", "Male", "Prefer not to say"],

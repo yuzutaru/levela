@@ -1,8 +1,8 @@
 # Onboarding — single source of truth
 
-The Levela post-guest onboarding flow (welcome, goal, profile, weight, height) is
-defined **once** here and mirrored by the Android and iOS apps, so the two
-platforms cannot drift apart:
+The Levela post-guest onboarding flow (welcome, goal, profile, weight, height,
+activity) is defined **once** here and mirrored by the Android and iOS apps, so
+the two platforms cannot drift apart:
 
 ```
 assets/onboarding/onboarding-contract.json   # THE CONTRACT: steps, copy, units, ranges, colours, targets
@@ -17,7 +17,7 @@ tinted light blue (`LightBlue100` for weight, `Blue100` for height).
 
 ## The flow
 
-Five steps, shown after the user taps **Continue as a guest** on the splash:
+Six steps, shown after the user taps **Continue as a guest** on the splash:
 
 | Step | Shown |
 | --- | --- |
@@ -26,14 +26,16 @@ Five steps, shown after the user taps **Continue as a guest** on the splash:
 | `profile` | progress segments + **Tell us about you** + **Age** (ruler picker, `years`) + **Biological sex** + three single-select cards (dot + label) + back / Next |
 | `weight` | progress segments + **What is your weight?** + `lb` / `kg` toggle + value card (ruler picker) |
 | `height` | progress segments + **What is your height?** + `ft/in` / `cm` toggle + value card (ruler picker) |
+| `activity` | progress segments + **What is your activity level?** + five single-select activity cards (dot + title + subtitle) + back / Next |
 
 The welcome step has a single primary **Let's start** button. The goal, profile,
-weight and height steps each have a circular back button and a primary **Next**
-button; the last step reports completion through `onFinished`. The goal and
-profile steps use single-select cards (choosing one activates it and deactivates
-the others), and their **Next** button stays disabled until a choice is made —
-a goal, or a biological sex (the age always has a default). The progress
-indicator has one segment per step (five).
+weight, height and activity steps each have a circular back button and a primary
+**Next** button; the last step (activity) reports completion through
+`onFinished`. The goal, profile and activity steps use single-select cards
+(choosing one activates it and deactivates the others), and their **Next** button
+stays disabled until a choice is made — a goal, a biological sex, or an activity
+level (the age always has a default). The progress indicator has one segment per
+step (six).
 
 The welcome step shows the hero illustration
 (`assets/onboarding/welcome-illustration.png`) between the subtitle and the
@@ -91,7 +93,8 @@ foot boundary.
 contract:
 
 - a step name, copy string, unit label or default unit differs;
-- a goal card's title or subtitle, or a biological-sex option, is missing;
+- a goal card's title or subtitle, an activity-level card's title or subtitle,
+  or a biological-sex option, is missing;
 - a value range min/max/step/default number is missing;
 - a colour token is renamed or missing;
 - the welcome illustration source or a platform rendition is missing or the wrong size;
