@@ -20,6 +20,12 @@ public struct OnboardingView: View {
         self.onFinished = onFinished
     }
 
+    /// Opens the view on a specific step. Internal: for previews/tests.
+    init(step: OnboardingStep, onFinished: @escaping () -> Void = {}) {
+        _viewModel = State(initialValue: OnboardingViewModel(step: step))
+        self.onFinished = onFinished
+    }
+
     public var body: some View {
         VStack(spacing: 0) {
             StepProgress(current: viewModel.stepIndex, count: viewModel.stepCount)
@@ -420,7 +426,22 @@ private struct GoalDot: View {
     }
 }
 
-#Preview {
+#Preview("Welcome") {
     OnboardingView()
+        .levelaTheme()
+}
+
+#Preview("Goal") {
+    OnboardingView(step: .goal)
+        .levelaTheme()
+}
+
+#Preview("Weight") {
+    OnboardingView(step: .weight)
+        .levelaTheme()
+}
+
+#Preview("Height") {
+    OnboardingView(step: .height)
         .levelaTheme()
 }

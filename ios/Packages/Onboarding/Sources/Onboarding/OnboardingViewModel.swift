@@ -25,6 +25,11 @@ public final class OnboardingViewModel {
 
     public init() {}
 
+    /// Creates a view model positioned at `step`. Internal: for previews/tests.
+    init(step: OnboardingStep) {
+        self.step = step
+    }
+
     public var stepIndex: Int { OnboardingTokens.steps.firstIndex(of: step) ?? 0 }
     public var stepCount: Int { OnboardingTokens.steps.count }
     public var isFirstStep: Bool { stepIndex == 0 }
