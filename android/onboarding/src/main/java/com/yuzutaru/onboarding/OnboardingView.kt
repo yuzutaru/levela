@@ -8,20 +8,33 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,12 +47,12 @@ import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LevelaTheme
 
 /**
- * The Levela post-guest onboarding flow (welcome, weight, height).
+ * The Levela post-guest onboarding flow (welcome, goal, weight, height).
  *
- * Shown after the user taps **Continue as a guest** on the splash. Three steps:
- * a welcome intro, then weight and height — the latter pair each using a
- * draggable ruler picker and a unit toggle. The last step reports completion
- * through [onFinished]. Mirrors the iOS `OnboardingView`.
+ * Shown after the user taps **Continue as a guest** on the splash. Four steps:
+ * a welcome intro, a single-select goal step, then weight and height — the
+ * latter pair each using a draggable ruler picker and a unit toggle. The last
+ * step reports completion through [onFinished]. Mirrors the iOS `OnboardingView`.
  *
  * @param onFinished called when the user taps Next on the final step.
  */
@@ -89,6 +102,14 @@ fun OnboardingView(
             ) {
                 when (step) {
                     OnboardingStep.Welcome -> WelcomeStep(onStart = viewModel::next)
+                    OnboardingStep.Goal ->
+                        GoalStep(
+                            selectedGoal = viewModel.goal,
+                            selectGoal = viewModel::selectGoal,
+                            hasGoal = viewModel.hasGoal,
+                            backOnClicked = viewModel::back,
+                            next = viewModel::next,
+                        )
                     OnboardingStep.Weight ->
                         ValueStep(
                             step = step,
@@ -174,10 +195,155 @@ private fun ColumnScope.WelcomeStep(onStart: () -> Unit) {
     Spacer(Modifier.height(24.dp))
 }
 
+/**
+ * The goal step: title + a scrollable list of single-select goal cards + back /
+ * Next. Next stays disabled until a goal is chosen.
+ */
+@Composable
+private fun ColumnScope.GoalStep(
+    selectedGoal: String?,
+    selectGoal: (String) -> Unit,
+    hasGoal: Boolean,
+    backOnClicked: () -> Unit,
+    next: () -> Unit,
+) {
+    Spacer(Modifier.height(28.dp))
+
+    Text(
+        text = OnboardingTokens.GoalTitle,
+        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+        color = OnboardingTokens.Title,
+        textAlign = TextAlign.Center,
+    )
+
+    Spacer(Modifier.height(20.dp))
+
+    Column(
+        modifier = Modifier
+            .weight(1f)
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        OnboardingTokens.goals.forEach { goal ->
+            GoalCard(
+                title = goal.title,
+                subtitle = goal.subtitle,
+                isSelected = goal.title == selectedGoal,
+                onClick = { selectGoal(goal.title) },
+            )
+        }
+    }
+
+    Spacer(Modifier.height(20.dp))
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        BackButton(onClick = backOnClicked)
+        Spacer(Modifier.width(12.dp))
+        NextButton(
+            label = OnboardingTokens.Next,
+            onClick = next,
+            enabled = hasGoal,
+            modifier = Modifier.weight(1f),
+        )
+    }
+
+    Spacer(Modifier.height(24.dp))
+}
+
+/** A single-select goal card: a status dot on the left, then title + subtitle. */
+@Composable
+private fun GoalCard(
+    title: String,
+    subtitle: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val shape = RoundedCornerShape(OnboardingTokens.GoalCardCorner.dp)
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(shape)
+            .background(
+                if (isSelected) OnboardingTokens.GoalCardActive else OnboardingTokens.GoalCardInactive
+            )
+            .border(
+                width = 1.dp,
+                color = if (isSelected) {
+                    OnboardingTokens.GoalCardActiveBorder
+                } else {
+                    OnboardingTokens.GoalCardInactiveBorder
+                },
+                shape = shape,
+            )
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        GoalDot(isSelected = isSelected)
+        Spacer(Modifier.width(14.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                color = OnboardingTokens.Title,
+            )
+            Spacer(Modifier.height(2.dp))
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = OnboardingTokens.Subtitle,
+            )
+        }
+    }
+}
+
+/** The goal card's status dot: filled when selected, a ring when not. */
+@Composable
+private fun GoalDot(
+    isSelected: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    val dot = modifier
+        .size(14.dp)
+        .clip(CircleShape)
+    Box(
+        modifier = if (isSelected) {
+            dot.background(OnboardingTokens.GoalDotActive)
+        } else {
+            dot.border(1.5.dp, OnboardingTokens.GoalDotInactive, CircleShape)
+        },
+    )
+}
+
 @Preview(showBackground = true, heightDp = 900)
 @Composable
 private fun OnboardingViewPreview() {
     LevelaTheme {
         OnboardingView()
+    }
+}
+
+@Preview(showBackground = true, heightDp = 900)
+@Composable
+private fun GoalStepPreview() {
+    LevelaTheme {
+        var goal by remember { mutableStateOf<String?>("Gain muscle") }
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            GoalStep(
+                selectedGoal = goal,
+                selectGoal = { goal = it },
+                hasGoal = goal != null,
+                backOnClicked = {},
+                next = {},
+            )
+        }
     }
 }

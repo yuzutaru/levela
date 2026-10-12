@@ -1,12 +1,13 @@
 import Design
 import SwiftUI
 
-/// The Levela post-guest onboarding flow (welcome, weight, height).
+/// The Levela post-guest onboarding flow (welcome, goal, weight, height).
 ///
-/// Shown after the user taps **Continue as a guest** on the splash. Three steps:
-/// a welcome intro, then weight and height — the latter pair each using a
-/// draggable ruler picker and a unit toggle. The last step reports completion
-/// through `onFinished`. Mirrors the Android `OnboardingView`.
+/// Shown after the user taps **Continue as a guest** on the splash. Four steps:
+/// a welcome intro, a single-select goal step, then weight and height — the
+/// latter pair each using a draggable ruler picker and a unit toggle. The last
+/// step reports completion through `onFinished`. Mirrors the Android
+/// `OnboardingView`.
 @MainActor
 public struct OnboardingView: View {
     @State private var viewModel = OnboardingViewModel()
@@ -19,6 +20,12 @@ public struct OnboardingView: View {
         self.onFinished = onFinished
     }
 
+    /// Opens the view on a specific step. Internal: for previews/tests.
+    init(step: OnboardingStep, onFinished: @escaping () -> Void = {}) {
+        _viewModel = State(initialValue: OnboardingViewModel(step: step))
+        self.onFinished = onFinished
+    }
+
     public var body: some View {
         VStack(spacing: 0) {
             StepProgress(current: viewModel.stepIndex, count: viewModel.stepCount)
@@ -28,6 +35,8 @@ public struct OnboardingView: View {
                 Group {
                     if viewModel.step == .welcome {
                         welcomeStep
+                    } else if viewModel.step == .goal {
+                        goalStep
                     } else {
                         valueStep
                     }
@@ -109,6 +118,44 @@ public struct OnboardingView: View {
         }
     }
 
+    /// The goal step: title + a scrollable list of single-select goal cards +
+    /// back / Next. Next stays disabled until a goal is chosen.
+    private var goalStep: some View {
+        VStack(spacing: 0) {
+            Text(OnboardingTokens.goalTitle)
+                .font(LevelaTypography.headlineMedium.bold())
+                .foregroundStyle(OnboardingTokens.title)
+                .multilineTextAlignment(.center)
+                .padding(.top, 28)
+
+            ScrollView {
+                VStack(spacing: 12) {
+                    ForEach(OnboardingTokens.goals, id: \.title) { goal in
+                        GoalCard(
+                            title: goal.title,
+                            subtitle: goal.subtitle,
+                            isSelected: viewModel.goal == goal.title
+                        ) {
+                            viewModel.selectGoal(goal.title)
+                        }
+                    }
+                }
+                .padding(.top, 20)
+                .padding(.bottom, 4)
+            }
+
+            Spacer(minLength: 16)
+
+            HStack(spacing: 12) {
+                BackButton(action: goBack)
+                NextButton(label: OnboardingTokens.next, enabled: viewModel.hasGoal) {
+                    goNext()
+                }
+            }
+            .padding(.bottom, 24)
+        }
+    }
+
     /// A weight or height step: title + unit toggle + value card + back / Next.
     private var valueStep: some View {
         VStack(spacing: 0) {
@@ -143,6 +190,7 @@ public struct OnboardingView: View {
     private var title: String {
         switch viewModel.step {
         case .welcome: OnboardingTokens.welcomeTitle
+        case .goal: OnboardingTokens.goalTitle
         case .weight: OnboardingTokens.weightTitle
         case .height: OnboardingTokens.heightTitle
         }
@@ -284,6 +332,7 @@ private struct BackButton: View {
 private struct NextButton: View {
     let label: String
     var showChevrons: Bool = true
+    var enabled: Bool = true
     let action: () -> Void
 
     var body: some View {
@@ -301,16 +350,98 @@ private struct NextButton: View {
                     }
                 }
             }
-            .foregroundStyle(OnboardingTokens.nextText)
+            .foregroundStyle(enabled ? OnboardingTokens.nextText : OnboardingTokens.nextDisabledText)
             .frame(maxWidth: .infinity)
             .frame(height: 56)
-            .background(OnboardingTokens.nextBackground, in: Capsule())
+            .background(
+                enabled ? OnboardingTokens.nextBackground : OnboardingTokens.nextDisabledBackground,
+                in: Capsule()
+            )
+        }
+        .buttonStyle(.plain)
+        .disabled(!enabled)
+    }
+}
+
+/// A single-select goal card: a status dot on the left, then title + subtitle.
+private struct GoalCard: View {
+    let title: String
+    let subtitle: String
+    let isSelected: Bool
+    let action: () -> Void
+
+    private var shape: RoundedRectangle {
+        RoundedRectangle(cornerRadius: CGFloat(OnboardingTokens.goalCardCorner), style: .continuous)
+    }
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 14) {
+                GoalDot(isSelected: isSelected)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(LevelaTypography.titleMedium.bold())
+                        .foregroundStyle(OnboardingTokens.title)
+
+                    Text(subtitle)
+                        .font(LevelaTypography.bodyMedium)
+                        .foregroundStyle(OnboardingTokens.subtitle)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
+            .frame(maxWidth: .infinity)
+            .background(
+                isSelected ? OnboardingTokens.goalCardActive : OnboardingTokens.goalCardInactive,
+                in: shape
+            )
+            .overlay(
+                shape.stroke(
+                    isSelected
+                        ? OnboardingTokens.goalCardActiveBorder
+                        : OnboardingTokens.goalCardInactiveBorder,
+                    lineWidth: 1
+                )
+            )
         }
         .buttonStyle(.plain)
     }
 }
 
-#Preview {
+/// The goal card's status dot: filled when selected, a ring when not.
+private struct GoalDot: View {
+    let isSelected: Bool
+
+    var body: some View {
+        Group {
+            if isSelected {
+                Circle().fill(OnboardingTokens.goalDotActive)
+            } else {
+                Circle().stroke(OnboardingTokens.goalDotInactive, lineWidth: 1.5)
+            }
+        }
+        .frame(width: 14, height: 14)
+    }
+}
+
+#Preview("Welcome") {
     OnboardingView()
+        .levelaTheme()
+}
+
+#Preview("Goal") {
+    OnboardingView(step: .goal)
+        .levelaTheme()
+}
+
+#Preview("Weight") {
+    OnboardingView(step: .weight)
+        .levelaTheme()
+}
+
+#Preview("Height") {
+    OnboardingView(step: .height)
         .levelaTheme()
 }

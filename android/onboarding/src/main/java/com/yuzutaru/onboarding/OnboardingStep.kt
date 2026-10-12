@@ -9,6 +9,7 @@ package com.yuzutaru.onboarding
  */
 enum class OnboardingStep {
     Welcome,
+    Goal,
     Weight,
     Height,
 }

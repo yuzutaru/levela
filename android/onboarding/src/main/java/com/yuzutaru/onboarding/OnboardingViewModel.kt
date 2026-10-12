@@ -26,6 +26,12 @@ class OnboardingViewModel {
     private var weightKg by mutableIntStateOf(OnboardingTokens.weightKgDefault)
     private var heightCm by mutableIntStateOf(OnboardingTokens.heightCmDefault)
 
+    /** The chosen goal card title, or null until one is selected. */
+    var goal: String? by mutableStateOf(null)
+        private set
+
+    val hasGoal: Boolean get() = goal != null
+
     val stepIndex: Int get() = OnboardingTokens.steps.indexOf(step)
     val stepCount: Int get() = OnboardingTokens.steps.size
     val isFirstStep: Boolean get() = stepIndex == 0
@@ -56,6 +62,11 @@ class OnboardingViewModel {
     /** Selects `lb` or `kg`; ignores unknown units. */
     fun selectWeightUnit(unit: String) {
         if (unit in OnboardingTokens.weightUnits) weightUnit = unit
+    }
+
+    /** Selects a goal card by title; ignores unknown titles. */
+    fun selectGoal(goal: String) {
+        if (OnboardingTokens.goals.any { it.title == goal }) this.goal = goal
     }
 
     /** Selects `ft/in` or `cm`; ignores unknown units. */

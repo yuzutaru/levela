@@ -52,6 +52,7 @@ internal fun ColumnScope.ValueStep(
     Text(
         text = when (step) {
             OnboardingStep.Welcome -> OnboardingTokens.WelcomeTitle
+            OnboardingStep.Goal -> OnboardingTokens.GoalTitle
             OnboardingStep.Weight -> OnboardingTokens.WeightTitle
             OnboardingStep.Height -> OnboardingTokens.HeightTitle
         },

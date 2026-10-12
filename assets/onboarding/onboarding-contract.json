@@ -1,22 +1,33 @@
 {
   "version": 2,
-  "description": "Single source of truth for the Levela post-guest onboarding flow (welcome, weight, height). scripts/verify_onboarding_parity.sh checks that the Android and iOS Onboarding features expose the same steps, copy, units, defaults, value ranges, colours and welcome illustration. Colour names refer to the primitive labels in THEME_COLORS.md.",
+  "description": "Single source of truth for the Levela post-guest onboarding flow (welcome, goal, weight, height). scripts/verify_onboarding_parity.sh checks that the Android and iOS Onboarding features expose the same steps, copy, units, defaults, value ranges, goals, colours and welcome illustration. Colour names refer to the primitive labels in THEME_COLORS.md.",
   "verifier": "scripts/verify_onboarding_parity.sh",
   "themeReference": "THEME_COLORS.md",
 
   "flow": {
-    "steps": ["welcome", "weight", "height"]
+    "steps": ["welcome", "goal", "weight", "height"]
   },
 
   "text": {
     "welcomeTitle": "Start your Fitness Journey",
     "welcomeSubtitle": "Start your fitness journey with our app's guidance and support",
+    "goalTitle": "What is your goal?",
     "weightTitle": "What is your weight?",
     "heightTitle": "What is your height?",
     "start": "Let's start",
     "next": "Next",
     "back": "Back"
   },
+
+  "goals": [
+    { "title": "Lose fat", "subtitle": "Burn fat and reveal a leaner physique" },
+    { "title": "Maintain weight", "subtitle": "Keep your current weight and stay consistent" },
+    { "title": "Gain muscle", "subtitle": "Build strength and add lean muscle" },
+    { "title": "Improve health", "subtitle": "Feel better and boost daily energy" },
+    { "title": "Improve performance", "subtitle": "Get stronger, faster and more athletic" },
+    { "title": "Fast consistently", "subtitle": "Stick to a regular fasting routine" },
+    { "title": "Train for an event", "subtitle": "Prepare for a race or competition" }
+  ],
 
   "units": {
     "weight": ["lb", "kg"],
@@ -68,6 +79,14 @@
     "cardHeightAccent": "Blue300",
     "nextBackground": "Blue500",
     "nextText": "White",
+    "nextDisabledBackground": "Gray200",
+    "nextDisabledText": "Gray500",
+    "goalCardActive": "Blue100",
+    "goalCardActiveBorder": "Blue500",
+    "goalCardInactive": "White",
+    "goalCardInactiveBorder": "Gray200",
+    "goalDotActive": "Blue500",
+    "goalDotInactive": "Gray300",
     "toggleTrack": "Gray100",
     "toggleSelectedBackground": "Blue500",
     "toggleSelectedText": "White",

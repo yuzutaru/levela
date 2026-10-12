@@ -7,6 +7,7 @@ import Foundation
 /// (enforced by `scripts/verify_onboarding_parity.sh`).
 public enum OnboardingStep: String, CaseIterable, Hashable, Sendable {
     case welcome
+    case goal
     case weight
     case height
 }

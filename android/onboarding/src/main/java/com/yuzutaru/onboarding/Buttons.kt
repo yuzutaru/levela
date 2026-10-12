@@ -35,13 +35,16 @@ internal fun NextButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     showChevrons: Boolean = true,
+    enabled: Boolean = true,
 ) {
     Row(
         modifier = modifier
             .height(56.dp)
             .clip(RoundedCornerShape(percent = 50))
-            .background(OnboardingTokens.NextBackground)
-            .clickable(onClick = onClick)
+            .background(
+                if (enabled) OnboardingTokens.NextBackground else OnboardingTokens.NextDisabledBackground
+            )
+            .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 24.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
@@ -49,11 +52,14 @@ internal fun NextButton(
         Text(
             text = label,
             style = MaterialTheme.typography.labelLarge,
-            color = OnboardingTokens.NextText,
+            color = if (enabled) OnboardingTokens.NextText else OnboardingTokens.NextDisabledText,
         )
         if (showChevrons) {
             Spacer(Modifier.width(10.dp))
-            Chevrons(color = OnboardingTokens.NextText, count = 3)
+            Chevrons(
+                color = if (enabled) OnboardingTokens.NextText else OnboardingTokens.NextDisabledText,
+                count = 3,
+            )
         }
     }
 }

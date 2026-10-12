@@ -2,6 +2,7 @@ package com.yuzutaru.onboarding
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -21,19 +22,23 @@ class OnboardingViewModelTest {
     }
 
     @Test
-    fun exposesThreeSteps() {
+    fun exposesFourSteps() {
         val viewModel = OnboardingViewModel()
 
-        assertEquals(3, viewModel.stepCount)
+        assertEquals(4, viewModel.stepCount)
         assertEquals(0, viewModel.stepIndex)
 
         viewModel.next()
-        assertEquals(OnboardingStep.Weight, viewModel.step)
+        assertEquals(OnboardingStep.Goal, viewModel.step)
         assertEquals(1, viewModel.stepIndex)
 
         viewModel.next()
-        assertEquals(OnboardingStep.Height, viewModel.step)
+        assertEquals(OnboardingStep.Weight, viewModel.step)
         assertEquals(2, viewModel.stepIndex)
+
+        viewModel.next()
+        assertEquals(OnboardingStep.Height, viewModel.step)
+        assertEquals(3, viewModel.stepIndex)
         assertTrue(viewModel.isLastStep)
 
         viewModel.back()
@@ -50,7 +55,28 @@ class OnboardingViewModelTest {
         viewModel.next()
         viewModel.next()
         viewModel.next()
+        viewModel.next()
         assertEquals(OnboardingStep.Height, viewModel.step)
+    }
+
+    @Test
+    fun selectsASingleGoal() {
+        val viewModel = OnboardingViewModel()
+
+        assertFalse(viewModel.hasGoal)
+        assertNull(viewModel.goal)
+
+        viewModel.selectGoal("Gain muscle")
+        assertEquals("Gain muscle", viewModel.goal)
+        assertTrue(viewModel.hasGoal)
+
+        // Selecting another goal replaces the previous one (single-select).
+        viewModel.selectGoal("Lose fat")
+        assertEquals("Lose fat", viewModel.goal)
+
+        // Unknown titles are ignored.
+        viewModel.selectGoal("Not a goal")
+        assertEquals("Lose fat", viewModel.goal)
     }
 
     @Test
