@@ -21,9 +21,10 @@ import com.yuzutaru.design.ui.theme.White
  * `scripts/verify_onboarding_parity.sh`.
  */
 object OnboardingTokens {
-    // Flow — steps: weight, height
+    // Flow — steps: welcome, goal, weight, height
     val steps: List<OnboardingStep> = listOf(
         OnboardingStep.Welcome,
+        OnboardingStep.Goal,
         OnboardingStep.Weight,
         OnboardingStep.Height,
     )
@@ -31,11 +32,23 @@ object OnboardingTokens {
     // Copy
     const val WelcomeTitle = "Start your Fitness Journey"
     const val WelcomeSubtitle = "Start your fitness journey with our app's guidance and support"
+    const val GoalTitle = "What is your goal?"
     const val WeightTitle = "What is your weight?"
     const val HeightTitle = "What is your height?"
     const val Start = "Let's start"
     const val Next = "Next"
     const val Back = "Back"
+
+    // Goals — the single-select goal cards (title + subtitle).
+    val goals: List<GoalOption> = listOf(
+        GoalOption("Lose fat", "Burn fat and reveal a leaner physique"),
+        GoalOption("Maintain weight", "Keep your current weight and stay consistent"),
+        GoalOption("Gain muscle", "Build strength and add lean muscle"),
+        GoalOption("Improve health", "Feel better and boost daily energy"),
+        GoalOption("Improve performance", "Get stronger, faster and more athletic"),
+        GoalOption("Fast consistently", "Stick to a regular fasting routine"),
+        GoalOption("Train for an event", "Prepare for a race or competition"),
+    )
 
     // Units
     val weightUnits = listOf("lb", "kg")
@@ -78,6 +91,14 @@ object OnboardingTokens {
     val CardHeightAccent: Color = Blue300
     val NextBackground: Color = Blue500
     val NextText: Color = White
+    val NextDisabledBackground: Color = Gray200
+    val NextDisabledText: Color = Gray500
+    val GoalCardActive: Color = Blue100
+    val GoalCardActiveBorder: Color = Blue500
+    val GoalCardInactive: Color = White
+    val GoalCardInactiveBorder: Color = Gray200
+    val GoalDotActive: Color = Blue500
+    val GoalDotInactive: Color = Gray300
     val ToggleTrack: Color = Gray100
     val ToggleSelectedBackground: Color = Blue500
     val ToggleSelectedText: Color = White
@@ -87,4 +108,11 @@ object OnboardingTokens {
     val HorizontalPadding = 24
     val CardCorner = 28
     val WelcomeIllustrationCorner = 28
+    val GoalCardCorner = 20
 }
+
+/** A single-select goal option: a card title and its supporting subtitle. */
+data class GoalOption(
+    val title: String,
+    val subtitle: String,
+)
