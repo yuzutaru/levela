@@ -16,19 +16,23 @@ final class OnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isLastStep)
     }
 
-    func testExposesThreeSteps() {
+    func testExposesFourSteps() {
         let viewModel = OnboardingViewModel()
 
-        XCTAssertEqual(viewModel.stepCount, 3)
+        XCTAssertEqual(viewModel.stepCount, 4)
         XCTAssertEqual(viewModel.stepIndex, 0)
 
         viewModel.next()
-        XCTAssertEqual(viewModel.step, .weight)
+        XCTAssertEqual(viewModel.step, .goal)
         XCTAssertEqual(viewModel.stepIndex, 1)
 
         viewModel.next()
-        XCTAssertEqual(viewModel.step, .height)
+        XCTAssertEqual(viewModel.step, .weight)
         XCTAssertEqual(viewModel.stepIndex, 2)
+
+        viewModel.next()
+        XCTAssertEqual(viewModel.step, .height)
+        XCTAssertEqual(viewModel.stepIndex, 3)
         XCTAssertTrue(viewModel.isLastStep)
 
         viewModel.back()
@@ -44,7 +48,27 @@ final class OnboardingViewModelTests: XCTestCase {
         viewModel.next()
         viewModel.next()
         viewModel.next()
+        viewModel.next()
         XCTAssertEqual(viewModel.step, .height)
+    }
+
+    func testSelectsASingleGoal() {
+        let viewModel = OnboardingViewModel()
+
+        XCTAssertFalse(viewModel.hasGoal)
+        XCTAssertNil(viewModel.goal)
+
+        viewModel.selectGoal("Gain muscle")
+        XCTAssertEqual(viewModel.goal, "Gain muscle")
+        XCTAssertTrue(viewModel.hasGoal)
+
+        // Selecting another goal replaces the previous one (single-select).
+        viewModel.selectGoal("Lose fat")
+        XCTAssertEqual(viewModel.goal, "Lose fat")
+
+        // Unknown titles are ignored.
+        viewModel.selectGoal("Not a goal")
+        XCTAssertEqual(viewModel.goal, "Lose fat")
     }
 
     func testSwitchingUnitPreservesTheMeasurement() {

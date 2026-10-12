@@ -18,6 +18,11 @@ public final class OnboardingViewModel {
     private var weightKg: Int = OnboardingTokens.weightKgDefault
     private var heightCm: Int = OnboardingTokens.heightCmDefault
 
+    /// The chosen goal card title, or nil until one is selected.
+    public private(set) var goal: String?
+
+    public var hasGoal: Bool { goal != nil }
+
     public init() {}
 
     public var stepIndex: Int { OnboardingTokens.steps.firstIndex(of: step) ?? 0 }
@@ -51,6 +56,11 @@ public final class OnboardingViewModel {
     /// Selects `lb` or `kg`; ignores unknown units.
     public func selectWeightUnit(_ unit: String) {
         if OnboardingTokens.weightUnits.contains(unit) { weightUnit = unit }
+    }
+
+    /// Selects a goal card by title; ignores unknown titles.
+    public func selectGoal(_ goal: String) {
+        if OnboardingTokens.goals.contains(where: { $0.title == goal }) { self.goal = goal }
     }
 
     /// Selects `ft/in` or `cm`; ignores unknown units.

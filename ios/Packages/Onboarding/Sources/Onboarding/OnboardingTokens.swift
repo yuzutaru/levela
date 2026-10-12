@@ -7,17 +7,29 @@ import SwiftUI
 /// `OnboardingTokens`. Do not hand-edit: change the contract and run
 /// `scripts/verify_onboarding_parity.sh`.
 public enum OnboardingTokens {
-    // Flow — steps: weight, height
-    public static let steps: [OnboardingStep] = [.welcome, .weight, .height]
+    // Flow — steps: welcome, goal, weight, height
+    public static let steps: [OnboardingStep] = [.welcome, .goal, .weight, .height]
 
     // Copy
     public static let welcomeTitle = "Start your Fitness Journey"
     public static let welcomeSubtitle = "Start your fitness journey with our app's guidance and support"
+    public static let goalTitle = "What is your goal?"
     public static let weightTitle = "What is your weight?"
     public static let heightTitle = "What is your height?"
     public static let start = "Let's start"
     public static let next = "Next"
     public static let back = "Back"
+
+    // Goals — the single-select goal cards (title + subtitle).
+    public static let goals: [GoalOption] = [
+        GoalOption(title: "Lose fat", subtitle: "Burn fat and reveal a leaner physique"),
+        GoalOption(title: "Maintain weight", subtitle: "Keep your current weight and stay consistent"),
+        GoalOption(title: "Gain muscle", subtitle: "Build strength and add lean muscle"),
+        GoalOption(title: "Improve health", subtitle: "Feel better and boost daily energy"),
+        GoalOption(title: "Improve performance", subtitle: "Get stronger, faster and more athletic"),
+        GoalOption(title: "Fast consistently", subtitle: "Stick to a regular fasting routine"),
+        GoalOption(title: "Train for an event", subtitle: "Prepare for a race or competition"),
+    ]
 
     // Units
     public static let weightUnits = ["lb", "kg"]
@@ -60,6 +72,14 @@ public enum OnboardingTokens {
     public static let cardHeightAccent = Color.blue300
     public static let nextBackground = Color.blue500
     public static let nextText = Color.white
+    public static let nextDisabledBackground = Color.gray200
+    public static let nextDisabledText = Color.gray500
+    public static let goalCardActive = Color.blue100
+    public static let goalCardActiveBorder = Color.blue500
+    public static let goalCardInactive = Color.white
+    public static let goalCardInactiveBorder = Color.gray200
+    public static let goalDotActive = Color.blue500
+    public static let goalDotInactive = Color.gray300
     public static let toggleTrack = Color.gray100
     public static let toggleSelectedBackground = Color.blue500
     public static let toggleSelectedText = Color.white
@@ -67,4 +87,16 @@ public enum OnboardingTokens {
 
     // Layout
     public static let welcomeIllustrationCorner = 28
+    public static let goalCardCorner = 20
+}
+
+/// A single-select goal option: a card title and its supporting subtitle.
+public struct GoalOption: Hashable, Sendable {
+    public let title: String
+    public let subtitle: String
+
+    public init(title: String, subtitle: String) {
+        self.title = title
+        self.subtitle = subtitle
+    }
 }
