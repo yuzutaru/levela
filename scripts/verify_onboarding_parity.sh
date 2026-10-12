@@ -110,6 +110,11 @@ def check_platform(key):
             if value and value not in tokens:
                 errors.append(f"{tokens_rel}: missing goals[{i}].{field} = \"{value}\"")
 
+    # biological sex options, single-select cards
+    for i, option in enumerate(c.get("sex", [])):
+        if option not in tokens:
+            errors.append(f"{tokens_rel}: missing sex[{i}] = \"{option}\"")
+
     # unit labels + defaults
     for group, units in c["units"].items():
         for unit in units:

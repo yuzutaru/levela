@@ -1,17 +1,20 @@
 {
   "version": 2,
-  "description": "Single source of truth for the Levela post-guest onboarding flow (welcome, goal, weight, height). scripts/verify_onboarding_parity.sh checks that the Android and iOS Onboarding features expose the same steps, copy, units, defaults, value ranges, goals, colours and welcome illustration. Colour names refer to the primitive labels in THEME_COLORS.md.",
+  "description": "Single source of truth for the Levela post-guest onboarding flow (welcome, goal, profile, weight, height). scripts/verify_onboarding_parity.sh checks that the Android and iOS Onboarding features expose the same steps, copy, units, defaults, value ranges, goals, sex options, colours and welcome illustration. Colour names refer to the primitive labels in THEME_COLORS.md.",
   "verifier": "scripts/verify_onboarding_parity.sh",
   "themeReference": "THEME_COLORS.md",
 
   "flow": {
-    "steps": ["welcome", "goal", "weight", "height"]
+    "steps": ["welcome", "goal", "profile", "weight", "height"]
   },
 
   "text": {
     "welcomeTitle": "Start your Fitness Journey",
     "welcomeSubtitle": "Start your fitness journey with our app's guidance and support",
     "goalTitle": "What is your goal?",
+    "profileTitle": "Tell us about you",
+    "ageTitle": "Age",
+    "sexTitle": "Biological sex",
     "weightTitle": "What is your weight?",
     "heightTitle": "What is your height?",
     "start": "Let's start",
@@ -29,9 +32,12 @@
     { "title": "Train for an event", "subtitle": "Prepare for a race or competition" }
   ],
 
+  "sex": ["Female", "Male", "Prefer not to say"],
+
   "units": {
     "weight": ["lb", "kg"],
-    "height": ["ft/in", "cm"]
+    "height": ["ft/in", "cm"],
+    "age": ["years"]
   },
 
   "defaults": {
@@ -47,6 +53,9 @@
     "height": {
       "cm": { "min": 120, "max": 220, "step": 1, "default": 170 },
       "ft/in": { "min": 47, "max": 87, "step": 1, "default": 67 }
+    },
+    "age": {
+      "years": { "min": 13, "max": 100, "step": 1, "default": 30 }
     }
   },
 
