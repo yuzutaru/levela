@@ -10,7 +10,7 @@ The iOS app lives in `../ios/` (SwiftUI + SwiftData) and is out of scope here.
 
 ## Module layout
 
-Four Gradle modules, declared in `settings.gradle.kts`:
+Five Gradle modules, declared in `settings.gradle.kts`:
 
 - **`:app`** — the application. Entry point is
   `app/src/main/java/com/yuzutaru/levela/MainActivity.kt`
@@ -19,6 +19,10 @@ Four Gradle modules, declared in `settings.gradle.kts`:
 - **`:design`** — a library module holding the shared design system under
   `design/src/main/java/com/yuzutaru/design/ui/theme/`. `:app` depends on
   `project(":design")`, so all theme primitives live here, not in `:app`.
+- **`:data`** — the offline-first persistence layer (Room) under
+  `data/src/main/java/com/yuzutaru/data/`: the `user_profile` table plus its DAO,
+  database and repository. Room types never leave the module. `:app` depends on it
+  and owns it via `AppContainer`. The iOS counterpart is the `Persistence` package.
 - **`:onboarding`** — the post-guest onboarding flow (welcome, goal, profile,
   weight, height, activity) under
   `onboarding/src/main/java/com/yuzutaru/onboarding/`. Depends on `:design`; the
@@ -27,8 +31,9 @@ Four Gradle modules, declared in `settings.gradle.kts`:
   `splash/src/main/java/com/yuzutaru/splash/`. Depends on `:design`; `:app`
   depends on it. The iOS counterpart is the `Splash` Swift package.
 
-Namespaces: `com.yuzutaru.levela` (`:app`), `com.yuzutaru.design` (`:design`),
-`com.yuzutaru.onboarding` (`:onboarding`), `com.yuzutaru.splash` (`:splash`).
+Namespaces: `com.yuzutaru.levela` (`:app`), `com.yuzutaru.data` (`:data`),
+`com.yuzutaru.design` (`:design`), `com.yuzutaru.onboarding` (`:onboarding`),
+`com.yuzutaru.splash` (`:splash`).
 
 ## Build & run
 
@@ -37,6 +42,7 @@ cd android
 ./gradlew assembleDebug          # debug APK -> app/build/outputs/apk/debug/
 ./gradlew :app:test              # app unit tests
 ./gradlew :design:test           # design unit tests
+./gradlew :data:test             # data unit tests
 ./gradlew connectedAndroidTest   # instrumented tests (needs a device/emulator)
 ```
 
@@ -45,6 +51,8 @@ cd android
 - Versions are centralized in `gradle/libs.versions.toml`; reference dependencies
   via the `libs.*` accessors, not hardcoded strings.
 - AGP `9.x` uses the block form `compileSdk { version = release(37) }`.
+- `android.disallowKotlinSourceSets=false` is set in `gradle.properties`: AGP 9's
+  built-in Kotlin rejects the generated source dirs KSP registers for Room.
 
 ## Design system (`:design`)
 
@@ -141,6 +149,26 @@ splash guest entry. See
 
 Related docs: [`../ios/AGENTS.md`](../ios/AGENTS.md) (iOS counterpart),
 [`../README.md`](../README.md) (project overview).
+
+## Persistence (`:data`)
+
+The offline-first store. `:data` holds a Room database (`LevelaDatabase`) with one
+`user_profile` table and a `UserProfileRepository`. Room types never leave the
+module: `LevelaData` builds the database and hands out repositories, and `:app`
+owns one via `AppContainer`. `OnboardingView` reports completion through
+`onFinished(OnboardingProfile)`, which `:app` maps to a `UserProfile` row in
+`ProfileMapping.kt`.
+
+The schema is **sync-ready now, synced later**: every row carries a
+client-generated `id` (UUID), a nullable `accountUserId`, a `syncState` (a
+`SyncState` enum), an `updatedAt` timestamp and a `deleted` tombstone. Onboarding
+rows are written guest-owned (`accountUserId = null`, `syncState = Pending`) with
+no network. When accounts land, registering re-parents the row
+(`UserProfileRepository.attachToAccount`) rather than copying it, and the same
+UUID upserts on the backend.
+
+- Room schema JSON is exported to `data/schemas/`; bump the DB version and add a
+  `Migration` on schema changes — never a destructive fallback.
 
 ## Conventions
 

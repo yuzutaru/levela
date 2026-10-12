@@ -115,6 +115,18 @@ class OnboardingViewModel {
     fun setHeightDisplay(value: Int) {
         heightCm = if (heightUnit == "cm") value else inToCm(value)
     }
+
+    /** The collected values, ready for the host app to persist. */
+    fun profile(): OnboardingProfile = OnboardingProfile(
+        goal = goal,
+        ageYears = age,
+        sex = sex,
+        weightKg = weightKg.toDouble(),
+        heightCm = heightCm.toDouble(),
+        activityLevel = activityLevel,
+        weightUnit = weightUnit,
+        heightUnit = heightUnit,
+    )
 }
 
 internal fun kgToLb(kg: Int): Int = (kg * 2.20462).roundToInt()

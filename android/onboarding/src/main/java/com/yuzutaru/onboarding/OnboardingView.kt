@@ -62,12 +62,13 @@ import com.yuzutaru.onboarding.widget.ValueStep
  * The last step reports completion through [onFinished]. Mirrors the iOS
  * `OnboardingView`.
  *
- * @param onFinished called when the user taps Next on the final step.
+ * @param onFinished called with the collected [OnboardingProfile] when the user
+ *   taps Next on the final step.
  */
 @Composable
 fun OnboardingView(
     modifier: Modifier = Modifier,
-    onFinished: () -> Unit = {},
+    onFinished: (OnboardingProfile) -> Unit = {},
     viewModel: OnboardingViewModel = remember { OnboardingViewModel() },
 ) {
     Column(
@@ -143,7 +144,7 @@ fun OnboardingView(
                             backOnClicked = viewModel::back,
                             isLastStep = viewModel.isLastStep,
                             next = viewModel::next,
-                            onFinished = onFinished
+                            onFinished = { onFinished(viewModel.profile()) }
                         )
                     OnboardingStep.Height ->
                         ValueStep(
@@ -160,7 +161,7 @@ fun OnboardingView(
                             backOnClicked = viewModel::back,
                             isLastStep = viewModel.isLastStep,
                             next = viewModel::next,
-                            onFinished = onFinished
+                            onFinished = { onFinished(viewModel.profile()) }
                         )
                     OnboardingStep.Activity ->
                         ActivityStep(
@@ -170,7 +171,7 @@ fun OnboardingView(
                             backOnClicked = viewModel::back,
                             isLastStep = viewModel.isLastStep,
                             next = viewModel::next,
-                            onFinished = onFinished,
+                            onFinished = { onFinished(viewModel.profile()) },
                         )
                 }
             }

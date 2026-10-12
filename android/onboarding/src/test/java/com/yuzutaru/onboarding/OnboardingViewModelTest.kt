@@ -22,10 +22,10 @@ class OnboardingViewModelTest {
     }
 
     @Test
-    fun exposesFiveSteps() {
+    fun exposesTheFullFlow() {
         val viewModel = OnboardingViewModel()
 
-        assertEquals(5, viewModel.stepCount)
+        assertEquals(6, viewModel.stepCount)
         assertEquals(0, viewModel.stepIndex)
 
         viewModel.next()
@@ -43,10 +43,14 @@ class OnboardingViewModelTest {
         viewModel.next()
         assertEquals(OnboardingStep.Height, viewModel.step)
         assertEquals(4, viewModel.stepIndex)
+
+        viewModel.next()
+        assertEquals(OnboardingStep.Activity, viewModel.step)
+        assertEquals(5, viewModel.stepIndex)
         assertTrue(viewModel.isLastStep)
 
         viewModel.back()
-        assertEquals(OnboardingStep.Weight, viewModel.step)
+        assertEquals(OnboardingStep.Height, viewModel.step)
     }
 
     @Test
@@ -60,7 +64,8 @@ class OnboardingViewModelTest {
         viewModel.next()
         viewModel.next()
         viewModel.next()
-        assertEquals(OnboardingStep.Height, viewModel.step)
+        viewModel.next()
+        assertEquals(OnboardingStep.Activity, viewModel.step)
     }
 
     @Test
@@ -162,5 +167,27 @@ class OnboardingViewModelTest {
     fun conversionsRoundTrip() {
         assertEquals(70, lbToKg(kgToLb(70)))
         assertEquals(170, inToCm(cmToIn(170)))
+    }
+
+    @Test
+    fun profileCarriesTheCollectedValues() {
+        val viewModel = OnboardingViewModel()
+        viewModel.selectGoal("Gain muscle")
+        viewModel.setAge(42)
+        viewModel.selectSex("Female")
+        viewModel.setWeightDisplay(80)
+        viewModel.setHeightDisplay(180)
+        viewModel.selectActivity("Very active")
+
+        val profile = viewModel.profile()
+
+        assertEquals("Gain muscle", profile.goal)
+        assertEquals(42, profile.ageYears)
+        assertEquals("Female", profile.sex)
+        assertEquals(80.0, profile.weightKg, 0.0)
+        assertEquals(180.0, profile.heightCm, 0.0)
+        assertEquals("Very active", profile.activityLevel)
+        assertEquals(OnboardingTokens.defaultWeightUnit, profile.weightUnit)
+        assertEquals(OnboardingTokens.defaultHeightUnit, profile.heightUnit)
     }
 }
