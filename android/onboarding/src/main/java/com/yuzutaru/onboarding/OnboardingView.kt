@@ -47,12 +47,13 @@ import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LevelaTheme
 
 /**
- * The Levela post-guest onboarding flow (welcome, goal, weight, height).
+ * The Levela post-guest onboarding flow (welcome, goal, profile, weight, height).
  *
- * Shown after the user taps **Continue as a guest** on the splash. Four steps:
- * a welcome intro, a single-select goal step, then weight and height — the
- * latter pair each using a draggable ruler picker and a unit toggle. The last
- * step reports completion through [onFinished]. Mirrors the iOS `OnboardingView`.
+ * Shown after the user taps **Continue as a guest** on the splash. Five steps:
+ * a welcome intro, a single-select goal step, a profile step (age + biological
+ * sex), then weight and height — the latter pair each using a draggable ruler
+ * picker and a unit toggle. The last step reports completion through
+ * [onFinished]. Mirrors the iOS `OnboardingView`.
  *
  * @param onFinished called when the user taps Next on the final step.
  */
@@ -107,6 +108,16 @@ fun OnboardingView(
                             selectedGoal = viewModel.goal,
                             selectGoal = viewModel::selectGoal,
                             hasGoal = viewModel.hasGoal,
+                            backOnClicked = viewModel::back,
+                            next = viewModel::next,
+                        )
+                    OnboardingStep.Profile ->
+                        ProfileStep(
+                            age = viewModel.age,
+                            setAge = viewModel::setAge,
+                            selectedSex = viewModel.sex,
+                            selectSex = viewModel::selectSex,
+                            hasSex = viewModel.hasSex,
                             backOnClicked = viewModel::back,
                             next = viewModel::next,
                         )
@@ -226,7 +237,7 @@ private fun ColumnScope.GoalStep(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         OnboardingTokens.goals.forEach { goal ->
-            GoalCard(
+            OptionCard(
                 title = goal.title,
                 subtitle = goal.subtitle,
                 isSelected = goal.title == selectedGoal,
@@ -254,11 +265,14 @@ private fun ColumnScope.GoalStep(
     Spacer(Modifier.height(24.dp))
 }
 
-/** A single-select goal card: a status dot on the left, then title + subtitle. */
+/**
+ * A single-select option card: a status dot on the left, then a title and an
+ * optional subtitle. Shared by the goal and profile steps.
+ */
 @Composable
-private fun GoalCard(
+private fun OptionCard(
     title: String,
-    subtitle: String,
+    subtitle: String?,
     isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -284,7 +298,7 @@ private fun GoalCard(
             .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        GoalDot(isSelected = isSelected)
+        OptionDot(isSelected = isSelected)
         Spacer(Modifier.width(14.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
@@ -292,19 +306,21 @@ private fun GoalCard(
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                 color = OnboardingTokens.Title,
             )
-            Spacer(Modifier.height(2.dp))
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = OnboardingTokens.Subtitle,
-            )
+            if (subtitle != null) {
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = OnboardingTokens.Subtitle,
+                )
+            }
         }
     }
 }
 
-/** The goal card's status dot: filled when selected, a ring when not. */
+/** The option card's status dot: filled when selected, a ring when not. */
 @Composable
-private fun GoalDot(
+private fun OptionDot(
     isSelected: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -318,6 +334,128 @@ private fun GoalDot(
             dot.border(1.5.dp, OnboardingTokens.GoalDotInactive, CircleShape)
         },
     )
+}
+
+/**
+ * The profile step: title + an age ruler card + a list of single-select
+ * biological-sex cards + back / Next. Next stays disabled until a sex option is
+ * chosen (the age always has a default).
+ */
+@Composable
+private fun ColumnScope.ProfileStep(
+    age: Int,
+    setAge: (Int) -> Unit,
+    selectedSex: String?,
+    selectSex: (String) -> Unit,
+    hasSex: Boolean,
+    backOnClicked: () -> Unit,
+    next: () -> Unit,
+) {
+    Spacer(Modifier.height(28.dp))
+
+    Text(
+        text = OnboardingTokens.ProfileTitle,
+        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+        color = OnboardingTokens.Title,
+        textAlign = TextAlign.Center,
+    )
+
+    Spacer(Modifier.height(24.dp))
+
+    Text(
+        text = OnboardingTokens.AgeTitle,
+        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+        color = OnboardingTokens.Title,
+        modifier = Modifier.fillMaxWidth(),
+    )
+
+    Spacer(Modifier.height(12.dp))
+
+    AgeCard(age = age, onAgeChange = setAge)
+
+    Spacer(Modifier.height(24.dp))
+
+    Text(
+        text = OnboardingTokens.SexTitle,
+        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+        color = OnboardingTokens.Title,
+        modifier = Modifier.fillMaxWidth(),
+    )
+
+    Spacer(Modifier.height(12.dp))
+
+    Column(
+        modifier = Modifier
+            .weight(1f)
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        OnboardingTokens.sexOptions.forEach { option ->
+            OptionCard(
+                title = option,
+                subtitle = null,
+                isSelected = option == selectedSex,
+                onClick = { selectSex(option) },
+            )
+        }
+    }
+
+    Spacer(Modifier.height(20.dp))
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        BackButton(onClick = backOnClicked)
+        Spacer(Modifier.width(12.dp))
+        NextButton(
+            label = OnboardingTokens.Next,
+            onClick = next,
+            enabled = hasSex,
+            modifier = Modifier.weight(1f),
+        )
+    }
+
+    Spacer(Modifier.height(24.dp))
+}
+
+/** The age ruler card: the value + a single `years` scale + a unit label. */
+@Composable
+private fun AgeCard(
+    age: Int,
+    onAgeChange: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(OnboardingTokens.CardCorner.dp))
+            .background(OnboardingTokens.CardWeight)
+            .padding(vertical = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = age.toString(),
+            style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
+            color = OnboardingTokens.Value,
+        )
+        Spacer(Modifier.height(6.dp))
+        RulerPicker(
+            value = age,
+            rangeStart = OnboardingTokens.ageMin,
+            rangeEnd = OnboardingTokens.ageMax,
+            step = OnboardingTokens.ageStep,
+            onValueChange = onAgeChange,
+            accentColor = OnboardingTokens.CardWeightAccent,
+        )
+        Spacer(Modifier.height(2.dp))
+        Text(
+            text = OnboardingTokens.ageUnit,
+            style = MaterialTheme.typography.labelMedium,
+            color = OnboardingTokens.RulerLabel,
+        )
+    }
 }
 
 @Preview(showBackground = true, heightDp = 900)
@@ -341,6 +479,29 @@ private fun GoalStepPreview() {
                 selectedGoal = goal,
                 selectGoal = { goal = it },
                 hasGoal = goal != null,
+                backOnClicked = {},
+                next = {},
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, heightDp = 900)
+@Composable
+private fun ProfileStepPreview() {
+    LevelaTheme {
+        var age by remember { mutableStateOf(OnboardingTokens.ageDefault) }
+        var sex by remember { mutableStateOf<String?>("Female") }
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            ProfileStep(
+                age = age,
+                setAge = { age = it },
+                selectedSex = sex,
+                selectSex = { sex = it },
+                hasSex = sex != null,
                 backOnClicked = {},
                 next = {},
             )

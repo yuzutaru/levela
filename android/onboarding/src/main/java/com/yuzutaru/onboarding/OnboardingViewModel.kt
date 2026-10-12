@@ -32,6 +32,17 @@ class OnboardingViewModel {
 
     val hasGoal: Boolean get() = goal != null
 
+    private var ageYears by mutableIntStateOf(OnboardingTokens.ageDefault)
+
+    /** The chosen age in years; starts at the contracted default. */
+    val age: Int get() = ageYears
+
+    /** The chosen biological-sex option, or null until one is selected. */
+    var sex: String? by mutableStateOf(null)
+        private set
+
+    val hasSex: Boolean get() = sex != null
+
     val stepIndex: Int get() = OnboardingTokens.steps.indexOf(step)
     val stepCount: Int get() = OnboardingTokens.steps.size
     val isFirstStep: Boolean get() = stepIndex == 0
@@ -67,6 +78,16 @@ class OnboardingViewModel {
     /** Selects a goal card by title; ignores unknown titles. */
     fun selectGoal(goal: String) {
         if (OnboardingTokens.goals.any { it.title == goal }) this.goal = goal
+    }
+
+    /** Selects a biological-sex option; ignores unknown options. */
+    fun selectSex(option: String) {
+        if (option in OnboardingTokens.sexOptions) sex = option
+    }
+
+    /** Sets the age in years. */
+    fun setAge(value: Int) {
+        ageYears = value
     }
 
     /** Selects `ft/in` or `cm`; ignores unknown units. */

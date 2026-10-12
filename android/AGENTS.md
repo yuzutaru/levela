@@ -19,8 +19,8 @@ Four Gradle modules, declared in `settings.gradle.kts`:
 - **`:design`** — a library module holding the shared design system under
   `design/src/main/java/com/yuzutaru/design/ui/theme/`. `:app` depends on
   `project(":design")`, so all theme primitives live here, not in `:app`.
-- **`:onboarding`** — the post-guest onboarding flow (welcome, goal, weight,
-  height) under
+- **`:onboarding`** — the post-guest onboarding flow (welcome, goal, profile,
+  weight, height) under
   `onboarding/src/main/java/com/yuzutaru/onboarding/`. Depends on `:design`; the
   iOS counterpart is the `Onboarding` Swift package.
 - **`:splash`** — the launch welcome flow under
@@ -126,9 +126,11 @@ both platforms, by the shared contract in `../assets/onboarding/`:
 
 `OnboardingView` shows the welcome step (title, subtitle, hero illustration), the
 goal step (single-select goal cards — a status dot plus title and subtitle — where
-Next stays disabled until a goal is chosen) and the weight and height steps
-(progress segments, unit toggle, a draggable snapping ruler picker on a tinted
-value card, back + Next buttons) and reports completion through `onFinished`. The
+Next stays disabled until a goal is chosen), the profile step (an age ruler picker
+plus single-select biological-sex cards, Next disabled until a sex option is
+chosen) and the weight and height steps (progress segments, unit toggle, a
+draggable snapping ruler picker on a tinted value card, back + Next buttons) and
+reports completion through `onFinished`. The
 welcome illustration lives in
 `onboarding/src/main/res/drawable-*/welcome_illustration.png` (generated from
 `assets/onboarding/welcome-illustration.png`). Canonical values are stored

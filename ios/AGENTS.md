@@ -138,9 +138,11 @@ once, for both platforms, by the shared contract in `../assets/onboarding/`:
 
 `OnboardingView` shows the welcome step (title, subtitle, hero illustration), the
 goal step (single-select goal cards — a status dot plus title and subtitle — where
-Next stays disabled until a goal is chosen) and the weight and height steps
-(progress segments, unit toggle, a draggable snapping ruler picker on a tinted
-value card, back + Next buttons) and reports completion through `onFinished`. The
+Next stays disabled until a goal is chosen), the profile step (an age ruler picker
+plus single-select biological-sex cards, Next disabled until a sex option is
+chosen) and the weight and height steps (progress segments, unit toggle, a
+draggable snapping ruler picker on a tinted value card, back + Next buttons) and
+reports completion through `onFinished`. The
 welcome illustration is bundled from
 `Sources/Onboarding/Resources/Assets.xcassets/WelcomeIllustration.imageset`
 (generated from `assets/onboarding/welcome-illustration.png`). Canonical values

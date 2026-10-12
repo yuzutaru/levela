@@ -23,6 +23,14 @@ public final class OnboardingViewModel {
 
     public var hasGoal: Bool { goal != nil }
 
+    /// The chosen age in years; starts at the contracted default.
+    public private(set) var age: Int = OnboardingTokens.ageDefault
+
+    /// The chosen biological-sex option, or nil until one is selected.
+    public private(set) var sex: String?
+
+    public var hasSex: Bool { sex != nil }
+
     public init() {}
 
     /// Creates a view model positioned at `step`. Internal: for previews/tests.
@@ -66,6 +74,16 @@ public final class OnboardingViewModel {
     /// Selects a goal card by title; ignores unknown titles.
     public func selectGoal(_ goal: String) {
         if OnboardingTokens.goals.contains(where: { $0.title == goal }) { self.goal = goal }
+    }
+
+    /// Selects a biological-sex option; ignores unknown options.
+    public func selectSex(_ option: String) {
+        if OnboardingTokens.sexOptions.contains(option) { sex = option }
+    }
+
+    /// Sets the age in years.
+    public func setAge(_ value: Int) {
+        age = value
     }
 
     /// Selects `ft/in` or `cm`; ignores unknown units.

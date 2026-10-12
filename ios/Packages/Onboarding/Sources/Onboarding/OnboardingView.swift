@@ -1,13 +1,13 @@
 import Design
 import SwiftUI
 
-/// The Levela post-guest onboarding flow (welcome, goal, weight, height).
+/// The Levela post-guest onboarding flow (welcome, goal, profile, weight, height).
 ///
-/// Shown after the user taps **Continue as a guest** on the splash. Four steps:
-/// a welcome intro, a single-select goal step, then weight and height — the
-/// latter pair each using a draggable ruler picker and a unit toggle. The last
-/// step reports completion through `onFinished`. Mirrors the Android
-/// `OnboardingView`.
+/// Shown after the user taps **Continue as a guest** on the splash. Five steps:
+/// a welcome intro, a single-select goal step, a profile step (age + biological
+/// sex), then weight and height — the latter pair each using a draggable ruler
+/// picker and a unit toggle. The last step reports completion through
+/// `onFinished`. Mirrors the Android `OnboardingView`.
 @MainActor
 public struct OnboardingView: View {
     @State private var viewModel = OnboardingViewModel()
@@ -37,6 +37,8 @@ public struct OnboardingView: View {
                         welcomeStep
                     } else if viewModel.step == .goal {
                         goalStep
+                    } else if viewModel.step == .profile {
+                        profileStep
                     } else {
                         valueStep
                     }
@@ -131,7 +133,7 @@ public struct OnboardingView: View {
             ScrollView {
                 VStack(spacing: 12) {
                     ForEach(OnboardingTokens.goals, id: \.title) { goal in
-                        GoalCard(
+                        OptionCard(
                             title: goal.title,
                             subtitle: goal.subtitle,
                             isSelected: viewModel.goal == goal.title
@@ -149,6 +151,60 @@ public struct OnboardingView: View {
             HStack(spacing: 12) {
                 BackButton(action: goBack)
                 NextButton(label: OnboardingTokens.next, enabled: viewModel.hasGoal) {
+                    goNext()
+                }
+            }
+            .padding(.bottom, 24)
+        }
+    }
+
+    /// The profile step: title + an age ruler card + a list of single-select
+    /// biological-sex cards + back / Next. Next stays disabled until a sex option
+    /// is chosen (the age always has a default).
+    private var profileStep: some View {
+        VStack(spacing: 0) {
+            Text(OnboardingTokens.profileTitle)
+                .font(LevelaTypography.headlineMedium.bold())
+                .foregroundStyle(OnboardingTokens.title)
+                .multilineTextAlignment(.center)
+                .padding(.top, 28)
+
+            Text(OnboardingTokens.ageTitle)
+                .font(LevelaTypography.titleMedium.bold())
+                .foregroundStyle(OnboardingTokens.title)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 24)
+
+            AgeCard(age: viewModel.age, onAgeChange: viewModel.setAge)
+                .padding(.top, 12)
+
+            Text(OnboardingTokens.sexTitle)
+                .font(LevelaTypography.titleMedium.bold())
+                .foregroundStyle(OnboardingTokens.title)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 24)
+
+            ScrollView {
+                VStack(spacing: 12) {
+                    ForEach(OnboardingTokens.sexOptions, id: \.self) { option in
+                        OptionCard(
+                            title: option,
+                            subtitle: nil,
+                            isSelected: viewModel.sex == option
+                        ) {
+                            viewModel.selectSex(option)
+                        }
+                    }
+                }
+                .padding(.top, 12)
+                .padding(.bottom, 4)
+            }
+
+            Spacer(minLength: 16)
+
+            HStack(spacing: 12) {
+                BackButton(action: goBack)
+                NextButton(label: OnboardingTokens.next, enabled: viewModel.hasSex) {
                     goNext()
                 }
             }
@@ -191,6 +247,7 @@ public struct OnboardingView: View {
         switch viewModel.step {
         case .welcome: OnboardingTokens.welcomeTitle
         case .goal: OnboardingTokens.goalTitle
+        case .profile: OnboardingTokens.profileTitle
         case .weight: OnboardingTokens.weightTitle
         case .height: OnboardingTokens.heightTitle
         }
@@ -313,6 +370,38 @@ private struct ValueCard: View {
     }
 }
 
+/// The age ruler card: the value + a single `years` scale + a unit label.
+private struct AgeCard: View {
+    let age: Int
+    let onAgeChange: (Int) -> Void
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Text("\(age)")
+                .font(LevelaTypography.displayMedium.bold())
+                .foregroundStyle(OnboardingTokens.value)
+
+            RulerPicker(
+                value: age,
+                rangeStart: OnboardingTokens.ageMin,
+                rangeEnd: OnboardingTokens.ageMax,
+                step: OnboardingTokens.ageStep,
+                accentColor: OnboardingTokens.cardWeightAccent,
+                onValueChange: onAgeChange
+            )
+            .padding(.top, 6)
+
+            Text(OnboardingTokens.ageUnit)
+                .font(LevelaTypography.labelMedium)
+                .foregroundStyle(OnboardingTokens.rulerLabel)
+                .padding(.top, 2)
+        }
+        .padding(.vertical, 20)
+        .frame(maxWidth: .infinity)
+        .background(OnboardingTokens.cardWeight, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+    }
+}
+
 private struct BackButton: View {
     let action: () -> Void
 
@@ -363,10 +452,11 @@ private struct NextButton: View {
     }
 }
 
-/// A single-select goal card: a status dot on the left, then title + subtitle.
-private struct GoalCard: View {
+/// A single-select option card: a status dot on the left, then a title and an
+/// optional subtitle. Shared by the goal and profile steps.
+private struct OptionCard: View {
     let title: String
-    let subtitle: String
+    let subtitle: String?
     let isSelected: Bool
     let action: () -> Void
 
@@ -377,16 +467,18 @@ private struct GoalCard: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: 14) {
-                GoalDot(isSelected: isSelected)
+                OptionDot(isSelected: isSelected)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
                         .font(LevelaTypography.titleMedium.bold())
                         .foregroundStyle(OnboardingTokens.title)
 
-                    Text(subtitle)
-                        .font(LevelaTypography.bodyMedium)
-                        .foregroundStyle(OnboardingTokens.subtitle)
+                    if let subtitle {
+                        Text(subtitle)
+                            .font(LevelaTypography.bodyMedium)
+                            .foregroundStyle(OnboardingTokens.subtitle)
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -410,8 +502,8 @@ private struct GoalCard: View {
     }
 }
 
-/// The goal card's status dot: filled when selected, a ring when not.
-private struct GoalDot: View {
+/// The option card's status dot: filled when selected, a ring when not.
+private struct OptionDot: View {
     let isSelected: Bool
 
     var body: some View {
@@ -433,6 +525,11 @@ private struct GoalDot: View {
 
 #Preview("Goal") {
     OnboardingView(step: .goal)
+        .levelaTheme()
+}
+
+#Preview("Profile") {
+    OnboardingView(step: .profile)
         .levelaTheme()
 }
 
