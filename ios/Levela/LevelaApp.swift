@@ -6,6 +6,8 @@
 //
 
 import Design
+import Persistence
+import SwiftData
 import SwiftUI
 
 @main
@@ -20,5 +22,8 @@ struct LevelaApp: App {
         WindowGroup {
             LevelaRootView()
         }
+        // The offline-first store for the user's profile. Rows stay guest-owned
+        // until the user registers, then sync under the account.
+        .modelContainer(for: UserProfile.self)
     }
 }

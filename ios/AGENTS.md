@@ -11,7 +11,7 @@ guide is at `../android/AGENTS.md`.
 
 ## Module layout
 
-Four Swift modules. The app and its feature packages are separate **local Swift
+Five Swift modules. The app and its feature packages are separate **local Swift
 packages**, so module boundaries are real compile boundaries — the iOS analogue
 of the Android Gradle modules.
 
@@ -24,10 +24,13 @@ of the Android Gradle modules.
   feature. Depends on `Design`.
 - **`Splash`** — local Swift package at `Packages/Splash`; the launch welcome
   flow. Depends on `Design`. The Android counterpart is the `:splash` module.
+- **`Persistence`** — local Swift package at `Packages/Persistence`; the
+  offline-first SwiftData store (`UserProfile` `@Model` + `ProfileStore`). No
+  dependencies. The Android counterpart is the `:data` module.
 
 Dependency direction: `Levela → Design`, `Levela → Onboarding`, `Levela → Splash`,
-`Onboarding → Design`, `Splash → Design`. Features never depend on each other or
-on the app.
+`Levela → Persistence`, `Onboarding → Design`, `Splash → Design`. Features never
+depend on each other or on the app.
 
 ## Build & run
 
@@ -41,8 +44,8 @@ Or open `Levela.xcodeproj` in Xcode and run.
 - Deployment target: iOS 18; Swift language mode 5 (`swiftLanguageModes: [.v5]`
   in each `Package.swift`, matching the app's `SWIFT_VERSION = 5.0`).
 - The packages are referenced from the project via `XCLocalSwiftPackageReference`
-  (`Packages/Design`, `Packages/Onboarding`, `Packages/Splash`) and linked to the
-  `Levela` target.
+  (`Packages/Design`, `Packages/Onboarding`, `Packages/Splash`,
+  `Packages/Persistence`) and linked to the `Levela` target.
 - The Xcode project uses file-system-synchronized groups: files under `Levela/`
   are picked up automatically — no need to edit `project.pbxproj` to add sources
   there. Adding a *new package* does require editing the project.
@@ -151,6 +154,25 @@ are stored in kg / cm; switching units converts them. It is shown from
 `LevelaRootView` after the splash guest entry. See
 [`../assets/onboarding/README.md`](../assets/onboarding/README.md).
 
+## Persistence (`Persistence` package)
+
+The offline-first store. `Persistence` holds a SwiftData `UserProfile` `@Model`
+and a `ProfileStore` (over a `ModelContext`). `LevelaApp` creates the container
+with `.modelContainer(for: UserProfile.self)`; `LevelaRootView` reads it from the
+environment and, when onboarding finishes, saves
+`UserProfile(onboarding:)` (defined in `Levela/ProfileMapping.swift`).
+
+The schema is **sync-ready now, synced later**: every row carries a
+client-generated `id` (UUID), a nullable `accountUserId`, a `syncState` (a
+`SyncState` enum, backed by `syncStateRaw` so `#Predicate` can match it), an
+`updatedAt` timestamp and a `deleted` tombstone. Onboarding rows are written
+guest-owned (`accountUserId = nil`, `.pending`) with no network. When accounts
+land, registering re-parents the row (`ProfileStore.attachToAccount(id:accountUserId:)`)
+rather than copying it, and the same UUID upserts on the backend.
+
+Tests: `xcodebuild test -scheme Persistence -destination 'platform=iOS Simulator,name=iPhone 18 Pro'`
+from `Packages/Persistence` (in-memory `ModelContainer`).
+
 Related docs: [`../android/AGENTS.md`](../android/AGENTS.md) (Android counterpart),
 [`../README.md`](../README.md) (project overview).
 
@@ -166,8 +188,10 @@ Related docs: [`../android/AGENTS.md`](../android/AGENTS.md) (Android counterpar
   container; inject via initializers / the SwiftUI environment.
 - App-level navigation lives in `LevelaRootView`. Features expose a route type
   (e.g. `OnboardingRoute`) so the app never reaches into feature internals.
-- Persistence (SwiftData) is intentionally not wired yet; add a dedicated
-  `Core`/`Persistence` package when a feature actually needs it.
+- Persistence lives in the `Persistence` package (SwiftData). The app injects the
+  `ModelContainer` via `.modelContainer(for: UserProfile.self)` in `LevelaApp`;
+  features receive the `ProfileStore` / `ModelContext` from the environment rather
+  than building storage themselves.
 
 ## Knowledge graph (graphify)
 

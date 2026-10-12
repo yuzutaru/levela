@@ -10,6 +10,7 @@
 		AA00000000000000000000D5 /* Design in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000D3 /* Design */; };
 		AA00000000000000000000D6 /* Onboarding in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000D4 /* Onboarding */; };
 		AA00000000000000000000D9 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000D8 /* Splash */; };
+		AA00000000000000000000DC /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000DB /* Persistence */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 				AA00000000000000000000D5 /* Design in Frameworks */,
 				AA00000000000000000000D6 /* Onboarding in Frameworks */,
 				AA00000000000000000000D9 /* Splash in Frameworks */,
+				AA00000000000000000000DC /* Persistence in Frameworks */,
 			);
 		};
 		21F13901306DD1B000DCCF15 /* Frameworks */ = {
@@ -116,6 +118,7 @@
 				AA00000000000000000000D3 /* Design */,
 				AA00000000000000000000D4 /* Onboarding */,
 				AA00000000000000000000D8 /* Splash */,
+				AA00000000000000000000DB /* Persistence */,
 			);
 			productName = Levela;
 			productReference = 21F138F5306DD1AF00DCCF15 /* Levela.app */;
@@ -199,6 +202,7 @@
 				AA00000000000000000000D1 /* XCLocalSwiftPackageReference "Packages/Design" */,
 				AA00000000000000000000D2 /* XCLocalSwiftPackageReference "Packages/Onboarding" */,
 				AA00000000000000000000D7 /* XCLocalSwiftPackageReference "Packages/Splash" */,
+				AA00000000000000000000DA /* XCLocalSwiftPackageReference "Packages/Persistence" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 21F138F6306DD1AF00DCCF15 /* Products */;
@@ -581,6 +585,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/Splash;
 		};
+		AA00000000000000000000DA /* XCLocalSwiftPackageReference "Packages/Persistence" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Persistence;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -595,6 +603,10 @@
 		AA00000000000000000000D8 /* Splash */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Splash;
+		};
+		AA00000000000000000000DB /* Persistence */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Persistence;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

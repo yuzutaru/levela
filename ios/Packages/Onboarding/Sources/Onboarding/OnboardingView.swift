@@ -16,14 +16,14 @@ public struct OnboardingView: View {
     /// 1 when moving forward through the steps, -1 when going back; drives the
     /// slide direction of the step transition.
     @State private var direction: Int = 1
-    private let onFinished: () -> Void
+    private let onFinished: (OnboardingProfile) -> Void
 
-    public init(onFinished: @escaping () -> Void = {}) {
+    public init(onFinished: @escaping (OnboardingProfile) -> Void = { _ in }) {
         self.onFinished = onFinished
     }
 
     /// Opens the view on a specific step. Internal: for previews/tests.
-    init(step: OnboardingStep, onFinished: @escaping () -> Void = {}) {
+    init(step: OnboardingStep, onFinished: @escaping (OnboardingProfile) -> Void = { _ in }) {
         _viewModel = State(initialValue: OnboardingViewModel(step: step))
         self.onFinished = onFinished
     }
@@ -249,7 +249,7 @@ public struct OnboardingView: View {
                 BackButton(action: goBack)
                 NextButton(label: OnboardingTokens.next, enabled: viewModel.hasActivity) {
                     if viewModel.isLastStep {
-                        onFinished()
+                        onFinished(viewModel.makeProfile())
                     } else {
                         goNext()
                     }
@@ -280,7 +280,7 @@ public struct OnboardingView: View {
                 BackButton(action: goBack)
                 NextButton(label: OnboardingTokens.next) {
                     if viewModel.isLastStep {
-                        onFinished()
+                        onFinished(viewModel.makeProfile())
                     } else {
                         goNext()
                     }
