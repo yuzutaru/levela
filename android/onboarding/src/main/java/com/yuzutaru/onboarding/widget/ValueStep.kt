@@ -1,4 +1,4 @@
-package com.yuzutaru.onboarding
+package com.yuzutaru.onboarding.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -28,6 +28,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LevelaTheme
+import com.yuzutaru.onboarding.OnboardingStep
+import com.yuzutaru.onboarding.OnboardingTokens
+import com.yuzutaru.onboarding.formatFtIn
 
 /** A weight or height step: title + unit toggle + value card + back / Next. */
 @Composable
@@ -56,6 +59,7 @@ internal fun ColumnScope.ValueStep(
             OnboardingStep.Profile -> OnboardingTokens.ProfileTitle
             OnboardingStep.Weight -> OnboardingTokens.WeightTitle
             OnboardingStep.Height -> OnboardingTokens.HeightTitle
+            OnboardingStep.Activity -> OnboardingTokens.ActivityTitle
         },
         style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
         color = OnboardingTokens.Title,

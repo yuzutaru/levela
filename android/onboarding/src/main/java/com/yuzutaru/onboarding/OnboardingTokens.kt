@@ -21,13 +21,14 @@ import com.yuzutaru.design.ui.theme.White
  * `scripts/verify_onboarding_parity.sh`.
  */
 object OnboardingTokens {
-    // Flow — steps: welcome, goal, profile, weight, height
+    // Flow — steps: welcome, goal, profile, weight, height, activity
     val steps: List<OnboardingStep> = listOf(
         OnboardingStep.Welcome,
         OnboardingStep.Goal,
         OnboardingStep.Profile,
         OnboardingStep.Weight,
         OnboardingStep.Height,
+        OnboardingStep.Activity,
     )
 
     // Copy
@@ -39,6 +40,7 @@ object OnboardingTokens {
     const val SexTitle = "Biological sex"
     const val WeightTitle = "What is your weight?"
     const val HeightTitle = "What is your height?"
+    const val ActivityTitle = "What is your activity level?"
     const val Start = "Let's start"
     const val Next = "Next"
     const val Back = "Back"
@@ -56,6 +58,15 @@ object OnboardingTokens {
 
     // Biological sex — the single-select options.
     val sexOptions = listOf("Female", "Male", "Prefer not to say")
+
+    // Activity level outside workouts — the single-select cards (title + subtitle).
+    val activityLevels: List<GoalOption> = listOf(
+        GoalOption("Sedentary", "Little to no daily activity or a desk job"),
+        GoalOption("Lightly active", "Light daily activity or walking 1–3 days a week"),
+        GoalOption("Moderately active", "Moderate daily activity 3–5 days a week"),
+        GoalOption("Very active", "Daily activity 6–7 days a week"),
+        GoalOption("Extra active", "A physical job plus daily activity"),
+    )
 
     // Units
     val weightUnits = listOf("lb", "kg")

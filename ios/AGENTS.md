@@ -140,9 +140,10 @@ once, for both platforms, by the shared contract in `../assets/onboarding/`:
 goal step (single-select goal cards — a status dot plus title and subtitle — where
 Next stays disabled until a goal is chosen), the profile step (an age ruler picker
 plus single-select biological-sex cards, Next disabled until a sex option is
-chosen) and the weight and height steps (progress segments, unit toggle, a
+chosen), the weight and height steps (progress segments, unit toggle, a
 draggable snapping ruler picker on a tinted value card, back + Next buttons) and
-reports completion through `onFinished`. The
+the activity step (single-select activity-level cards, Next disabled until a level
+is chosen) and reports completion through `onFinished`. The
 welcome illustration is bundled from
 `Sources/Onboarding/Resources/Assets.xcassets/WelcomeIllustration.imageset`
 (generated from `assets/onboarding/welcome-illustration.png`). Canonical values

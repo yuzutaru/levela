@@ -13,4 +13,5 @@ enum class OnboardingStep {
     Profile,
     Weight,
     Height,
+    Activity,
 }

@@ -5,9 +5,9 @@
 # Contract enforcement for the Levela post-guest onboarding flow. Reads
 # assets/onboarding/onboarding-contract.json and checks that each platform's
 # OnboardingTokens file carries the same steps, copy, units, defaults, value
-# ranges and colour tokens, that its design-system Color file defines the
-# contracted palette, and that the welcome illustration ships on both
-# platforms at the contracted sizes.
+# ranges, goals, activity levels and colour tokens, that its design-system Color
+# file defines the contracted palette, and that the welcome illustration ships on
+# both platforms at the contracted sizes.
 #
 # A platform is only checked once its OnboardingTokens file exists, so the
 # Android and iOS pull requests pass independently. Pass --strict to require
@@ -114,6 +114,13 @@ def check_platform(key):
     for i, option in enumerate(c.get("sex", [])):
         if option not in tokens:
             errors.append(f"{tokens_rel}: missing sex[{i}] = \"{option}\"")
+
+    # activity-level options (title + subtitle copy), single-select cards
+    for i, level in enumerate(c.get("activityLevels", [])):
+        for field in ("title", "subtitle"):
+            value = level.get(field)
+            if value and value not in tokens:
+                errors.append(f"{tokens_rel}: missing activityLevels[{i}].{field} = \"{value}\"")
 
     # unit labels + defaults
     for group, units in c["units"].items():

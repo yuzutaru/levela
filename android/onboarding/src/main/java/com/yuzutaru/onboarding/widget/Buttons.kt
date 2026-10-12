@@ -1,11 +1,13 @@
-package com.yuzutaru.onboarding
+package com.yuzutaru.onboarding.widget
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -25,8 +27,11 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.Gray200
+import com.yuzutaru.design.ui.theme.LevelaTheme
+import com.yuzutaru.onboarding.OnboardingTokens
 
 /** The primary pill button shared by the onboarding steps. */
 @Composable
@@ -128,5 +133,28 @@ private fun Chevron(
                 join = StrokeJoin.Round,
             ),
         )
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Composable
+private fun ButtonsPreviewLight() = ButtonsPreviewContent()
+
+@Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun ButtonsPreviewDark() = ButtonsPreviewContent()
+
+@Composable
+private fun ButtonsPreviewContent() {
+    LevelaTheme {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            NextButton(label = OnboardingTokens.Next, onClick = {})
+            NextButton(label = OnboardingTokens.Next, onClick = {}, enabled = false)
+            BackButton(onClick = {})
+        }
     }
 }
