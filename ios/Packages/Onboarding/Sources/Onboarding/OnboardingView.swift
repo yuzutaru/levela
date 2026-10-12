@@ -1,13 +1,15 @@
 import Design
 import SwiftUI
 
-/// The Levela post-guest onboarding flow (welcome, goal, profile, weight, height).
+/// The Levela post-guest onboarding flow (welcome, goal, profile, weight, height,
+/// activity).
 ///
-/// Shown after the user taps **Continue as a guest** on the splash. Five steps:
+/// Shown after the user taps **Continue as a guest** on the splash. Six steps:
 /// a welcome intro, a single-select goal step, a profile step (age + biological
 /// sex), then weight and height — the latter pair each using a draggable ruler
-/// picker and a unit toggle. The last step reports completion through
-/// `onFinished`. Mirrors the Android `OnboardingView`.
+/// picker and a unit toggle — and finally a single-select activity-level step.
+/// The last step reports completion through `onFinished`. Mirrors the Android
+/// `OnboardingView`.
 @MainActor
 public struct OnboardingView: View {
     @State private var viewModel = OnboardingViewModel()
@@ -39,6 +41,8 @@ public struct OnboardingView: View {
                         goalStep
                     } else if viewModel.step == .profile {
                         profileStep
+                    } else if viewModel.step == .activity {
+                        activityStep
                     } else {
                         valueStep
                     }
@@ -212,6 +216,49 @@ public struct OnboardingView: View {
         }
     }
 
+    /// The activity step: title + a scrollable list of single-select
+    /// activity-level cards + back / Next. Next stays disabled until a level is
+    /// chosen.
+    private var activityStep: some View {
+        VStack(spacing: 0) {
+            Text(OnboardingTokens.activityTitle)
+                .font(LevelaTypography.headlineMedium.bold())
+                .foregroundStyle(OnboardingTokens.title)
+                .multilineTextAlignment(.center)
+                .padding(.top, 28)
+
+            ScrollView {
+                VStack(spacing: 12) {
+                    ForEach(OnboardingTokens.activityLevels, id: \.title) { level in
+                        OptionCard(
+                            title: level.title,
+                            subtitle: level.subtitle,
+                            isSelected: viewModel.activityLevel == level.title
+                        ) {
+                            viewModel.selectActivity(level.title)
+                        }
+                    }
+                }
+                .padding(.top, 20)
+                .padding(.bottom, 4)
+            }
+
+            Spacer(minLength: 16)
+
+            HStack(spacing: 12) {
+                BackButton(action: goBack)
+                NextButton(label: OnboardingTokens.next, enabled: viewModel.hasActivity) {
+                    if viewModel.isLastStep {
+                        onFinished()
+                    } else {
+                        goNext()
+                    }
+                }
+            }
+            .padding(.bottom, 24)
+        }
+    }
+
     /// A weight or height step: title + unit toggle + value card + back / Next.
     private var valueStep: some View {
         VStack(spacing: 0) {
@@ -250,6 +297,7 @@ public struct OnboardingView: View {
         case .profile: OnboardingTokens.profileTitle
         case .weight: OnboardingTokens.weightTitle
         case .height: OnboardingTokens.heightTitle
+        case .activity: OnboardingTokens.activityTitle
         }
     }
 
@@ -540,5 +588,10 @@ private struct OptionDot: View {
 
 #Preview("Height") {
     OnboardingView(step: .height)
+        .levelaTheme()
+}
+
+#Preview("Activity") {
+    OnboardingView(step: .activity)
         .levelaTheme()
 }

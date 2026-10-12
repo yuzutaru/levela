@@ -31,6 +31,11 @@ public final class OnboardingViewModel {
 
     public var hasSex: Bool { sex != nil }
 
+    /// The chosen activity level (card title), or nil until one is selected.
+    public private(set) var activityLevel: String?
+
+    public var hasActivity: Bool { activityLevel != nil }
+
     public init() {}
 
     /// Creates a view model positioned at `step`. Internal: for previews/tests.
@@ -79,6 +84,11 @@ public final class OnboardingViewModel {
     /// Selects a biological-sex option; ignores unknown options.
     public func selectSex(_ option: String) {
         if OnboardingTokens.sexOptions.contains(option) { sex = option }
+    }
+
+    /// Selects an activity-level card by title; ignores unknown titles.
+    public func selectActivity(_ level: String) {
+        if OnboardingTokens.activityLevels.contains(where: { $0.title == level }) { activityLevel = level }
     }
 
     /// Sets the age in years.

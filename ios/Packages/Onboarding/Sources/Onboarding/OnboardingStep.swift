@@ -11,4 +11,5 @@ public enum OnboardingStep: String, CaseIterable, Hashable, Sendable {
     case profile
     case weight
     case height
+    case activity
 }

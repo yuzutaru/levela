@@ -7,8 +7,8 @@ import SwiftUI
 /// `OnboardingTokens`. Do not hand-edit: change the contract and run
 /// `scripts/verify_onboarding_parity.sh`.
 public enum OnboardingTokens {
-    // Flow — steps: welcome, goal, profile, weight, height
-    public static let steps: [OnboardingStep] = [.welcome, .goal, .profile, .weight, .height]
+    // Flow — steps: welcome, goal, profile, weight, height, activity
+    public static let steps: [OnboardingStep] = [.welcome, .goal, .profile, .weight, .height, .activity]
 
     // Copy
     public static let welcomeTitle = "Start your Fitness Journey"
@@ -19,6 +19,7 @@ public enum OnboardingTokens {
     public static let sexTitle = "Biological sex"
     public static let weightTitle = "What is your weight?"
     public static let heightTitle = "What is your height?"
+    public static let activityTitle = "What is your activity level?"
     public static let start = "Let's start"
     public static let next = "Next"
     public static let back = "Back"
@@ -36,6 +37,15 @@ public enum OnboardingTokens {
 
     // Biological sex — the single-select options.
     public static let sexOptions = ["Female", "Male", "Prefer not to say"]
+
+    // Activity level outside workouts — the single-select cards (title + subtitle).
+    public static let activityLevels: [GoalOption] = [
+        GoalOption(title: "Sedentary", subtitle: "Little to no daily activity or a desk job"),
+        GoalOption(title: "Lightly active", subtitle: "Light daily activity or walking 1–3 days a week"),
+        GoalOption(title: "Moderately active", subtitle: "Moderate daily activity 3–5 days a week"),
+        GoalOption(title: "Very active", subtitle: "Daily activity 6–7 days a week"),
+        GoalOption(title: "Extra active", subtitle: "A physical job plus daily activity"),
+    ]
 
     // Units
     public static let weightUnits = ["lb", "kg"]
