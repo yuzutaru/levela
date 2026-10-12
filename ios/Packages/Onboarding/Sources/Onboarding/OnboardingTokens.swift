@@ -7,13 +7,16 @@ import SwiftUI
 /// `OnboardingTokens`. Do not hand-edit: change the contract and run
 /// `scripts/verify_onboarding_parity.sh`.
 public enum OnboardingTokens {
-    // Flow — steps: welcome, goal, weight, height
-    public static let steps: [OnboardingStep] = [.welcome, .goal, .weight, .height]
+    // Flow — steps: welcome, goal, profile, weight, height
+    public static let steps: [OnboardingStep] = [.welcome, .goal, .profile, .weight, .height]
 
     // Copy
     public static let welcomeTitle = "Start your Fitness Journey"
     public static let welcomeSubtitle = "Start your fitness journey with our app's guidance and support"
     public static let goalTitle = "What is your goal?"
+    public static let profileTitle = "Tell us about you"
+    public static let ageTitle = "Age"
+    public static let sexTitle = "Biological sex"
     public static let weightTitle = "What is your weight?"
     public static let heightTitle = "What is your height?"
     public static let start = "Let's start"
@@ -31,11 +34,21 @@ public enum OnboardingTokens {
         GoalOption(title: "Train for an event", subtitle: "Prepare for a race or competition"),
     ]
 
+    // Biological sex — the single-select options.
+    public static let sexOptions = ["Female", "Male", "Prefer not to say"]
+
     // Units
     public static let weightUnits = ["lb", "kg"]
     public static let heightUnits = ["ft/in", "cm"]
     public static let defaultWeightUnit = "kg"
     public static let defaultHeightUnit = "cm"
+    public static let ageUnit = "years"
+
+    // Age (single unit: years). Range/default are in years.
+    public static let ageMin = 13
+    public static let ageMax = 100
+    public static let ageStep = 1
+    public static let ageDefault = 30
 
     // Values (see onboarding-contract.json). Ranges/defaults are per display unit.
     public static let weightKgMin = 30

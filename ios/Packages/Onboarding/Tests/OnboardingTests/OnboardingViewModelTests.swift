@@ -16,10 +16,10 @@ final class OnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isLastStep)
     }
 
-    func testExposesFourSteps() {
+    func testExposesFiveSteps() {
         let viewModel = OnboardingViewModel()
 
-        XCTAssertEqual(viewModel.stepCount, 4)
+        XCTAssertEqual(viewModel.stepCount, 5)
         XCTAssertEqual(viewModel.stepIndex, 0)
 
         viewModel.next()
@@ -27,12 +27,16 @@ final class OnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.stepIndex, 1)
 
         viewModel.next()
-        XCTAssertEqual(viewModel.step, .weight)
+        XCTAssertEqual(viewModel.step, .profile)
         XCTAssertEqual(viewModel.stepIndex, 2)
 
         viewModel.next()
-        XCTAssertEqual(viewModel.step, .height)
+        XCTAssertEqual(viewModel.step, .weight)
         XCTAssertEqual(viewModel.stepIndex, 3)
+
+        viewModel.next()
+        XCTAssertEqual(viewModel.step, .height)
+        XCTAssertEqual(viewModel.stepIndex, 4)
         XCTAssertTrue(viewModel.isLastStep)
 
         viewModel.back()
@@ -69,6 +73,29 @@ final class OnboardingViewModelTests: XCTestCase {
         // Unknown titles are ignored.
         viewModel.selectGoal("Not a goal")
         XCTAssertEqual(viewModel.goal, "Lose fat")
+    }
+
+    func testStartsProfileWithDefaultAgeAndNoSex() {
+        let viewModel = OnboardingViewModel()
+
+        XCTAssertEqual(viewModel.age, OnboardingTokens.ageDefault)
+        XCTAssertNil(viewModel.sex)
+        XCTAssertFalse(viewModel.hasSex)
+
+        viewModel.selectSex("Female")
+        XCTAssertEqual(viewModel.sex, "Female")
+        XCTAssertTrue(viewModel.hasSex)
+
+        // Selecting another option replaces the previous one (single-select).
+        viewModel.selectSex("Prefer not to say")
+        XCTAssertEqual(viewModel.sex, "Prefer not to say")
+
+        // Unknown options are ignored.
+        viewModel.selectSex("Not an option")
+        XCTAssertEqual(viewModel.sex, "Prefer not to say")
+
+        viewModel.setAge(42)
+        XCTAssertEqual(viewModel.age, 42)
     }
 
     func testSwitchingUnitPreservesTheMeasurement() {
