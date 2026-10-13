@@ -12,5 +12,6 @@ import com.yuzutaru.profile.local.ProfileDatabase
 class ProfileData(context: Context) {
     private val database = ProfileDatabase.build(context)
 
-    val userProfileRepository: UserProfileRepository = UserProfileRepository(database.userProfileDao())
+    val userProfileRepository: UserProfileRepository =
+        UserProfileRepositoryImpl(database.userProfileDao())
 }
