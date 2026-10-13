@@ -131,7 +131,7 @@
     "android": {
       "module": ":onboarding",
       "namespace": "com.yuzutaru.onboarding",
-      "tokensFile": "android/onboarding/src/main/java/com/yuzutaru/onboarding/OnboardingTokens.kt",
+      "tokensFile": "android/onboarding/src/main/java/com/yuzutaru/onboarding/presentation/model/OnboardingTokens.kt",
       "designColorFile": "android/design/src/main/java/com/yuzutaru/design/ui/theme/Color.kt"
     },
     "ios": {
