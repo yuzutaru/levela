@@ -1,8 +1,12 @@
 package com.yuzutaru.levela
 
 import android.app.Application
-import com.yuzutaru.profile.ProfileData
-import com.yuzutaru.profile.UserProfileRepository
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.yuzutaru.onboarding.presentation.OnboardingViewModel
+import com.yuzutaru.profile.data.ProfileData
+import com.yuzutaru.profile.data.repository.UserProfileRepository
 
 /**
  * Holds the app's long-lived singletons.
@@ -19,4 +23,16 @@ class AppContainer(application: Application) {
     private val profile by lazy { ProfileData(application) }
 
     val userProfileRepository: UserProfileRepository get() = profile.userProfileRepository
+
+    /** Persists the onboarding result; the `:app` implementation of the save. */
+    val completeOnboardingUseCase: CompleteOnboardingUseCase by lazy {
+        CompleteOnboardingUseCase(userProfileRepository)
+    }
+
+    /** Builds the onboarding view model, injecting the use case. */
+    val onboardingViewModelFactory: ViewModelProvider.Factory by lazy {
+        viewModelFactory {
+            initializer { OnboardingViewModel(completeOnboardingUseCase::invoke) }
+        }
+    }
 }

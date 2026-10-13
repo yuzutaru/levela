@@ -1,4 +1,4 @@
-package com.yuzutaru.onboarding
+package com.yuzutaru.onboarding.presentation.model
 
 /**
  * The steps of the post-guest onboarding flow.

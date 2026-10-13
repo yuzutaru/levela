@@ -1,7 +1,8 @@
-package com.yuzutaru.profile.local
+package com.yuzutaru.profile.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.yuzutaru.profile.data.model.SyncState
 
 /**
  * The locally persisted user profile — the first rows captured by the offline

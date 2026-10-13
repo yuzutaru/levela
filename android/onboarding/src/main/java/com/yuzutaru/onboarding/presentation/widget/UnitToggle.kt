@@ -1,4 +1,4 @@
-package com.yuzutaru.onboarding.widget
+package com.yuzutaru.onboarding.presentation.widget
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LevelaTheme
-import com.yuzutaru.onboarding.OnboardingTokens
+import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
 
 /**
  * A two-option pill toggle (e.g. `lb` / `kg`). The selected option is filled

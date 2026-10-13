@@ -12,13 +12,13 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yuzutaru.design.ui.theme.LevelaTheme
-import com.yuzutaru.onboarding.OnboardingView
+import com.yuzutaru.onboarding.presentation.OnboardingView
+import com.yuzutaru.onboarding.presentation.OnboardingViewModel
 import com.yuzutaru.splash.SplashView
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +30,10 @@ class MainActivity : ComponentActivity() {
                 // Splash is the launch screen; tapping "Continue as a guest"
                 // reports completion and crossfades into the onboarding flow.
                 var showOnboarding by remember { mutableStateOf(false) }
-                val scope = rememberCoroutineScope()
+                // The onboarding view model owns persistence (through its use
+                // case); the activity only decides which flow is on screen.
+                val onboardingViewModel: OnboardingViewModel =
+                    viewModel(factory = container.onboardingViewModelFactory)
                 AnimatedContent(
                     targetState = showOnboarding,
                     transitionSpec = {
@@ -39,13 +42,12 @@ class MainActivity : ComponentActivity() {
                     label = "splash-to-onboarding",
                 ) { isOnboarding ->
                     if (isOnboarding) {
-                        // Persist the collected profile offline; it stays guest-owned
-                        // until the user registers, then syncs under the account.
                         OnboardingView(
-                            onFinished = { profile ->
-                                scope.launch {
-                                    container.userProfileRepository.save(profile.toUserProfile())
-                                }
+                            viewModel = onboardingViewModel,
+                            onFinished = {
+                                // The profile is already persisted by the view
+                                // model; this is the hook for navigating on once
+                                // a home screen exists.
                             },
                         )
                     } else {
