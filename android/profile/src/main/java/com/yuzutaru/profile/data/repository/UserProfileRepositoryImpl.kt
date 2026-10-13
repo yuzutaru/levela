@@ -1,6 +1,6 @@
 package com.yuzutaru.profile.data.repository
 
-import com.yuzutaru.profile.data.local.SyncState
+import com.yuzutaru.profile.data.model.SyncState
 import com.yuzutaru.profile.data.local.UserProfileDao
 import com.yuzutaru.profile.data.local.UserProfileEntity
 import com.yuzutaru.profile.data.model.UserProfile
