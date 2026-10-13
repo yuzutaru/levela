@@ -1,4 +1,4 @@
-package com.yuzutaru.profile
+package com.yuzutaru.profile.data.model
 
 /**
  * The user's profile as the rest of the app sees it.

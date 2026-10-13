@@ -1,4 +1,4 @@
-package com.yuzutaru.onboarding
+package com.yuzutaru.onboarding.presentation
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -31,9 +31,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,11 +47,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LevelaTheme
-import com.yuzutaru.onboarding.widget.BackButton
-import com.yuzutaru.onboarding.widget.NextButton
-import com.yuzutaru.onboarding.widget.RulerPicker
-import com.yuzutaru.onboarding.widget.StepProgress
-import com.yuzutaru.onboarding.widget.ValueStep
+import com.yuzutaru.onboarding.presentation.model.OnboardingStep
+import com.yuzutaru.onboarding.R
+import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
+import com.yuzutaru.onboarding.presentation.widget.BackButton
+import com.yuzutaru.onboarding.presentation.widget.NextButton
+import com.yuzutaru.onboarding.presentation.widget.RulerPicker
+import com.yuzutaru.onboarding.presentation.widget.StepProgress
+import com.yuzutaru.onboarding.presentation.widget.ValueStep
 
 /**
  * The Levela post-guest onboarding flow (welcome, goal, profile, weight, height,
@@ -59,18 +64,22 @@ import com.yuzutaru.onboarding.widget.ValueStep
  * a welcome intro, a single-select goal step, a profile step (age + biological
  * sex), then weight and height — the latter pair each using a draggable ruler
  * picker and a unit toggle — and finally a single-select activity-level step.
- * The last step reports completion through [onFinished]. Mirrors the iOS
- * `OnboardingView`.
+ * Tapping Next on the last step asks [OnboardingViewModel.complete] to persist
+ * the collected profile through its use case; once saved, [onFinished] is called
+ * so the host can move on. Mirrors the iOS `OnboardingView`.
  *
- * @param onFinished called with the collected [OnboardingProfile] when the user
- *   taps Next on the final step.
+ * @param onFinished called once the profile has been saved on the final step.
  */
 @Composable
 fun OnboardingView(
+    viewModel: OnboardingViewModel,
     modifier: Modifier = Modifier,
-    onFinished: (OnboardingProfile) -> Unit = {},
-    viewModel: OnboardingViewModel = remember { OnboardingViewModel() },
+    onFinished: () -> Unit = {},
 ) {
+    val currentOnFinished by rememberUpdatedState(onFinished)
+    LaunchedEffect(viewModel.isComplete) {
+        if (viewModel.isComplete) currentOnFinished()
+    }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -144,7 +153,7 @@ fun OnboardingView(
                             backOnClicked = viewModel::back,
                             isLastStep = viewModel.isLastStep,
                             next = viewModel::next,
-                            onFinished = { onFinished(viewModel.profile()) }
+                            onFinished = viewModel::complete,
                         )
                     OnboardingStep.Height ->
                         ValueStep(
@@ -161,7 +170,7 @@ fun OnboardingView(
                             backOnClicked = viewModel::back,
                             isLastStep = viewModel.isLastStep,
                             next = viewModel::next,
-                            onFinished = { onFinished(viewModel.profile()) }
+                            onFinished = viewModel::complete,
                         )
                     OnboardingStep.Activity ->
                         ActivityStep(
@@ -171,7 +180,7 @@ fun OnboardingView(
                             backOnClicked = viewModel::back,
                             isLastStep = viewModel.isLastStep,
                             next = viewModel::next,
-                            onFinished = { onFinished(viewModel.profile()) },
+                            onFinished = viewModel::complete,
                         )
                 }
             }
@@ -541,7 +550,9 @@ private fun AgeCard(
 @Composable
 private fun OnboardingViewPreview() {
     LevelaTheme {
-        OnboardingView()
+        OnboardingView(
+            viewModel = remember { OnboardingViewModel {} },
+        )
     }
 }
 

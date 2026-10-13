@@ -1,10 +1,16 @@
-package com.yuzutaru.onboarding
+package com.yuzutaru.onboarding.presentation
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.yuzutaru.onboarding.data.OnboardingProfile
+import com.yuzutaru.onboarding.presentation.model.OnboardingStep
+import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
 import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 /**
  * Drives the post-guest onboarding flow.
@@ -12,8 +18,14 @@ import kotlin.math.roundToInt
  * The platform counterpart of the iOS `OnboardingViewModel`. The canonical value
  * is always stored in kg / cm; the UI shows the selected unit and conversions
  * are applied on read/write so switching units preserves the measurement.
+ *
+ * The view model owns completion: [complete] hands the collected profile to the
+ * injected save function and flips [isComplete] once it is saved. The host app
+ * supplies that function (persistence stays out of this module).
  */
-class OnboardingViewModel {
+class OnboardingViewModel(
+    private val completeOnboarding: suspend (OnboardingProfile) -> Unit,
+) : ViewModel() {
     var step: OnboardingStep by mutableStateOf(OnboardingTokens.steps.first())
         private set
 
@@ -48,6 +60,10 @@ class OnboardingViewModel {
         private set
 
     val hasActivity: Boolean get() = activityLevel != null
+
+    /** True once the collected profile has been saved through the use case. */
+    var isComplete: Boolean by mutableStateOf(false)
+        private set
 
     val stepIndex: Int get() = OnboardingTokens.steps.indexOf(step)
     val stepCount: Int get() = OnboardingTokens.steps.size
@@ -114,6 +130,18 @@ class OnboardingViewModel {
     /** Sets the height from the value shown in the current unit. */
     fun setHeightDisplay(value: Int) {
         heightCm = if (heightUnit == "cm") value else inToCm(value)
+    }
+
+    /**
+     * Persists the collected profile through [completeOnboarding], then flips
+     * [isComplete]. Re-entrant calls are ignored, so a double tap saves once.
+     */
+    fun complete() {
+        if (isComplete) return
+        viewModelScope.launch {
+            completeOnboarding(profile())
+            isComplete = true
+        }
     }
 
     /** The collected values, ready for the host app to persist. */

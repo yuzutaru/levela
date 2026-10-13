@@ -1,4 +1,4 @@
-package com.yuzutaru.onboarding
+package com.yuzutaru.onboarding.data
 
 /**
  * The values collected by the onboarding flow, handed to the host app when the

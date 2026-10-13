@@ -26,8 +26,12 @@ Five Gradle modules, declared in `settings.gradle.kts`:
   screen. The iOS counterpart is the `Persistence` package.
 - **`:onboarding`** — the post-guest onboarding flow (welcome, goal, profile,
   weight, height, activity) under
-  `onboarding/src/main/java/com/yuzutaru/onboarding/`. Depends on `:design`; the
-  iOS counterpart is the `Onboarding` Swift package.
+  `onboarding/src/main/java/com/yuzutaru/onboarding/`. Holds a lifecycle
+  `OnboardingViewModel` that persists through an injected
+  `suspend (OnboardingProfile) -> Unit` save function (the app supplies the
+  persistence-backed implementation, so this module never sees `:profile`).
+  Depends on `:design` and `lifecycle-viewmodel`; the iOS counterpart is the
+  `Onboarding` Swift package.
 - **`:splash`** — the launch welcome flow under
   `splash/src/main/java/com/yuzutaru/splash/`. Depends on `:design`; `:app`
   depends on it. The iOS counterpart is the `Splash` Swift package.
@@ -140,8 +144,10 @@ plus single-select biological-sex cards, Next disabled until a sex option is
 chosen), the weight and height steps (progress segments, unit toggle, a
 draggable snapping ruler picker on a tinted value card, back + Next buttons) and
 the activity step (single-select activity-level cards, Next disabled until a level
-is chosen) and reports completion through `onFinished`. The
-welcome illustration lives in
+is chosen). Tapping Next on the final step asks `OnboardingViewModel.complete()`,
+which persists the collected profile through its injected
+`suspend (OnboardingProfile) -> Unit` save function; once saved, the view reports
+completion through `onFinished`. The welcome illustration lives in
 `onboarding/src/main/res/drawable-*/welcome_illustration.png` (generated from
 `assets/onboarding/welcome-illustration.png`). Canonical values are stored
 in kg / cm; switching units converts them. It is shown from `:app` after the
@@ -156,9 +162,10 @@ Related docs: [`../ios/AGENTS.md`](../ios/AGENTS.md) (iOS counterpart),
 The offline-first store. `:profile` holds a Room database (`ProfileDatabase`) with
 one `user_profile` table and a `UserProfileRepository`. Room types never leave the
 module: `ProfileData` builds the database and hands out repositories, and `:app`
-owns one via `AppContainer`. `OnboardingView` reports completion through
-`onFinished(OnboardingProfile)`, which `:app` maps to a `UserProfile` row in
-`ProfileMapping.kt`.
+owns one via `AppContainer`. Onboarding completion is persisted by `:app`'s
+`CompleteOnboardingUseCase` — it maps `OnboardingProfile` to a `UserProfile` row
+(`ProfileMapping.kt`) and calls the repository. `MainActivity` builds the view
+model from `AppContainer.onboardingViewModelFactory` and only handles navigation.
 
 The schema is **sync-ready now, synced later**: every row carries a
 client-generated `id` (UUID), a nullable `accountUserId`, a `syncState` (a
