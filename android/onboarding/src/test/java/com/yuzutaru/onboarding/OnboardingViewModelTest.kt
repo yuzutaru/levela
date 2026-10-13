@@ -2,15 +2,20 @@ package com.yuzutaru.onboarding
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
 
 class OnboardingViewModelTest {
 
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     @Test
     fun startsOnWelcomeStepWithDefaultUnits() {
-        val viewModel = OnboardingViewModel()
+        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
 
         assertEquals(OnboardingStep.Welcome, viewModel.step)
         assertEquals(OnboardingTokens.defaultWeightUnit, viewModel.weightUnit)
@@ -23,7 +28,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun exposesTheFullFlow() {
-        val viewModel = OnboardingViewModel()
+        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
 
         assertEquals(6, viewModel.stepCount)
         assertEquals(0, viewModel.stepIndex)
@@ -55,7 +60,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun staysOnBounds() {
-        val viewModel = OnboardingViewModel()
+        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
 
         viewModel.back()
         assertEquals(OnboardingStep.Welcome, viewModel.step)
@@ -70,7 +75,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun selectsASingleGoal() {
-        val viewModel = OnboardingViewModel()
+        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
 
         assertFalse(viewModel.hasGoal)
         assertNull(viewModel.goal)
@@ -90,7 +95,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun startsProfileWithDefaultAgeAndNoSex() {
-        val viewModel = OnboardingViewModel()
+        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
 
         assertEquals(OnboardingTokens.ageDefault, viewModel.age)
         assertNull(viewModel.sex)
@@ -114,7 +119,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun switchingUnitPreservesTheMeasurement() {
-        val viewModel = OnboardingViewModel()
+        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
 
         viewModel.selectWeightUnit("lb")
         assertEquals(154, viewModel.weightDisplay)
@@ -139,7 +144,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun ignoresUnknownUnits() {
-        val viewModel = OnboardingViewModel()
+        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
 
         viewModel.selectWeightUnit("stone")
         assertEquals(OnboardingTokens.defaultWeightUnit, viewModel.weightUnit)
@@ -150,7 +155,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun setValueConvertsFromTheCurrentUnit() {
-        val viewModel = OnboardingViewModel()
+        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
 
         viewModel.selectWeightUnit("lb")
         viewModel.setWeightDisplay(200)
@@ -171,7 +176,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun profileCarriesTheCollectedValues() {
-        val viewModel = OnboardingViewModel()
+        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
         viewModel.selectGoal("Gain muscle")
         viewModel.setAge(42)
         viewModel.selectSex("Female")
@@ -189,5 +194,40 @@ class OnboardingViewModelTest {
         assertEquals("Very active", profile.activityLevel)
         assertEquals(OnboardingTokens.defaultWeightUnit, profile.weightUnit)
         assertEquals(OnboardingTokens.defaultHeightUnit, profile.heightUnit)
+    }
+
+    @Test
+    fun completeSavesTheCollectedProfileAndMarksComplete() {
+        var saved: OnboardingProfile? = null
+        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { saved = it })
+        viewModel.selectGoal("Gain muscle")
+        viewModel.setAge(42)
+        viewModel.selectSex("Female")
+        viewModel.selectActivity("Very active")
+
+        assertFalse(viewModel.isComplete)
+
+        viewModel.complete()
+
+        assertTrue(viewModel.isComplete)
+        assertNotNull(saved)
+        val profile = requireNotNull(saved)
+        assertEquals("Gain muscle", profile.goal)
+        assertEquals(42, profile.ageYears)
+        assertEquals("Female", profile.sex)
+        assertEquals("Very active", profile.activityLevel)
+    }
+
+    @Test
+    fun completeOnlySavesOnce() {
+        var count = 0
+        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { count++ })
+        viewModel.selectGoal("Lose fat")
+
+        viewModel.complete()
+        viewModel.complete()
+
+        assertEquals(1, count)
+        assertTrue(viewModel.isComplete)
     }
 }
