@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yuzutaru.onboarding.domain.CompleteOnboardingUseCase
 import com.yuzutaru.onboarding.data.OnboardingProfile
 import com.yuzutaru.onboarding.presentation.model.OnboardingStep
 import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
@@ -21,11 +20,11 @@ import kotlinx.coroutines.launch
  * are applied on read/write so switching units preserves the measurement.
  *
  * The view model owns completion: [complete] hands the collected profile to the
- * [completeOnboarding] use case and flips [isComplete] once it is saved. The host
- * app supplies the use case (persistence stays out of this module).
+ * injected save function and flips [isComplete] once it is saved. The host app
+ * supplies that function (persistence stays out of this module).
  */
 class OnboardingViewModel(
-    private val completeOnboarding: CompleteOnboardingUseCase,
+    private val completeOnboarding: suspend (OnboardingProfile) -> Unit,
 ) : ViewModel() {
     var step: OnboardingStep by mutableStateOf(OnboardingTokens.steps.first())
         private set

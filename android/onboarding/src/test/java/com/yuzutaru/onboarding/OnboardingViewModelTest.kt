@@ -1,7 +1,6 @@
 package com.yuzutaru.onboarding
 
 import com.yuzutaru.onboarding.data.OnboardingProfile
-import com.yuzutaru.onboarding.domain.CompleteOnboardingUseCase
 import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
 import com.yuzutaru.onboarding.presentation.OnboardingViewModel
 import com.yuzutaru.onboarding.presentation.cmToIn
@@ -25,7 +24,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun startsOnWelcomeStepWithDefaultUnits() {
-        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
+        val viewModel = OnboardingViewModel { }
 
         assertEquals(OnboardingStep.Welcome, viewModel.step)
         assertEquals(OnboardingTokens.defaultWeightUnit, viewModel.weightUnit)
@@ -38,7 +37,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun exposesTheFullFlow() {
-        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
+        val viewModel = OnboardingViewModel { }
 
         assertEquals(6, viewModel.stepCount)
         assertEquals(0, viewModel.stepIndex)
@@ -70,7 +69,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun staysOnBounds() {
-        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
+        val viewModel = OnboardingViewModel { }
 
         viewModel.back()
         assertEquals(OnboardingStep.Welcome, viewModel.step)
@@ -85,7 +84,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun selectsASingleGoal() {
-        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
+        val viewModel = OnboardingViewModel { }
 
         assertFalse(viewModel.hasGoal)
         assertNull(viewModel.goal)
@@ -105,7 +104,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun startsProfileWithDefaultAgeAndNoSex() {
-        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
+        val viewModel = OnboardingViewModel { }
 
         assertEquals(OnboardingTokens.ageDefault, viewModel.age)
         assertNull(viewModel.sex)
@@ -129,7 +128,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun switchingUnitPreservesTheMeasurement() {
-        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
+        val viewModel = OnboardingViewModel { }
 
         viewModel.selectWeightUnit("lb")
         assertEquals(154, viewModel.weightDisplay)
@@ -154,7 +153,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun ignoresUnknownUnits() {
-        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
+        val viewModel = OnboardingViewModel { }
 
         viewModel.selectWeightUnit("stone")
         assertEquals(OnboardingTokens.defaultWeightUnit, viewModel.weightUnit)
@@ -165,7 +164,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun setValueConvertsFromTheCurrentUnit() {
-        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
+        val viewModel = OnboardingViewModel { }
 
         viewModel.selectWeightUnit("lb")
         viewModel.setWeightDisplay(200)
@@ -186,7 +185,7 @@ class OnboardingViewModelTest {
 
     @Test
     fun profileCarriesTheCollectedValues() {
-        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { })
+        val viewModel = OnboardingViewModel { }
         viewModel.selectGoal("Gain muscle")
         viewModel.setAge(42)
         viewModel.selectSex("Female")
@@ -209,7 +208,7 @@ class OnboardingViewModelTest {
     @Test
     fun completeSavesTheCollectedProfileAndMarksComplete() {
         var saved: OnboardingProfile? = null
-        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { saved = it })
+        val viewModel = OnboardingViewModel { saved = it }
         viewModel.selectGoal("Gain muscle")
         viewModel.setAge(42)
         viewModel.selectSex("Female")
@@ -231,7 +230,7 @@ class OnboardingViewModelTest {
     @Test
     fun completeOnlySavesOnce() {
         var count = 0
-        val viewModel = OnboardingViewModel(CompleteOnboardingUseCase { count++ })
+        val viewModel = OnboardingViewModel { count++ }
         viewModel.selectGoal("Lose fat")
 
         viewModel.complete()

@@ -47,7 +47,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LevelaTheme
-import com.yuzutaru.onboarding.domain.CompleteOnboardingUseCase
 import com.yuzutaru.onboarding.presentation.model.OnboardingStep
 import com.yuzutaru.onboarding.R
 import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
@@ -552,7 +551,7 @@ private fun AgeCard(
 private fun OnboardingViewPreview() {
     LevelaTheme {
         OnboardingView(
-            viewModel = remember { OnboardingViewModel(CompleteOnboardingUseCase {}) },
+            viewModel = remember { OnboardingViewModel {} },
         )
     }
 }

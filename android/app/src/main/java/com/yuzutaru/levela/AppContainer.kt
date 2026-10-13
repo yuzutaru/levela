@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.yuzutaru.onboarding.domain.CompleteOnboardingUseCase
 import com.yuzutaru.onboarding.presentation.OnboardingViewModel
 import com.yuzutaru.profile.data.ProfileData
 import com.yuzutaru.profile.data.repository.UserProfileRepository
@@ -25,15 +24,15 @@ class AppContainer(application: Application) {
 
     val userProfileRepository: UserProfileRepository get() = profile.userProfileRepository
 
-    /** Persists the onboarding result; the `:app` adapter for the onboarding port. */
+    /** Persists the onboarding result; the `:app` implementation of the save. */
     val completeOnboardingUseCase: CompleteOnboardingUseCase by lazy {
-        OnboardingCompleter(userProfileRepository)
+        CompleteOnboardingUseCase(userProfileRepository)
     }
 
     /** Builds the onboarding view model, injecting the use case. */
     val onboardingViewModelFactory: ViewModelProvider.Factory by lazy {
         viewModelFactory {
-            initializer { OnboardingViewModel(completeOnboardingUseCase) }
+            initializer { OnboardingViewModel(completeOnboardingUseCase::invoke) }
         }
     }
 }
