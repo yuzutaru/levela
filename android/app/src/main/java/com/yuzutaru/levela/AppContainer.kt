@@ -4,10 +4,10 @@ import android.app.Application
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.yuzutaru.onboarding.CompleteOnboardingUseCase
-import com.yuzutaru.onboarding.OnboardingViewModel
-import com.yuzutaru.profile.ProfileData
-import com.yuzutaru.profile.UserProfileRepository
+import com.yuzutaru.onboarding.domain.CompleteOnboardingUseCase
+import com.yuzutaru.onboarding.presentation.OnboardingViewModel
+import com.yuzutaru.profile.data.ProfileData
+import com.yuzutaru.profile.data.repository.UserProfileRepository
 
 /**
  * Holds the app's long-lived singletons.

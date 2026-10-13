@@ -1,5 +1,6 @@
-package com.yuzutaru.profile
+package com.yuzutaru.profile.data.repository
 
+import com.yuzutaru.profile.data.model.UserProfile
 import kotlinx.coroutines.flow.Flow
 
 /** Reads and writes the local profile, mapping between the domain model and Room. */

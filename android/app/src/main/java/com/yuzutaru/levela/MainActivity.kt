@@ -16,8 +16,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yuzutaru.design.ui.theme.LevelaTheme
-import com.yuzutaru.onboarding.OnboardingView
-import com.yuzutaru.onboarding.OnboardingViewModel
+import com.yuzutaru.onboarding.presentation.OnboardingView
+import com.yuzutaru.onboarding.presentation.OnboardingViewModel
 import com.yuzutaru.splash.SplashView
 
 class MainActivity : ComponentActivity() {

@@ -1,4 +1,4 @@
-package com.yuzutaru.profile.local
+package com.yuzutaru.profile.data.local
 
 import android.content.Context
 import androidx.room.Database

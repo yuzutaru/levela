@@ -1,4 +1,4 @@
-package com.yuzutaru.onboarding
+package com.yuzutaru.onboarding.presentation
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -6,6 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yuzutaru.onboarding.domain.CompleteOnboardingUseCase
+import com.yuzutaru.onboarding.data.OnboardingProfile
+import com.yuzutaru.onboarding.presentation.model.OnboardingStep
+import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 

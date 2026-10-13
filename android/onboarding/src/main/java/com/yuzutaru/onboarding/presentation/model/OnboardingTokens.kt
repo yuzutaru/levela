@@ -1,4 +1,4 @@
-package com.yuzutaru.onboarding
+package com.yuzutaru.onboarding.presentation.model
 
 import androidx.compose.ui.graphics.Color
 import com.yuzutaru.design.ui.theme.Blue100

@@ -1,7 +1,9 @@
-package com.yuzutaru.profile
+package com.yuzutaru.profile.data
 
 import android.content.Context
-import com.yuzutaru.profile.local.ProfileDatabase
+import com.yuzutaru.profile.data.repository.UserProfileRepository
+import com.yuzutaru.profile.data.repository.UserProfileRepositoryImpl
+import com.yuzutaru.profile.data.local.ProfileDatabase
 
 /**
  * Builds the profile feature's data layer and exposes its repositories.

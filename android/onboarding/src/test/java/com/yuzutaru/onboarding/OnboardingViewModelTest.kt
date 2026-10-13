@@ -1,5 +1,15 @@
 package com.yuzutaru.onboarding
 
+import com.yuzutaru.onboarding.data.OnboardingProfile
+import com.yuzutaru.onboarding.domain.CompleteOnboardingUseCase
+import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
+import com.yuzutaru.onboarding.presentation.OnboardingViewModel
+import com.yuzutaru.onboarding.presentation.cmToIn
+import com.yuzutaru.onboarding.presentation.formatFtIn
+import com.yuzutaru.onboarding.presentation.inToCm
+import com.yuzutaru.onboarding.presentation.kgToLb
+import com.yuzutaru.onboarding.presentation.lbToKg
+import com.yuzutaru.onboarding.presentation.model.OnboardingStep
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull

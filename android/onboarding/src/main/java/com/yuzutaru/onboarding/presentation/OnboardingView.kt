@@ -1,4 +1,4 @@
-package com.yuzutaru.onboarding
+package com.yuzutaru.onboarding.presentation
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -47,11 +47,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LevelaTheme
-import com.yuzutaru.onboarding.widget.BackButton
-import com.yuzutaru.onboarding.widget.NextButton
-import com.yuzutaru.onboarding.widget.RulerPicker
-import com.yuzutaru.onboarding.widget.StepProgress
-import com.yuzutaru.onboarding.widget.ValueStep
+import com.yuzutaru.onboarding.domain.CompleteOnboardingUseCase
+import com.yuzutaru.onboarding.presentation.model.OnboardingStep
+import com.yuzutaru.onboarding.R
+import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
+import com.yuzutaru.onboarding.presentation.widget.BackButton
+import com.yuzutaru.onboarding.presentation.widget.NextButton
+import com.yuzutaru.onboarding.presentation.widget.RulerPicker
+import com.yuzutaru.onboarding.presentation.widget.StepProgress
+import com.yuzutaru.onboarding.presentation.widget.ValueStep
 
 /**
  * The Levela post-guest onboarding flow (welcome, goal, profile, weight, height,

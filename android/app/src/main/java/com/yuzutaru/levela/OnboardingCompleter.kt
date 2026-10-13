@@ -1,8 +1,8 @@
 package com.yuzutaru.levela
 
-import com.yuzutaru.onboarding.CompleteOnboardingUseCase
-import com.yuzutaru.onboarding.OnboardingProfile
-import com.yuzutaru.profile.UserProfileRepository
+import com.yuzutaru.onboarding.domain.CompleteOnboardingUseCase
+import com.yuzutaru.onboarding.data.OnboardingProfile
+import com.yuzutaru.profile.data.repository.UserProfileRepository
 
 /**
  * Completes onboarding by persisting the collected profile.

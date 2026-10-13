@@ -1,8 +1,9 @@
-package com.yuzutaru.profile
+package com.yuzutaru.profile.data.repository
 
-import com.yuzutaru.profile.local.SyncState
-import com.yuzutaru.profile.local.UserProfileDao
-import com.yuzutaru.profile.local.UserProfileEntity
+import com.yuzutaru.profile.data.local.SyncState
+import com.yuzutaru.profile.data.local.UserProfileDao
+import com.yuzutaru.profile.data.local.UserProfileEntity
+import com.yuzutaru.profile.data.model.UserProfile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

@@ -1,4 +1,6 @@
-package com.yuzutaru.onboarding
+package com.yuzutaru.onboarding.domain
+
+import com.yuzutaru.onboarding.data.OnboardingProfile
 
 /**
  * The port the onboarding flow uses to persist the collected profile.

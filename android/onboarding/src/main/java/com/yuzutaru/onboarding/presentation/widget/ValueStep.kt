@@ -1,4 +1,4 @@
-package com.yuzutaru.onboarding.widget
+package com.yuzutaru.onboarding.presentation.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -28,9 +28,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LevelaTheme
-import com.yuzutaru.onboarding.OnboardingStep
-import com.yuzutaru.onboarding.OnboardingTokens
-import com.yuzutaru.onboarding.formatFtIn
+import com.yuzutaru.onboarding.presentation.model.OnboardingStep
+import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
+import com.yuzutaru.onboarding.presentation.formatFtIn
 
 /** A weight or height step: title + unit toggle + value card + back / Next. */
 @Composable
