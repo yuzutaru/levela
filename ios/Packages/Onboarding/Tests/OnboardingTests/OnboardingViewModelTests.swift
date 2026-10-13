@@ -16,10 +16,10 @@ final class OnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isLastStep)
     }
 
-    func testExposesFiveSteps() {
+    func testExposesTheFullFlow() {
         let viewModel = OnboardingViewModel()
 
-        XCTAssertEqual(viewModel.stepCount, 5)
+        XCTAssertEqual(viewModel.stepCount, 6)
         XCTAssertEqual(viewModel.stepIndex, 0)
 
         viewModel.next()
@@ -37,10 +37,14 @@ final class OnboardingViewModelTests: XCTestCase {
         viewModel.next()
         XCTAssertEqual(viewModel.step, .height)
         XCTAssertEqual(viewModel.stepIndex, 4)
+
+        viewModel.next()
+        XCTAssertEqual(viewModel.step, .activity)
+        XCTAssertEqual(viewModel.stepIndex, 5)
         XCTAssertTrue(viewModel.isLastStep)
 
         viewModel.back()
-        XCTAssertEqual(viewModel.step, .weight)
+        XCTAssertEqual(viewModel.step, .height)
     }
 
     func testStaysOnBounds() {
@@ -53,7 +57,8 @@ final class OnboardingViewModelTests: XCTestCase {
         viewModel.next()
         viewModel.next()
         viewModel.next()
-        XCTAssertEqual(viewModel.step, .height)
+        viewModel.next()
+        XCTAssertEqual(viewModel.step, .activity)
     }
 
     func testSelectsASingleGoal() {
@@ -148,5 +153,26 @@ final class OnboardingViewModelTests: XCTestCase {
     func testConversionsRoundTrip() {
         XCTAssertEqual(OnboardingViewModel.lbToKg(OnboardingViewModel.kgToLb(70)), 70)
         XCTAssertEqual(OnboardingViewModel.inToCm(OnboardingViewModel.cmToIn(170)), 170)
+    }
+
+    func testMakeProfileCarriesTheCollectedValues() {
+        let viewModel = OnboardingViewModel()
+        viewModel.selectGoal("Gain muscle")
+        viewModel.setAge(42)
+        viewModel.selectSex("Female")
+        viewModel.setWeightDisplay(80)
+        viewModel.setHeightDisplay(180)
+        viewModel.selectActivity("Very active")
+
+        let profile = viewModel.makeProfile()
+
+        XCTAssertEqual(profile.goal, "Gain muscle")
+        XCTAssertEqual(profile.ageYears, 42)
+        XCTAssertEqual(profile.sex, "Female")
+        XCTAssertEqual(profile.weightKg, 80)
+        XCTAssertEqual(profile.heightCm, 180)
+        XCTAssertEqual(profile.activityLevel, "Very active")
+        XCTAssertEqual(profile.weightUnit, OnboardingTokens.defaultWeightUnit)
+        XCTAssertEqual(profile.heightUnit, OnboardingTokens.defaultHeightUnit)
     }
 }

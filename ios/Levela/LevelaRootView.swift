@@ -7,12 +7,15 @@
 
 import Design
 import Onboarding
+import Persistence
 import Splash
+import SwiftData
 import SwiftUI
 
 /// The app shell. Owns navigation and theming; feature modules provide destinations.
 struct LevelaRootView: View {
     @State private var showOnboarding = false
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         NavigationStack {
@@ -20,8 +23,10 @@ struct LevelaRootView: View {
             // reports completion and crossfades into the onboarding flow.
             ZStack {
                 if showOnboarding {
-                    OnboardingView()
-                        .transition(.opacity)
+                    OnboardingView { profile in
+                        persist(profile)
+                    }
+                    .transition(.opacity)
                 } else {
                     SplashView(icon: Image("SplashIcon")) {
                         showOnboarding = true
@@ -32,6 +37,13 @@ struct LevelaRootView: View {
             .animation(.easeOut(duration: 0.25), value: showOnboarding)
         }
         .levelaTheme()
+    }
+
+    /// Persists the collected profile offline; it stays guest-owned until the
+    /// user registers, then syncs under the account.
+    private func persist(_ profile: OnboardingProfile) {
+        let store = ProfileStore(context: modelContext)
+        try? store.save(UserProfile(onboarding: profile))
     }
 }
 

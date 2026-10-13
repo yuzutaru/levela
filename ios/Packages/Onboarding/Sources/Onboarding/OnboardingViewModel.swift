@@ -111,6 +111,20 @@ public final class OnboardingViewModel {
         heightCm = heightUnit == "cm" ? value : Self.inToCm(value)
     }
 
+    /// The collected values, ready for the host app to persist.
+    public func makeProfile() -> OnboardingProfile {
+        OnboardingProfile(
+            goal: goal,
+            ageYears: age,
+            sex: sex,
+            weightKg: Double(weightKg),
+            heightCm: Double(heightCm),
+            activityLevel: activityLevel,
+            weightUnit: weightUnit,
+            heightUnit: heightUnit
+        )
+    }
+
     static func kgToLb(_ kg: Int) -> Int { Int((Double(kg) * 2.20462).rounded()) }
     static func lbToKg(_ lb: Int) -> Int { Int((Double(lb) / 2.20462).rounded()) }
     static func cmToIn(_ cm: Int) -> Int { Int((Double(cm) / 2.54).rounded()) }

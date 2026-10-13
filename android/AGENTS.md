@@ -10,7 +10,7 @@ The iOS app lives in `../ios/` (SwiftUI + SwiftData) and is out of scope here.
 
 ## Module layout
 
-Four Gradle modules, declared in `settings.gradle.kts`:
+Five Gradle modules, declared in `settings.gradle.kts`:
 
 - **`:app`** — the application. Entry point is
   `app/src/main/java/com/yuzutaru/levela/MainActivity.kt`
@@ -19,16 +19,26 @@ Four Gradle modules, declared in `settings.gradle.kts`:
 - **`:design`** — a library module holding the shared design system under
   `design/src/main/java/com/yuzutaru/design/ui/theme/`. `:app` depends on
   `project(":design")`, so all theme primitives live here, not in `:app`.
+- **`:profile`** — the profile feature: the offline-first persistence layer (Room)
+  under `profile/src/main/java/com/yuzutaru/profile/`, holding the `user_profile`
+  table plus its DAO, database and repository. Room types never leave the module.
+  `:app` depends on it and owns it via `AppContainer`, and it will host the profile
+  screen. The iOS counterpart is the `Persistence` package.
 - **`:onboarding`** — the post-guest onboarding flow (welcome, goal, profile,
   weight, height, activity) under
-  `onboarding/src/main/java/com/yuzutaru/onboarding/`. Depends on `:design`; the
-  iOS counterpart is the `Onboarding` Swift package.
+  `onboarding/src/main/java/com/yuzutaru/onboarding/`. Holds a lifecycle
+  `OnboardingViewModel` that persists through an injected
+  `suspend (OnboardingProfile) -> Unit` save function (the app supplies the
+  persistence-backed implementation, so this module never sees `:profile`).
+  Depends on `:design` and `lifecycle-viewmodel`; the iOS counterpart is the
+  `Onboarding` Swift package.
 - **`:splash`** — the launch welcome flow under
   `splash/src/main/java/com/yuzutaru/splash/`. Depends on `:design`; `:app`
   depends on it. The iOS counterpart is the `Splash` Swift package.
 
-Namespaces: `com.yuzutaru.levela` (`:app`), `com.yuzutaru.design` (`:design`),
-`com.yuzutaru.onboarding` (`:onboarding`), `com.yuzutaru.splash` (`:splash`).
+Namespaces: `com.yuzutaru.levela` (`:app`), `com.yuzutaru.profile` (`:profile`),
+`com.yuzutaru.design` (`:design`), `com.yuzutaru.onboarding` (`:onboarding`),
+`com.yuzutaru.splash` (`:splash`).
 
 ## Build & run
 
@@ -37,6 +47,7 @@ cd android
 ./gradlew assembleDebug          # debug APK -> app/build/outputs/apk/debug/
 ./gradlew :app:test              # app unit tests
 ./gradlew :design:test           # design unit tests
+./gradlew :profile:test          # profile unit tests
 ./gradlew connectedAndroidTest   # instrumented tests (needs a device/emulator)
 ```
 
@@ -45,6 +56,8 @@ cd android
 - Versions are centralized in `gradle/libs.versions.toml`; reference dependencies
   via the `libs.*` accessors, not hardcoded strings.
 - AGP `9.x` uses the block form `compileSdk { version = release(37) }`.
+- `android.disallowKotlinSourceSets=false` is set in `gradle.properties`: AGP 9's
+  built-in Kotlin rejects the generated source dirs KSP registers for Room.
 
 ## Design system (`:design`)
 
@@ -131,8 +144,10 @@ plus single-select biological-sex cards, Next disabled until a sex option is
 chosen), the weight and height steps (progress segments, unit toggle, a
 draggable snapping ruler picker on a tinted value card, back + Next buttons) and
 the activity step (single-select activity-level cards, Next disabled until a level
-is chosen) and reports completion through `onFinished`. The
-welcome illustration lives in
+is chosen). Tapping Next on the final step asks `OnboardingViewModel.complete()`,
+which persists the collected profile through its injected
+`suspend (OnboardingProfile) -> Unit` save function; once saved, the view reports
+completion through `onFinished`. The welcome illustration lives in
 `onboarding/src/main/res/drawable-*/welcome_illustration.png` (generated from
 `assets/onboarding/welcome-illustration.png`). Canonical values are stored
 in kg / cm; switching units converts them. It is shown from `:app` after the
@@ -141,6 +156,27 @@ splash guest entry. See
 
 Related docs: [`../ios/AGENTS.md`](../ios/AGENTS.md) (iOS counterpart),
 [`../README.md`](../README.md) (project overview).
+
+## Persistence (`:profile`)
+
+The offline-first store. `:profile` holds a Room database (`ProfileDatabase`) with
+one `user_profile` table and a `UserProfileRepository`. Room types never leave the
+module: `ProfileData` builds the database and hands out repositories, and `:app`
+owns one via `AppContainer`. Onboarding completion is persisted by `:app`'s
+`CompleteOnboardingUseCase` — it maps `OnboardingProfile` to a `UserProfile` row
+(`ProfileMapping.kt`) and calls the repository. `MainActivity` builds the view
+model from `AppContainer.onboardingViewModelFactory` and only handles navigation.
+
+The schema is **sync-ready now, synced later**: every row carries a
+client-generated `id` (UUID), a nullable `accountUserId`, a `syncState` (a
+`SyncState` enum), an `updatedAt` timestamp and a `deleted` tombstone. Onboarding
+rows are written guest-owned (`accountUserId = null`, `syncState = Pending`) with
+no network. When accounts land, registering re-parents the row
+(`UserProfileRepository.attachToAccount`) rather than copying it, and the same
+UUID upserts on the backend.
+
+- Room schema JSON is exported to `profile/schemas/`; bump the DB version and add a
+  `Migration` on schema changes — never a destructive fallback.
 
 ## Conventions
 
