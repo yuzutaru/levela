@@ -3,6 +3,7 @@ package com.yuzutaru.profile.data.local
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
+import com.yuzutaru.profile.data.model.SyncState
 import kotlinx.coroutines.flow.Flow
 
 /**
