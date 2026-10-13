@@ -1,8 +1,8 @@
 package com.yuzutaru.levela
 
 import android.app.Application
-import com.yuzutaru.data.LevelaData
-import com.yuzutaru.data.UserProfileRepository
+import com.yuzutaru.profile.ProfileData
+import com.yuzutaru.profile.UserProfileRepository
 
 /**
  * Holds the app's long-lived singletons.
@@ -16,7 +16,7 @@ class LevelaApplication : Application() {
 
 /** The app's dependency graph. Everything is lazy, so nothing is built until used. */
 class AppContainer(application: Application) {
-    private val data by lazy { LevelaData(application) }
+    private val profile by lazy { ProfileData(application) }
 
-    val userProfileRepository: UserProfileRepository get() = data.userProfileRepository
+    val userProfileRepository: UserProfileRepository get() = profile.userProfileRepository
 }

@@ -19,10 +19,11 @@ Five Gradle modules, declared in `settings.gradle.kts`:
 - **`:design`** — a library module holding the shared design system under
   `design/src/main/java/com/yuzutaru/design/ui/theme/`. `:app` depends on
   `project(":design")`, so all theme primitives live here, not in `:app`.
-- **`:data`** — the offline-first persistence layer (Room) under
-  `data/src/main/java/com/yuzutaru/data/`: the `user_profile` table plus its DAO,
-  database and repository. Room types never leave the module. `:app` depends on it
-  and owns it via `AppContainer`. The iOS counterpart is the `Persistence` package.
+- **`:profile`** — the profile feature: the offline-first persistence layer (Room)
+  under `profile/src/main/java/com/yuzutaru/profile/`, holding the `user_profile`
+  table plus its DAO, database and repository. Room types never leave the module.
+  `:app` depends on it and owns it via `AppContainer`, and it will host the profile
+  screen. The iOS counterpart is the `Persistence` package.
 - **`:onboarding`** — the post-guest onboarding flow (welcome, goal, profile,
   weight, height, activity) under
   `onboarding/src/main/java/com/yuzutaru/onboarding/`. Depends on `:design`; the
@@ -31,7 +32,7 @@ Five Gradle modules, declared in `settings.gradle.kts`:
   `splash/src/main/java/com/yuzutaru/splash/`. Depends on `:design`; `:app`
   depends on it. The iOS counterpart is the `Splash` Swift package.
 
-Namespaces: `com.yuzutaru.levela` (`:app`), `com.yuzutaru.data` (`:data`),
+Namespaces: `com.yuzutaru.levela` (`:app`), `com.yuzutaru.profile` (`:profile`),
 `com.yuzutaru.design` (`:design`), `com.yuzutaru.onboarding` (`:onboarding`),
 `com.yuzutaru.splash` (`:splash`).
 
@@ -42,7 +43,7 @@ cd android
 ./gradlew assembleDebug          # debug APK -> app/build/outputs/apk/debug/
 ./gradlew :app:test              # app unit tests
 ./gradlew :design:test           # design unit tests
-./gradlew :data:test             # data unit tests
+./gradlew :profile:test          # profile unit tests
 ./gradlew connectedAndroidTest   # instrumented tests (needs a device/emulator)
 ```
 
@@ -150,11 +151,11 @@ splash guest entry. See
 Related docs: [`../ios/AGENTS.md`](../ios/AGENTS.md) (iOS counterpart),
 [`../README.md`](../README.md) (project overview).
 
-## Persistence (`:data`)
+## Persistence (`:profile`)
 
-The offline-first store. `:data` holds a Room database (`LevelaDatabase`) with one
-`user_profile` table and a `UserProfileRepository`. Room types never leave the
-module: `LevelaData` builds the database and hands out repositories, and `:app`
+The offline-first store. `:profile` holds a Room database (`ProfileDatabase`) with
+one `user_profile` table and a `UserProfileRepository`. Room types never leave the
+module: `ProfileData` builds the database and hands out repositories, and `:app`
 owns one via `AppContainer`. `OnboardingView` reports completion through
 `onFinished(OnboardingProfile)`, which `:app` maps to a `UserProfile` row in
 `ProfileMapping.kt`.
@@ -167,7 +168,7 @@ no network. When accounts land, registering re-parents the row
 (`UserProfileRepository.attachToAccount`) rather than copying it, and the same
 UUID upserts on the backend.
 
-- Room schema JSON is exported to `data/schemas/`; bump the DB version and add a
+- Room schema JSON is exported to `profile/schemas/`; bump the DB version and add a
   `Migration` on schema changes — never a destructive fallback.
 
 ## Conventions

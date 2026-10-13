@@ -1,6 +1,6 @@
 package com.yuzutaru.levela
 
-import com.yuzutaru.data.UserProfile
+import com.yuzutaru.profile.UserProfile
 import com.yuzutaru.onboarding.OnboardingProfile
 import java.util.UUID
 

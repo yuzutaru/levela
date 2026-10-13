@@ -1,4 +1,4 @@
-package com.yuzutaru.data.local
+package com.yuzutaru.profile.local
 
 import androidx.room.Dao
 import androidx.room.Query

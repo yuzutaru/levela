@@ -1,4 +1,4 @@
-package com.yuzutaru.data.local
+package com.yuzutaru.profile.local
 
 /**
  * How far a row has travelled through the (future) sync engine.
