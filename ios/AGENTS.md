@@ -26,7 +26,7 @@ of the Android Gradle modules.
   flow. Depends on `Design`. The Android counterpart is the `:splash` module.
 - **`Persistence`** — local Swift package at `Packages/Persistence`; the
   offline-first SwiftData store (`UserProfile` `@Model` + `ProfileStore`). No
-  dependencies. The Android counterpart is the `:data` module.
+  dependencies. The Android counterpart is the `:profile` module.
 
 Dependency direction: `Levela → Design`, `Levela → Onboarding`, `Levela → Splash`,
 `Levela → Persistence`, `Onboarding → Design`, `Splash → Design`. Features never
