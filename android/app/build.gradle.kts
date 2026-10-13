@@ -37,7 +37,7 @@ android {
 
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
-    implementation(project(":data"))
+    implementation(project(":profile"))
     implementation(project(":design"))
     implementation(project(":onboarding"))
     implementation(project(":splash"))

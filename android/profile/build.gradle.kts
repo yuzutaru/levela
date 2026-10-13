@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.yuzutaru.data"
+    namespace = "com.yuzutaru.profile"
     compileSdk {
         version = release(37)
     }

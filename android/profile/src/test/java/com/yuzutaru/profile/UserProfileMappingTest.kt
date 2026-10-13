@@ -1,6 +1,6 @@
-package com.yuzutaru.data
+package com.yuzutaru.profile
 
-import com.yuzutaru.data.local.SyncState
+import com.yuzutaru.profile.local.SyncState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
