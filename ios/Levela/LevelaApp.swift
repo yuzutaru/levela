@@ -6,7 +6,7 @@
 //
 
 import Design
-import Persistence
+import Profile
 import SwiftData
 import SwiftUI
 

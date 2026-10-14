@@ -10,10 +10,17 @@
 		AA00000000000000000000D5 /* Design in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000D3 /* Design */; };
 		AA00000000000000000000D6 /* Onboarding in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000D4 /* Onboarding */; };
 		AA00000000000000000000D9 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000D8 /* Splash */; };
-		AA00000000000000000000DC /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000DB /* Persistence */; };
+		AA00000000000000000000DC /* Profile in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000DB /* Profile */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		2109238F307EF3760028513A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 21F138ED306DD1AF00DCCF15 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 21F138F4306DD1AF00DCCF15;
+			remoteInfo = Levela;
+		};
 		21F13905306DD1B000DCCF15 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 21F138ED306DD1AF00DCCF15 /* Project object */;
@@ -31,12 +38,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2109238B307EF3760028513A /* SplashTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplashTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21F138F5306DD1AF00DCCF15 /* Levela.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Levela.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21F13904306DD1B000DCCF15 /* LevelaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LevelaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21F1390E306DD1B000DCCF15 /* LevelaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LevelaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		2109238C307EF3760028513A /* SplashTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SplashTests;
+			sourceTree = "<group>";
+		};
 		21F138F7306DD1AF00DCCF15 /* Levela */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Levela;
@@ -55,13 +68,18 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		21092388307EF3760028513A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
 		21F138F2306DD1AF00DCCF15 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
 				AA00000000000000000000D5 /* Design in Frameworks */,
 				AA00000000000000000000D6 /* Onboarding in Frameworks */,
 				AA00000000000000000000D9 /* Splash in Frameworks */,
-				AA00000000000000000000DC /* Persistence in Frameworks */,
+				AA00000000000000000000DC /* Profile in Frameworks */,
 			);
 		};
 		21F13901306DD1B000DCCF15 /* Frameworks */ = {
@@ -83,6 +101,7 @@
 				21F138F7306DD1AF00DCCF15 /* Levela */,
 				21F13907306DD1B000DCCF15 /* LevelaTests */,
 				21F13911306DD1B000DCCF15 /* LevelaUITests */,
+				2109238C307EF3760028513A /* SplashTests */,
 				21F138F6306DD1AF00DCCF15 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -93,6 +112,7 @@
 				21F138F5306DD1AF00DCCF15 /* Levela.app */,
 				21F13904306DD1B000DCCF15 /* LevelaTests.xctest */,
 				21F1390E306DD1B000DCCF15 /* LevelaUITests.xctest */,
+				2109238B307EF3760028513A /* SplashTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -100,6 +120,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2109238A307EF3760028513A /* SplashTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 21092391307EF3760028513A /* Build configuration list for PBXNativeTarget "SplashTests" */;
+			buildPhases = (
+				21092387307EF3760028513A /* Sources */,
+				21092388307EF3760028513A /* Frameworks */,
+				21092389307EF3760028513A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				21092390307EF3760028513A /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				2109238C307EF3760028513A /* SplashTests */,
+			);
+			name = SplashTests;
+			productName = SplashTests;
+			productReference = 2109238B307EF3760028513A /* SplashTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		21F138F4306DD1AF00DCCF15 /* Levela */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 21F13916306DD1B000DCCF15 /* Build configuration list for PBXNativeTarget "Levela" */;
@@ -118,7 +159,7 @@
 				AA00000000000000000000D3 /* Design */,
 				AA00000000000000000000D4 /* Onboarding */,
 				AA00000000000000000000D8 /* Splash */,
-				AA00000000000000000000DB /* Persistence */,
+				AA00000000000000000000DB /* Profile */,
 			);
 			productName = Levela;
 			productReference = 21F138F5306DD1AF00DCCF15 /* Levela.app */;
@@ -176,6 +217,10 @@
 				LastSwiftUpdateCheck = 2700;
 				LastUpgradeCheck = 2700;
 				TargetAttributes = {
+					2109238A307EF3760028513A = {
+						CreatedOnToolsVersion = 27.0;
+						TestTargetID = 21F138F4306DD1AF00DCCF15;
+					};
 					21F138F4306DD1AF00DCCF15 = {
 						CreatedOnToolsVersion = 27.0;
 					};
@@ -202,7 +247,7 @@
 				AA00000000000000000000D1 /* XCLocalSwiftPackageReference "Packages/Design" */,
 				AA00000000000000000000D2 /* XCLocalSwiftPackageReference "Packages/Onboarding" */,
 				AA00000000000000000000D7 /* XCLocalSwiftPackageReference "Packages/Splash" */,
-				AA00000000000000000000DA /* XCLocalSwiftPackageReference "Packages/Persistence" */,
+				AA00000000000000000000DA /* XCLocalSwiftPackageReference "Packages/Profile" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 21F138F6306DD1AF00DCCF15 /* Products */;
@@ -212,11 +257,17 @@
 				21F138F4306DD1AF00DCCF15 /* Levela */,
 				21F13903306DD1B000DCCF15 /* LevelaTests */,
 				21F1390D306DD1B000DCCF15 /* LevelaUITests */,
+				2109238A307EF3760028513A /* SplashTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		21092389307EF3760028513A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
 		21F138F3306DD1AF00DCCF15 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
@@ -235,6 +286,11 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		21092387307EF3760028513A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
 		21F138F1306DD1AF00DCCF15 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
@@ -253,6 +309,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		21092390307EF3760028513A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 21F138F4306DD1AF00DCCF15 /* Levela */;
+			targetProxy = 2109238F307EF3760028513A /* PBXContainerItemProxy */;
+		};
 		21F13906306DD1B000DCCF15 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 21F138F4306DD1AF00DCCF15 /* Levela */;
@@ -266,6 +327,50 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		21092392307EF3760028513A /* Debug configuration for PBXNativeTarget "SplashTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Y56R63B7F6;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yuzutaru.SplashTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Levela.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Levela";
+			};
+			name = Debug;
+		};
+		21092393307EF3760028513A /* Release configuration for PBXNativeTarget "SplashTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Y56R63B7F6;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yuzutaru.SplashTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Levela.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Levela";
+			};
+			name = Release;
+		};
 		21F13914306DD1B000DCCF15 /* Debug configuration for PBXProject "Levela" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -538,6 +643,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		21092391307EF3760028513A /* Build configuration list for PBXNativeTarget "SplashTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				21092392307EF3760028513A /* Debug configuration for PBXNativeTarget "SplashTests" */,
+				21092393307EF3760028513A /* Release configuration for PBXNativeTarget "SplashTests" */,
+			);
+			defaultConfigurationName = Release;
+		};
 		21F138F0306DD1AF00DCCF15 /* Build configuration list for PBXProject "Levela" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -585,9 +698,9 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/Splash;
 		};
-		AA00000000000000000000DA /* XCLocalSwiftPackageReference "Packages/Persistence" */ = {
+		AA00000000000000000000DA /* XCLocalSwiftPackageReference "Packages/Profile" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/Persistence;
+			relativePath = Packages/Profile;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -604,9 +717,9 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Splash;
 		};
-		AA00000000000000000000DB /* Persistence */ = {
+		AA00000000000000000000DB /* Profile */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Persistence;
+			productName = Profile;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

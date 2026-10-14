@@ -1,6 +1,6 @@
 import SwiftData
 import XCTest
-@testable import Persistence
+@testable import Profile
 
 @MainActor
 final class ProfileStoreTests: XCTestCase {

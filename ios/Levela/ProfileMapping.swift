@@ -5,7 +5,7 @@
 
 import Foundation
 import Onboarding
-import Persistence
+import Profile
 
 extension UserProfile {
     /// Builds a guest-owned profile (no account yet) from the collected
