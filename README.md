@@ -38,7 +38,7 @@ clone:
 ## Project layout
 
 - `android/` — Android application (Kotlin, Jetpack Compose). Modules: `:app`, `:profile`, `:design`, `:onboarding`, `:splash`.
-- `ios/` — iOS application (SwiftUI). Modules: `Levela` app + local packages `Design`, `Onboarding`, `Splash`, `Persistence`.
+- `ios/` — iOS application (SwiftUI). Modules: `Levela` app + local packages `Design`, `Onboarding`, `Splash`, `Profile`.
 - `assets/app-icon/` — master app icon + the contract that drives both platforms' icons.
 - `assets/splash/`, `assets/onboarding/` — shared flow contracts mirrored by both platforms.
 - `scripts/` — repo tooling, including `generate_icons.sh` and the parity verifiers.

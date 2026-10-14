@@ -7,7 +7,7 @@
 
 import Design
 import Onboarding
-import Persistence
+import Profile
 import Splash
 import SwiftData
 import SwiftUI
