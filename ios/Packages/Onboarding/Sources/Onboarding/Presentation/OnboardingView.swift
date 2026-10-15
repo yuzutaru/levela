@@ -136,8 +136,10 @@ public struct OnboardingView: View {
 
             ScrollView {
                 VStack(spacing: 12) {
-                    ForEach(OnboardingTokens.goals, id: \.title) { goal in
+                    ForEach(OnboardingTokens.goals.indices, id: \.self) { index in
+                        let goal = OnboardingTokens.goals[index]
                         OptionCard(
+                            id: OnboardingAccessibility.goalCard(index),
                             title: goal.title,
                             subtitle: goal.subtitle,
                             isSelected: viewModel.goal == goal.title
@@ -190,8 +192,10 @@ public struct OnboardingView: View {
 
             ScrollView {
                 VStack(spacing: 12) {
-                    ForEach(OnboardingTokens.sexOptions, id: \.self) { option in
+                    ForEach(OnboardingTokens.sexOptions.indices, id: \.self) { index in
+                        let option = OnboardingTokens.sexOptions[index]
                         OptionCard(
+                            id: OnboardingAccessibility.sexOption(index),
                             title: option,
                             subtitle: nil,
                             isSelected: viewModel.sex == option
@@ -229,8 +233,10 @@ public struct OnboardingView: View {
 
             ScrollView {
                 VStack(spacing: 12) {
-                    ForEach(OnboardingTokens.activityLevels, id: \.title) { level in
+                    ForEach(OnboardingTokens.activityLevels.indices, id: \.self) { index in
+                        let level = OnboardingTokens.activityLevels[index]
                         OptionCard(
+                            id: OnboardingAccessibility.activityCard(index),
                             title: level.title,
                             subtitle: level.subtitle,
                             isSelected: viewModel.activityLevel == level.title
@@ -392,6 +398,7 @@ private struct ValueCard: View {
             Text(displayText)
                 .font(LevelaTypography.displayMedium.bold())
                 .foregroundStyle(OnboardingTokens.value)
+                .accessibilityIdentifier(OnboardingAccessibility.value)
 
             RulerPicker(
                 value: value,
@@ -428,6 +435,7 @@ private struct AgeCard: View {
             Text("\(age)")
                 .font(LevelaTypography.displayMedium.bold())
                 .foregroundStyle(OnboardingTokens.value)
+                .accessibilityIdentifier(OnboardingAccessibility.value)
 
             RulerPicker(
                 value: age,
@@ -454,9 +462,22 @@ private struct AgeCard: View {
 /// text, so it needs a stable handle (for VoiceOver and for the UI tests);
 /// mirrors the Android `BackButtonTag` / `NextButtonTag`. Internal: the app and
 /// the tests, never the flow's public API.
+///
+/// The XCUITest UI tests (the app's `LevelaUITests`) repeat these strings — a UI
+/// test bundle runs out of process and cannot import this module — so keep the
+/// two in sync. The single-select cards are addressed by their position in the
+/// contract's list, not by copy.
 enum OnboardingAccessibility {
     static let back = "onboarding.back"
     static let next = "onboarding.next"
+    /// The big value on the age / weight / height cards.
+    static let value = "onboarding.value"
+
+    static func goalCard(_ index: Int) -> String { "onboarding.goal.\(index)" }
+    static func sexOption(_ index: Int) -> String { "onboarding.sex.\(index)" }
+    static func activityCard(_ index: Int) -> String { "onboarding.activity.\(index)" }
+    /// A unit-toggle option, keyed by its label (e.g. `lb`, `ft/in`).
+    static func unit(_ unit: String) -> String { "onboarding.unit.\(unit)" }
 }
 
 private struct BackButton: View {
@@ -513,8 +534,11 @@ private struct NextButton: View {
 }
 
 /// A single-select option card: a status dot on the left, then a title and an
-/// optional subtitle. Shared by the goal and profile steps.
+/// optional subtitle. Shared by the goal, profile and activity steps. `id` is
+/// the card's accessibility identifier (its own, since the merged title/subtitle
+/// label is not a stable handle).
 private struct OptionCard: View {
+    let id: String
     let title: String
     let subtitle: String?
     let isSelected: Bool
@@ -559,6 +583,7 @@ private struct OptionCard: View {
             )
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier(id)
     }
 }
 

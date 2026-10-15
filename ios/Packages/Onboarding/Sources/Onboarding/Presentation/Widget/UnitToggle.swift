@@ -37,6 +37,7 @@ public struct UnitToggle: View {
                         .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
+                .accessibilityIdentifier(OnboardingAccessibility.unit(unit))
             }
         }
         .padding(4)

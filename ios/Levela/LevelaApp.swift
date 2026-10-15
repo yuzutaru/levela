@@ -33,6 +33,7 @@ private struct AppBootstrapView: View {
                 .progressViewStyle(.circular)
                 .tint(.blue500)
                 .levelaTheme()
+                .task { await bootstrap() }
 
         case .failed(let message):
             ErrorView(message: message) {

@@ -133,7 +133,8 @@ button is tapped (the app then shows the onboarding flow). The Login /
 Register buttons are defined but hidden while accounts are deferred
 (offline-first), gated by `SplashTokens.showAuthActions`; the guest entry is a
 primary `Continue as a guest` button (`SplashTokens.showGuestButton`), with the
-old text link defined but hidden (`SplashTokens.showGuestLink`). See
+old text link defined but hidden (`SplashTokens.showGuestLink`). The buttons carry
+stable accessibility identifiers (`SplashAccessibility`) for the UI tests. See
 [`../assets/splash/README.md`](../assets/splash/README.md).
 
 ## Onboarding
@@ -161,13 +162,16 @@ are stored in kg / cm; switching units converts them. It is shown from
 [`../assets/onboarding/README.md`](../assets/onboarding/README.md).
 
 Tests: `Packages/Onboarding/Tests/OnboardingTests/` holds `OnboardingViewModelTests`
-(state/conversions) and `OnboardingViewTests` — SwiftUI **UI tests** that drive the
+(state/conversions) and `OnboardingViewTests` — in-process view tests that drive the
 real views (step gating, unit toggles, completion wiring) through
 [ViewInspector](https://github.com/nalexn/ViewInspector), a test-only package
-dependency. They mirror the Android `OnboardingViewTest`: each seeds a step via the
-internal `OnboardingView(step:onFinished:)` initializer — not the default entry
-point, whose `@State` is re-created on every headless inspection — and asserts
-against `OnboardingTokens`, never hardcoded copy. Run them from `Packages/Onboarding`:
+dependency. They run in the package's **unit** test bundle: ViewInspector inspects
+the live SwiftUI view tree, which only works same-process, so a UI-testing bundle
+cannot use it. Each test seeds a step via the internal
+`OnboardingView(step:onFinished:)` initializer — not the default entry point, whose
+`@State` is re-created on every headless inspection — and asserts against
+`OnboardingTokens`, never hardcoded copy. They mirror the Android
+`OnboardingViewTest`. Run them from `Packages/Onboarding`:
 
 ```sh
 xcodebuild test -scheme Onboarding -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
@@ -177,6 +181,20 @@ The same sources are mirrored to `OnboardingTests/` at the app level and wired i
 the `Levela` scheme (like `SplashTests` / `ProfileTests`), so
 `xcodebuild test -scheme Levela` also runs them hosted in the app. The mirror is a
 copy — keep both in sync.
+
+The flow is also covered end-to-end by `LevelaUITests/OnboardingUITests.swift`, a
+real XCUITest **UI-testing** bundle: it launches the app, enters through the splash
+guest button, walks all six steps and asserts the gating, the unit conversions
+(`70 kg → 154 lb`, `170 cm → 5'7"`) and the final Next. It drives the app by
+accessibility identifier — `splash.guest` and the `onboarding.*` handles from
+`OnboardingAccessibility` / `SplashAccessibility` — not by visible copy. A UI-test
+bundle runs out of process and cannot import the feature modules, so those
+identifier literals are repeated in the test; keep them in sync. Run it with:
+
+```sh
+xcodebuild test -scheme Levela -only-testing:LevelaUITests/OnboardingUITests \
+  -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
+```
 
 ## Profile (`Profile` package)
 
