@@ -450,6 +450,15 @@ private struct AgeCard: View {
     }
 }
 
+/// Accessibility identifiers for the flow's controls. The back button carries no
+/// text, so it needs a stable handle (for VoiceOver and for the UI tests);
+/// mirrors the Android `BackButtonTag` / `NextButtonTag`. Internal: the app and
+/// the tests, never the flow's public API.
+enum OnboardingAccessibility {
+    static let back = "onboarding.back"
+    static let next = "onboarding.next"
+}
+
 private struct BackButton: View {
     let action: () -> Void
 
@@ -463,6 +472,8 @@ private struct BackButton: View {
                 .overlay(Circle().stroke(Color.gray200, lineWidth: 1))
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(OnboardingTokens.back)
+        .accessibilityIdentifier(OnboardingAccessibility.back)
     }
 }
 
@@ -497,6 +508,7 @@ private struct NextButton: View {
         }
         .buttonStyle(.plain)
         .disabled(!enabled)
+        .accessibilityIdentifier(OnboardingAccessibility.next)
     }
 }
 
