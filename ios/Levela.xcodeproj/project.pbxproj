@@ -543,50 +543,6 @@
 			};
 			name = Release;
 		};
-		AA00000000000000000000EA /* Debug configuration for PBXNativeTarget "OnboardingTests" */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = Y56R63B7F6;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.yuzutaru.OnboardingTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Levela.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Levela";
-			};
-			name = Debug;
-		};
-		AA00000000000000000000EB /* Release configuration for PBXNativeTarget "OnboardingTests" */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = Y56R63B7F6;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.yuzutaru.OnboardingTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Levela.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Levela";
-			};
-			name = Release;
-		};
 		21F13914306DD1B000DCCF15 /* Debug configuration for PBXProject "Levela" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -856,6 +812,50 @@
 			};
 			name = Release;
 		};
+		AA00000000000000000000EA /* Debug configuration for PBXNativeTarget "OnboardingTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Y56R63B7F6;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yuzutaru.OnboardingTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Levela.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Levela";
+			};
+			name = Debug;
+		};
+		AA00000000000000000000EB /* Release configuration for PBXNativeTarget "OnboardingTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Y56R63B7F6;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yuzutaru.OnboardingTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Levela.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Levela";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -872,14 +872,6 @@
 			buildConfigurations = (
 				21E9A13F3080933700A002E7 /* Debug configuration for PBXNativeTarget "ProfileTests" */,
 				21E9A1403080933700A002E7 /* Release configuration for PBXNativeTarget "ProfileTests" */,
-			);
-			defaultConfigurationName = Release;
-		};
-		AA00000000000000000000EC /* Build configuration list for PBXNativeTarget "OnboardingTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AA00000000000000000000EA /* Debug configuration for PBXNativeTarget "OnboardingTests" */,
-				AA00000000000000000000EB /* Release configuration for PBXNativeTarget "OnboardingTests" */,
 			);
 			defaultConfigurationName = Release;
 		};
@@ -912,6 +904,14 @@
 			buildConfigurations = (
 				21F1391D306DD1B000DCCF15 /* Debug configuration for PBXNativeTarget "LevelaUITests" */,
 				21F1391E306DD1B000DCCF15 /* Release configuration for PBXNativeTarget "LevelaUITests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		AA00000000000000000000EC /* Build configuration list for PBXNativeTarget "OnboardingTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA00000000000000000000EA /* Debug configuration for PBXNativeTarget "OnboardingTests" */,
+				AA00000000000000000000EB /* Release configuration for PBXNativeTarget "OnboardingTests" */,
 			);
 			defaultConfigurationName = Release;
 		};
