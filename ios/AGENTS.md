@@ -16,8 +16,13 @@ packages**, so module boundaries are real compile boundaries — the iOS analogu
 of the Android Gradle modules.
 
 - **`Levela`** (app target) — the application shell.
-  - `Levela/LevelaApp.swift` — `@main` entry; registers fonts, shows `LevelaRootView`.
+  - `Levela/LevelaApp.swift` — `@main` entry; registers fonts, builds the
+    `AppContainer`, shows `LevelaRootView`.
   - `Levela/LevelaRootView.swift` — owns the `NavigationStack`, applies `.levelaTheme()`.
+  - `Levela/AppContainer.swift` — the app's dependency graph (holds `ProfileData`
+    and the use cases).
+  - `Levela/CompleteOnboardingUseCase.swift` + `Levela/ProfileMapping.swift` — the
+    app-side use case that maps `OnboardingProfile` → `UserProfile` and saves it.
   - Links the local packages.
 - **`Design`** — local Swift package at `Packages/Design`; the shared design system.
 - **`Onboarding`** — local Swift package at `Packages/Onboarding`; the onboarding
@@ -25,8 +30,9 @@ of the Android Gradle modules.
 - **`Splash`** — local Swift package at `Packages/Splash`; the launch welcome
   flow. Depends on `Design`. The Android counterpart is the `:splash` module.
 - **`Profile`** — local Swift package at `Packages/Profile`; the offline-first
-  SwiftData store (`UserProfile` `@Model` + `ProfileStore`). No dependencies. The
-  Android counterpart is the `:profile` module.
+  SwiftData store (a `UserProfileEntity` `@Model` behind a `UserProfileDao`, a
+  `UserProfileRepository` and `ProfileData`). No dependencies. The Android
+  counterpart is the `:profile` module.
 
 Dependency direction: `Levela → Design`, `Levela → Onboarding`, `Levela → Splash`,
 `Levela → Profile`, `Onboarding → Design`, `Splash → Design`. Features never
@@ -156,22 +162,30 @@ are stored in kg / cm; switching units converts them. It is shown from
 
 ## Profile (`Profile` package)
 
-The offline-first store. `Profile` holds a SwiftData `UserProfile` `@Model`
-and a `ProfileStore` (over a `ModelContext`). `LevelaApp` creates the container
-with `.modelContainer(for: UserProfile.self)`; `LevelaRootView` reads it from the
-environment and, when onboarding finishes, saves
-`UserProfile(onboarding:)` (defined in `Levela/ProfileMapping.swift`).
+The offline-first store, layered like Android's `:profile` so SwiftData types
+never leave the module. `Profile` holds a `UserProfileEntity` `@Model` (carrying
+the sync envelope), a `UserProfileDao` that owns the raw `ModelContext`
+operations, a `UserProfileRepository` (protocol) + `UserProfileRepositoryImpl`
+that map between the entity and the public domain `UserProfile` struct, and
+`ProfileData` — which builds the `ModelContainer` and hands out repositories. The
+app builds a `ProfileData` inside its `AppContainer` (`Levela/AppContainer.swift`);
+`LevelaRootView`, when onboarding finishes, calls
+`CompleteOnboardingUseCase.invoke(_:)`, which maps the flow's values
+(`OnboardingProfile.toUserProfile()`, defined in `Levela/ProfileMapping.swift`)
+onto a `UserProfile` and saves it as a guest-owned, pending row.
 
 The schema is **sync-ready now, synced later**: every row carries a
 client-generated `id` (UUID), a nullable `accountUserId`, a `syncState` (a
 `SyncState` enum, backed by `syncStateRaw` so `#Predicate` can match it), an
 `updatedAt` timestamp and a `deleted` tombstone. Onboarding rows are written
 guest-owned (`accountUserId = nil`, `.pending`) with no network. When accounts
-land, registering re-parents the row (`ProfileStore.attachToAccount(id:accountUserId:)`)
-rather than copying it, and the same UUID upserts on the backend.
+land, registering re-parents the row
+(`UserProfileRepository.attachToAccount(id:accountUserId:)`) rather than copying
+it, and the same UUID upserts on the backend.
 
 Tests: `xcodebuild test -scheme Profile -destination 'platform=iOS Simulator,name=iPhone 18 Pro'`
-from `Packages/Profile` (in-memory `ModelContainer`).
+from `Packages/Profile` (in-memory `ModelContainer`; `UserProfileDaoTests`,
+`UserProfileRepositoryTests`, `UserProfileMappingTests`).
 
 Related docs: [`../android/AGENTS.md`](../android/AGENTS.md) (Android counterpart),
 [`../README.md`](../README.md) (project overview).
@@ -188,10 +202,10 @@ Related docs: [`../android/AGENTS.md`](../android/AGENTS.md) (Android counterpar
   container; inject via initializers / the SwiftUI environment.
 - App-level navigation lives in `LevelaRootView`. Features expose a route type
   (e.g. `OnboardingRoute`) so the app never reaches into feature internals.
-- The profile store lives in the `Profile` package (SwiftData). The app injects the
-  `ModelContainer` via `.modelContainer(for: UserProfile.self)` in `LevelaApp`;
-  features receive the `ProfileStore` / `ModelContext` from the environment rather
-  than building storage themselves.
+- The profile store lives in the `Profile` package (SwiftData). The app builds the
+  store through `ProfileData` inside its `AppContainer` and injects the resulting
+  `UserProfileRepository` / `CompleteOnboardingUseCase` into views; features never
+  build storage themselves, and the entity/DAO stay inside `Profile`.
 
 ## Knowledge graph (graphify)
 
