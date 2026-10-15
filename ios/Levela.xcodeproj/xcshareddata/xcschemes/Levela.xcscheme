@@ -58,6 +58,16 @@
                ReferencedContainer = "container:Levela.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "21E9A1373080933700A002E7"
+               BuildableName = "ProfileTests.xctest"
+               ReferencedContainer = "container:Levela.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
