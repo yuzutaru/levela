@@ -15,6 +15,15 @@ public final class ProfileData {
         userProfileRepository = ProfileData.makeRepository(for: container)
     }
 
+    /// Builds the persistent, on-disk store asynchronously off the main actor.
+    /// Use this at app launch to avoid blocking the main thread.
+    public static func open() async throws -> ProfileData {
+        let container = try await Task.detached(priority: .userInitiated) {
+            try ModelContainer(for: UserProfileEntity.self)
+        }.value
+        return await MainActor.run { ProfileData(container: container) }
+    }
+
     /// An in-memory store, for previews and tests.
     public static func inMemory() throws -> ProfileData {
         let container = try ModelContainer(
@@ -24,7 +33,9 @@ public final class ProfileData {
         return ProfileData(container: container)
     }
 
-    private init(container: ModelContainer) {
+    /// Creates a ProfileData instance from an already-opened ModelContainer.
+    /// Used by `open()` and tests.
+    public init(container: ModelContainer) {
         userProfileRepository = ProfileData.makeRepository(for: container)
     }
 

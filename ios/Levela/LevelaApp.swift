@@ -6,25 +6,58 @@
 //
 
 import Design
+import Profile
 import SwiftUI
 
 @main
 struct LevelaApp: App {
-    /// The app's dependency graph; built once at launch.
-    private let container: AppContainer
-
     init() {
-        // Fonts live in the Design package's resource bundle; register them so
-        // `Font.custom` can resolve their PostScript names.
         LevelaFonts.registerAll()
-        // The offline-first store for the user's profile. Rows stay guest-owned
-        // until the user registers, then sync under the account.
-        container = try! AppContainer()
     }
 
     var body: some Scene {
         WindowGroup {
+            AppBootstrapView()
+        }
+    }
+}
+
+/// Handles async store bootstrap and renders the appropriate UI.
+private struct AppBootstrapView: View {
+    @State private var state: AppState = .loading
+
+    var body: some View {
+        switch state {
+        case .loading:
+            ProgressView()
+                .progressViewStyle(.circular)
+                .tint(.blue500)
+                .levelaTheme()
+
+        case .failed(let message):
+            ErrorView(message: message) {
+                Task { await bootstrap() }
+            }
+            .levelaTheme()
+
+        case .ready(let container):
             LevelaRootView(completeOnboardingUseCase: container.completeOnboardingUseCase)
         }
     }
+
+    private func bootstrap() async {
+        do {
+            let profileData = try await ProfileData.open()
+            state = .ready(AppContainer(profileData: profileData))
+        } catch {
+            state = .failed(error.localizedDescription)
+        }
+    }
+}
+
+/// Launch-time state machine: loading → ready | failed.
+private enum AppState {
+    case loading
+    case ready(AppContainer)
+    case failed(String)
 }
