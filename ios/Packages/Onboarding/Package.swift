@@ -10,7 +10,9 @@ let package = Package(
         .library(name: "Onboarding", targets: ["Onboarding"])
     ],
     dependencies: [
-        .package(path: "../Design")
+        .package(path: "../Design"),
+        // Test-only: inspects the SwiftUI view tree from the unit tests.
+        .package(url: "https://github.com/nalexn/ViewInspector", from: "0.10.5")
     ],
     targets: [
         .target(
@@ -24,7 +26,10 @@ let package = Package(
         ),
         .testTarget(
             name: "OnboardingTests",
-            dependencies: ["Onboarding"]
+            dependencies: [
+                "Onboarding",
+                .product(name: "ViewInspector", package: "ViewInspector")
+            ]
         )
     ],
     swiftLanguageModes: [.v5]

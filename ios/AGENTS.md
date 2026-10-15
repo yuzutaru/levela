@@ -160,6 +160,24 @@ are stored in kg / cm; switching units converts them. It is shown from
 `LevelaRootView` after the splash guest entry. See
 [`../assets/onboarding/README.md`](../assets/onboarding/README.md).
 
+Tests: `Packages/Onboarding/Tests/OnboardingTests/` holds `OnboardingViewModelTests`
+(state/conversions) and `OnboardingViewTests` — SwiftUI **UI tests** that drive the
+real views (step gating, unit toggles, completion wiring) through
+[ViewInspector](https://github.com/nalexn/ViewInspector), a test-only package
+dependency. They mirror the Android `OnboardingViewTest`: each seeds a step via the
+internal `OnboardingView(step:onFinished:)` initializer — not the default entry
+point, whose `@State` is re-created on every headless inspection — and asserts
+against `OnboardingTokens`, never hardcoded copy. Run them from `Packages/Onboarding`:
+
+```sh
+xcodebuild test -scheme Onboarding -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
+```
+
+The same sources are mirrored to `OnboardingTests/` at the app level and wired into
+the `Levela` scheme (like `SplashTests` / `ProfileTests`), so
+`xcodebuild test -scheme Levela` also runs them hosted in the app. The mirror is a
+copy — keep both in sync.
+
 ## Profile (`Profile` package)
 
 The offline-first store, layered like Android's `:profile` so SwiftData types
