@@ -14,6 +14,9 @@ import SwiftUI
 /// The app shell. Owns navigation and theming; feature modules provide destinations.
 struct LevelaRootView: View {
     @State private var showOnboarding = false
+    /// Owns the onboarding flow's view model so it survives re-renders; injected
+    /// into `OnboardingView`.
+    @State private var onboardingViewModel = OnboardingViewModel()
 
     /// The app-side use case that persists a completed onboarding flow.
     let completeOnboardingUseCase: CompleteOnboardingUseCase
@@ -24,7 +27,7 @@ struct LevelaRootView: View {
             // reports completion and crossfades into the onboarding flow.
             ZStack {
                 if showOnboarding {
-                    OnboardingView { profile in
+                    OnboardingView(viewModel: onboardingViewModel) { profile in
                         persist(profile)
                     }
                     .transition(.opacity)

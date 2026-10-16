@@ -12,20 +12,25 @@ import SwiftUI
 /// `OnboardingView`.
 @MainActor
 public struct OnboardingView: View {
-    @State private var viewModel = OnboardingViewModel()
-    /// 1 when moving forward through the steps, -1 when going back; drives the
-    /// slide direction of the step transition.
-    @State private var direction: Int = 1
+    private let viewModel: OnboardingViewModel
     private let onFinished: (OnboardingProfile) -> Void
 
-    public init(onFinished: @escaping (OnboardingProfile) -> Void = { _ in }) {
+    /// Creates the flow with an injected view model. The app owns the view
+    /// model (held with `@State` in its own view) so it survives re-renders.
+    public init(viewModel: OnboardingViewModel,
+                onFinished: @escaping (OnboardingProfile) -> Void = { _ in }) {
+        self.viewModel = viewModel
         self.onFinished = onFinished
+    }
+
+    /// Owns a fresh view model starting at the welcome step.
+    public init(onFinished: @escaping (OnboardingProfile) -> Void = { _ in }) {
+        self.init(viewModel: OnboardingViewModel(), onFinished: onFinished)
     }
 
     /// Opens the view on a specific step. Internal: for previews/tests.
     init(step: OnboardingStep, onFinished: @escaping (OnboardingProfile) -> Void = { _ in }) {
-        _viewModel = State(initialValue: OnboardingViewModel(step: step))
-        self.onFinished = onFinished
+        self.init(viewModel: OnboardingViewModel(step: step), onFinished: onFinished)
     }
 
     public var body: some View {
@@ -63,7 +68,7 @@ public struct OnboardingView: View {
     /// leaves to the left. Going back mirrors it: in from the left, out to the
     /// right.
     private var stepTransition: AnyTransition {
-        direction > 0
+        viewModel.direction > 0
             ? .asymmetric(
                 insertion: .move(edge: .trailing).combined(with: .opacity),
                 removal: .move(edge: .leading).combined(with: .opacity)
@@ -74,17 +79,16 @@ public struct OnboardingView: View {
             )
     }
 
-    /// Advances a step, sliding forward. `direction` is committed before the
-    /// animated step change so the transition reads the correct direction.
+    /// Advances a step, sliding forward. The forward transition direction is
+    /// committed by `viewModel.next()` before the animated step change.
     private func goNext() {
-        direction = 1
         withAnimation(.easeInOut(duration: 0.3)) { viewModel.next() }
     }
 
     /// Returns a step, sliding back (previous step in from the left, current one
-    /// out to the right). `direction` is committed before the animated change.
+    /// out to the right). The backward transition direction is committed by
+    /// `viewModel.back()` before the animated step change.
     private func goBack() {
-        direction = -1
         withAnimation(.easeInOut(duration: 0.3)) { viewModel.back() }
     }
 

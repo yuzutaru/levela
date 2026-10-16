@@ -12,17 +12,15 @@ import XCTest
 /// hardcoded copy); the text-less back button is located by its accessibility
 /// identifier. Mirrors the Android `OnboardingViewTest`.
 ///
-/// The step is seeded rather than walked from the default entry point: with no
-/// hosting controller, SwiftUI re-creates a `@State` value declared with a
-/// property initializer on every access, so only the seeded view model survives
-/// between inspections. Seeding (rather than injecting a view model) is the
+/// The step is seeded rather than walked from the default entry point, the
 /// closest iOS equivalent of the Android test's `setContent`.
 ///
-/// ``OnboardingView`` holds its `@Observable` view model with `@State`, so View
-/// Inspector's default `inspect()` reads `@State` without a real storage
-/// location and emits a runtime warning. Hosting the view with
-/// `ViewHosting.host(view:)` installs `@State` before each `inspect()` call,
-/// which silences the warning and reads the live view model instance.
+/// ``OnboardingView`` takes its `@Observable` view model as an injected `let`
+/// (owned by the app, not held in `@State`). View Inspector's `inspect()`
+/// evaluates `body` on a detached struct copy, so with no `@State` to read
+/// SwiftUI emits no "Accessing State ... without being installed" runtime
+/// warning. `ViewHosting.host(view:)` still hosts the view so it renders
+/// (exercising `@Observable` change tracking) while it is inspected.
 @MainActor
 final class OnboardingViewTests: XCTestCase {
 

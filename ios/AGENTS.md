@@ -168,10 +168,12 @@ real views (step gating, unit toggles, completion wiring) through
 dependency. They run in the package's **unit** test bundle: ViewInspector inspects
 the live SwiftUI view tree, which only works same-process, so a UI-testing bundle
 cannot use it. Each test seeds a step via the internal
-`OnboardingView(step:onFinished:)` initializer — not the default entry point, whose
-`@State` is re-created on every headless inspection — and asserts against
-`OnboardingTokens`, never hardcoded copy. They mirror the Android
-`OnboardingViewTest`. Run them from `Packages/Onboarding`:
+`OnboardingView(step:onFinished:)` initializer and asserts against
+`OnboardingTokens`, never hardcoded copy. The view model is injected (a plain
+`let`, owned by the app), not held in `@State`, so ViewInspector's headless
+`inspect()` reads it without SwiftUI's "Accessing State ... without being
+installed" runtime warning. They mirror the Android `OnboardingViewTest`. Run
+them from `Packages/Onboarding`:
 
 ```sh
 xcodebuild test -scheme Onboarding -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
@@ -233,9 +235,12 @@ Related docs: [`../android/AGENTS.md`](../android/AGENTS.md) (Android counterpar
   (`scripts/install-hooks.sh`) rejects a commit that stages changes under both
   `android/` and `ios/`. Keep iOS and Android changes in separate commits.
 - Cross-module symbols must be `public` (Swift packages do not expose internals).
-- Feature view models are `@Observable @MainActor` and held by the view with
-  `@State` — the iOS counterpart to Android's Hilt + `ViewModel`. There is no DI
-  container; inject via initializers / the SwiftUI environment.
+- Feature view models are `@Observable @MainActor` — the iOS counterpart to
+  Android's Hilt + `ViewModel`. There is no DI container; the app owns them and
+  injects them via initializers / the SwiftUI environment (e.g. `OnboardingView`
+  takes its view model through `init(viewModel:)`). Avoiding `@State` keeps
+  ViewInspector's headless `inspect()` from emitting SwiftUI's "Accessing State
+  ... without being installed" runtime warning.
 - App-level navigation lives in `LevelaRootView`. Features expose a route type
   (e.g. `OnboardingRoute`) so the app never reaches into feature internals.
 - The profile store lives in the `Profile` package (SwiftData). The app builds the
