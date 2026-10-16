@@ -16,12 +16,14 @@ import XCTest
 final class OnboardingUITests: XCTestCase {
 
     /// Mirrors `OnboardingAccessibility` / `SplashAccessibility` in the feature
-    /// packages (which this bundle cannot import).
+    /// packages (which this bundle cannot import) plus the app-level
+    /// `MainMenuAccessibility`.
     private enum Identifier {
         static let guest = "splash.guest"
         static let next = "onboarding.next"
         static let back = "onboarding.back"
         static let value = "onboarding.value"
+        static let mainMenu = "mainmenu.title"
 
         static func goalCard(_ index: Int) -> String { "onboarding.goal.\(index)" }
         static func sexOption(_ index: Int) -> String { "onboarding.sex.\(index)" }
@@ -37,7 +39,8 @@ final class OnboardingUITests: XCTestCase {
 
     /// Walks all six steps the way a guest would: the splash guest entry, the
     /// gating on each single-select step, the weight/height unit toggles (which
-    /// must convert without losing the measurement) and the final Next.
+    /// must convert without losing the measurement) and the final Next, which
+    /// navigates on to the mock main menu.
     @MainActor
     func testWalksTheWholeFlowAndCompletes() throws {
         let app = launch()
@@ -71,17 +74,21 @@ final class OnboardingUITests: XCTestCase {
         tap(button(Identifier.unit("ft/in"), in: app))
         assertValue(in: app, equals: "5'7\"")
 
-        // Height -> activity: gates Next, then the final Next reports completion.
+        // Height -> activity: gates Next, then the final Next reports completion
+        // and the app navigates on to the mock main menu.
         tapNext(in: app)
         XCTAssertFalse(nextButton(in: app).isEnabled)
         tap(button(Identifier.activityCard(0), in: app))
         XCTAssertTrue(nextButton(in: app).isEnabled)
         tapNext(in: app)
 
-        // Completion is a callback, not a navigation: the flow stays on the
-        // activity step and the app keeps running.
+        // Completion navigates on: the mock main menu replaces the onboarding
+        // flow (the app keeps running).
         XCTAssertEqual(app.state, .runningForeground)
-        XCTAssertEqual(app.buttons.matching(identifier: Identifier.activityCard(0)).count, 1)
+        XCTAssertTrue(
+            app.staticTexts[Identifier.mainMenu].waitForExistence(timeout: 20),
+            "Expected the app to navigate to the mock main menu after onboarding"
+        )
     }
 
     // MARK: - Back navigation
