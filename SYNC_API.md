@@ -1,6 +1,6 @@
 # Levela sync API contract
 
-The contract the offline-first clients (`:profile` on Android, `Persistence` on iOS)
+The contract the offline-first clients (`:profile` on Android, `Profile` on iOS)
 will use to push guest data to the backend once a user registers. The client
 schema already carries every field this contract needs (`id`, `accountUserId`,
 `updatedAt`, `syncState`, `deleted`), so no migration is required to adopt it.

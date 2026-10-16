@@ -94,12 +94,14 @@ public struct SplashView: View {
         VStack(spacing: 0) {
             if SplashTokens.showAuthActions {
                 SplashButton(
+                    identifier: SplashAccessibility.login,
                     title: SplashTokens.login,
                     background: SplashTokens.loginBackground,
                     foreground: SplashTokens.loginText
                 ) {}
 
                 SplashButton(
+                    identifier: SplashAccessibility.register,
                     title: SplashTokens.register,
                     background: SplashTokens.registerBackground,
                     foreground: SplashTokens.registerText
@@ -109,6 +111,7 @@ public struct SplashView: View {
 
             if SplashTokens.showGuestButton {
                 SplashButton(
+                    identifier: SplashAccessibility.guest,
                     title: SplashTokens.guest,
                     background: SplashTokens.registerBackground,
                     foreground: SplashTokens.registerText,
@@ -130,7 +133,18 @@ public struct SplashView: View {
     }
 }
 
+/// Accessibility identifiers for the splash controls.
+///
+/// Internal: a stable handle for the app's XCUITest UI tests (which repeat the
+/// literal, since a UI test bundle runs out of process) and for VoiceOver.
+enum SplashAccessibility {
+    static let login = "splash.login"
+    static let register = "splash.register"
+    static let guest = "splash.guest"
+}
+
 private struct SplashButton: View {
+    let identifier: String
     let title: String
     let background: Color
     let foreground: Color
@@ -146,6 +160,7 @@ private struct SplashButton: View {
                 .background(background, in: Capsule())
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier(identifier)
     }
 }
 

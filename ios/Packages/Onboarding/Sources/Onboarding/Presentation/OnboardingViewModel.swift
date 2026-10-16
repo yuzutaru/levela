@@ -4,14 +4,18 @@ import Observation
 /// Drives the post-guest onboarding flow.
 ///
 /// `@Observable` + `@MainActor` is the iOS counterpart to the Android
-/// `OnboardingViewModel`; the owning view holds it with `@State`. The canonical
-/// value is always stored in kg / cm; the UI shows the selected unit and
-/// conversions are applied on read/write so switching units preserves the
-/// measurement.
+/// `OnboardingViewModel`; the app owns it and injects it into
+/// `OnboardingView` (rather than the view holding it in `@State`, which
+/// ViewInspector cannot read cleanly). The canonical value is always stored in
+/// kg / cm; the UI shows the selected unit and conversions are applied on
+/// read/write so switching units preserves the measurement.
 @Observable
 @MainActor
 public final class OnboardingViewModel {
     public private(set) var step: OnboardingStep = OnboardingTokens.steps.first ?? .weight
+    /// 1 when moving forward through the steps, -1 when going back; drives the
+    /// slide direction of the step transition.
+    public private(set) var direction: Int = 1
     public private(set) var weightUnit: String = OnboardingTokens.defaultWeightUnit
     public private(set) var heightUnit: String = OnboardingTokens.defaultHeightUnit
 
@@ -59,14 +63,18 @@ public final class OnboardingViewModel {
         heightUnit == "cm" ? "\(heightCm)" : Self.formatFtIn(Self.cmToIn(heightCm))
     }
 
-    /// Advances to the next step, staying on the last step.
+    /// Advances to the next step, staying on the last step. Commits the forward
+    /// transition direction before the step change so the slide reads correctly.
     public func next() {
+        direction = 1
         let index = stepIndex
         if index < stepCount - 1 { step = OnboardingTokens.steps[index + 1] }
     }
 
-    /// Goes back a step, staying on the first step.
+    /// Goes back a step, staying on the first step. Commits the backward
+    /// transition direction before the step change so the slide reads correctly.
     public func back() {
+        direction = -1
         let index = stepIndex
         if index > 0 { step = OnboardingTokens.steps[index - 1] }
     }
