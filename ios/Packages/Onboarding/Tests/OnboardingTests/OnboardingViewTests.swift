@@ -35,13 +35,13 @@ final class OnboardingViewTests: XCTestCase {
         defer { ViewHosting.expel() }
 
         let inspected = try view.inspect()
-        try inspected.find(text: OnboardingTokens.welcomeTitle)
-        try inspected.find(text: OnboardingTokens.welcomeSubtitle)
+        _ = try inspected.find(text: OnboardingTokens.welcomeTitle)
+        _ = try inspected.find(text: OnboardingTokens.welcomeSubtitle)
 
         try nextButton(inspected).tap()
 
         let inspectedAgain = try view.inspect()
-        try inspectedAgain.find(text: OnboardingTokens.goalTitle)
+        _ = try inspectedAgain.find(text: OnboardingTokens.goalTitle)
     }
 
     // MARK: - Goal
@@ -53,7 +53,7 @@ final class OnboardingViewTests: XCTestCase {
         defer { ViewHosting.expel() }
 
         let inspected = try view.inspect()
-        try inspected.find(text: OnboardingTokens.goalTitle)
+        _ = try inspected.find(text: OnboardingTokens.goalTitle)
         XCTAssertTrue(try nextButton(inspected).isDisabled())
 
         try inspected.find(button: OnboardingTokens.goals[0].title).tap()
@@ -71,7 +71,7 @@ final class OnboardingViewTests: XCTestCase {
         try backButton(inspected).tap()
 
         let inspectedAgain = try view.inspect()
-        try inspectedAgain.find(text: OnboardingTokens.welcomeTitle)
+        _ = try inspectedAgain.find(text: OnboardingTokens.welcomeTitle)
     }
 
     // MARK: - Profile
@@ -83,8 +83,8 @@ final class OnboardingViewTests: XCTestCase {
         defer { ViewHosting.expel() }
 
         let inspected = try view.inspect()
-        try inspected.find(text: OnboardingTokens.profileTitle)
-        try inspected.find(text: "\(OnboardingTokens.ageDefault)")
+        _ = try inspected.find(text: OnboardingTokens.profileTitle)
+        _ = try inspected.find(text: "\(OnboardingTokens.ageDefault)")
         XCTAssertTrue(try nextButton(inspected).isDisabled())
 
         try inspected.find(button: OnboardingTokens.sexOptions[0]).tap()
@@ -101,15 +101,15 @@ final class OnboardingViewTests: XCTestCase {
         defer { ViewHosting.expel() }
 
         let inspected = try view.inspect()
-        try inspected.find(text: OnboardingTokens.weightTitle)
-        try inspected.find(text: "\(OnboardingTokens.weightKgDefault)")
+        _ = try inspected.find(text: OnboardingTokens.weightTitle)
+        _ = try inspected.find(text: "\(OnboardingTokens.weightKgDefault)")
 
         // The unselected option is the only single match (the selected one is
         // also echoed under the ruler), so tapping it is unambiguous.
         try inspected.find(button: "lb").tap()
 
         let inspectedAgain = try view.inspect()
-        try inspectedAgain.find(text: "\(OnboardingTokens.weightLbDefault)")
+        _ = try inspectedAgain.find(text: "\(OnboardingTokens.weightLbDefault)")
     }
 
     func testHeightUnitToggleShowsFeetAndInches() throws {
@@ -119,13 +119,13 @@ final class OnboardingViewTests: XCTestCase {
         defer { ViewHosting.expel() }
 
         let inspected = try view.inspect()
-        try inspected.find(text: OnboardingTokens.heightTitle)
-        try inspected.find(text: "\(OnboardingTokens.heightCmDefault)")
+        _ = try inspected.find(text: OnboardingTokens.heightTitle)
+        _ = try inspected.find(text: "\(OnboardingTokens.heightCmDefault)")
 
         try inspected.find(button: "ft/in").tap()
 
         let inspectedAgain = try view.inspect()
-        try inspectedAgain.find(text: "5'7\"")
+        _ = try inspectedAgain.find(text: "5'7\"")
     }
 
     // MARK: - Activity & completion
@@ -142,7 +142,7 @@ final class OnboardingViewTests: XCTestCase {
         defer { ViewHosting.expel() }
 
         let inspected = try view.inspect()
-        try inspected.find(text: OnboardingTokens.activityTitle)
+        _ = try inspected.find(text: OnboardingTokens.activityTitle)
         XCTAssertTrue(try nextButton(inspected).isDisabled())
 
         try inspected.find(button: OnboardingTokens.activityLevels[0].title).tap()
@@ -167,34 +167,34 @@ final class OnboardingViewTests: XCTestCase {
 
         // Welcome -> Goal
         let inspected = try view.inspect()
-        try inspected.find(text: OnboardingTokens.welcomeTitle)
+        _ = try inspected.find(text: OnboardingTokens.welcomeTitle)
         try nextButton(inspected).tap()
 
         // Goal -> Profile
         let inspected2 = try view.inspect()
-        try inspected2.find(text: OnboardingTokens.goalTitle)
+        _ = try inspected2.find(text: OnboardingTokens.goalTitle)
         try inspected2.find(button: OnboardingTokens.goals[0].title).tap()
         try nextButton(try view.inspect()).tap()
 
         // Profile -> Weight
         let inspected3 = try view.inspect()
-        try inspected3.find(text: OnboardingTokens.profileTitle)
+        _ = try inspected3.find(text: OnboardingTokens.profileTitle)
         try inspected3.find(button: OnboardingTokens.sexOptions[0]).tap()
         try nextButton(try view.inspect()).tap()
 
         // Weight -> Height
         let inspected4 = try view.inspect()
-        try inspected4.find(text: OnboardingTokens.weightTitle)
+        _ = try inspected4.find(text: OnboardingTokens.weightTitle)
         try nextButton(try view.inspect()).tap()
 
         // Height -> Activity
         let inspected5 = try view.inspect()
-        try inspected5.find(text: OnboardingTokens.heightTitle)
+        _ = try inspected5.find(text: OnboardingTokens.heightTitle)
         try nextButton(try view.inspect()).tap()
 
         // Activity -> finish
         let inspected6 = try view.inspect()
-        try inspected6.find(text: OnboardingTokens.activityTitle)
+        _ = try inspected6.find(text: OnboardingTokens.activityTitle)
         XCTAssertTrue(try nextButton(inspected6).isDisabled())
         try inspected6.find(button: OnboardingTokens.activityLevels[0].title).tap()
         try nextButton(try view.inspect()).tap()

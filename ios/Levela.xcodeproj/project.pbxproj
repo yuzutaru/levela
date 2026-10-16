@@ -61,17 +61,50 @@
 		AA00000000000000000000E3 /* OnboardingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OnboardingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		215F40C13081AD3100BCCE36 /* Exceptions for "LevelaTests" folder in "LevelaTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				OnboardingTests/OnboardingViewModelTests.swift,
+				OnboardingTests/OnboardingViewTests.swift,
+				ProfileTests/UserProfileDaoTests.swift,
+				ProfileTests/UserProfileMappingTests.swift,
+				ProfileTests/UserProfileRepositoryTests.swift,
+				SplashTests/SplashStageTests.swift,
+				SplashTests/SplashTokensTests.swift,
+				SplashTests/SplashViewModelTests.swift,
+			);
+			target = 21F13903306DD1B000DCCF15 /* LevelaTests */;
+		};
+		215F40C23081AD3100BCCE36 /* Exceptions for "LevelaTests" folder in "SplashTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SplashTests/SplashStageTests.swift,
+				SplashTests/SplashTokensTests.swift,
+				SplashTests/SplashViewModelTests.swift,
+			);
+			target = 2109238A307EF3760028513A /* SplashTests */;
+		};
+		215F40C33081AD3100BCCE36 /* Exceptions for "LevelaTests" folder in "ProfileTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ProfileTests/UserProfileDaoTests.swift,
+				ProfileTests/UserProfileMappingTests.swift,
+				ProfileTests/UserProfileRepositoryTests.swift,
+			);
+			target = 21E9A1373080933700A002E7 /* ProfileTests */;
+		};
+		215F40C43081AD3100BCCE36 /* Exceptions for "LevelaTests" folder in "OnboardingTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				OnboardingTests/OnboardingViewModelTests.swift,
+				OnboardingTests/OnboardingViewTests.swift,
+			);
+			target = AA00000000000000000000E6 /* OnboardingTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		2109238C307EF3760028513A /* SplashTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = SplashTests;
-			sourceTree = "<group>";
-		};
-		21E9A1393080933700A002E7 /* ProfileTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ProfileTests;
-			sourceTree = "<group>";
-		};
 		21F138F7306DD1AF00DCCF15 /* Levela */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Levela;
@@ -79,17 +112,18 @@
 		};
 		21F13907306DD1B000DCCF15 /* LevelaTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				215F40C13081AD3100BCCE36 /* Exceptions for "LevelaTests" folder in "LevelaTests" target */,
+				215F40C23081AD3100BCCE36 /* Exceptions for "LevelaTests" folder in "SplashTests" target */,
+				215F40C33081AD3100BCCE36 /* Exceptions for "LevelaTests" folder in "ProfileTests" target */,
+				215F40C43081AD3100BCCE36 /* Exceptions for "LevelaTests" folder in "OnboardingTests" target */,
+			);
 			path = LevelaTests;
 			sourceTree = "<group>";
 		};
 		21F13911306DD1B000DCCF15 /* LevelaUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = LevelaUITests;
-			sourceTree = "<group>";
-		};
-		AA00000000000000000000E4 /* OnboardingTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = OnboardingTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -139,9 +173,6 @@
 				21F138F7306DD1AF00DCCF15 /* Levela */,
 				21F13907306DD1B000DCCF15 /* LevelaTests */,
 				21F13911306DD1B000DCCF15 /* LevelaUITests */,
-				2109238C307EF3760028513A /* SplashTests */,
-				21E9A1393080933700A002E7 /* ProfileTests */,
-				AA00000000000000000000E4 /* OnboardingTests */,
 				21F138F6306DD1AF00DCCF15 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -175,9 +206,6 @@
 			dependencies = (
 				21092390307EF3760028513A /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				2109238C307EF3760028513A /* SplashTests */,
-			);
 			name = SplashTests;
 			productName = SplashTests;
 			productReference = 2109238B307EF3760028513A /* SplashTests.xctest */;
@@ -195,9 +223,6 @@
 			);
 			dependencies = (
 				21E9A13D3080933700A002E7 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				21E9A1393080933700A002E7 /* ProfileTests */,
 			);
 			name = ProfileTests;
 			productName = ProfileTests;
@@ -282,9 +307,6 @@
 			);
 			dependencies = (
 				AA00000000000000000000E9 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				AA00000000000000000000E4 /* OnboardingTests */,
 			);
 			name = OnboardingTests;
 			packageProductDependencies = (
