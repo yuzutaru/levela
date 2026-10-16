@@ -35,4 +35,26 @@ final class SplashViewModelTests: XCTestCase {
         viewModel.advance()
         XCTAssertNil(viewModel.nextDelayMs)
     }
+
+    func testAutoFinishDefaultsToFalse() {
+        let viewModel = SplashViewModel()
+
+        XCTAssertFalse(viewModel.autoFinish)
+    }
+
+    func testAutoFinishCanBeEnabled() {
+        let viewModel = SplashViewModel(autoFinish: true)
+
+        XCTAssertTrue(viewModel.autoFinish)
+    }
+
+    func testAutoFinishStillAdvancesThroughStages() {
+        let viewModel = SplashViewModel(autoFinish: true)
+
+        viewModel.advance()
+        XCTAssertEqual(viewModel.stage, .welcome)
+
+        viewModel.advance()
+        XCTAssertEqual(viewModel.stage, .actions)
+    }
 }

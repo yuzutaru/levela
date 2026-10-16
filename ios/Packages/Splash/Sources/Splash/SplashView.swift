@@ -16,11 +16,12 @@ import SwiftUI
 /// - Parameter icon: the app icon, injected by the app.
 @MainActor
 public struct SplashView: View {
-    @State private var viewModel = SplashViewModel()
+    @State private var viewModel: SplashViewModel
     private let icon: Image
     private let onFinished: () -> Void
 
-    public init(icon: Image, onFinished: @escaping () -> Void = {}) {
+    public init(icon: Image, autoFinish: Bool = false, onFinished: @escaping () -> Void = {}) {
+        self._viewModel = State(wrappedValue: SplashViewModel(autoFinish: autoFinish))
         self.icon = icon
         self.onFinished = onFinished
     }
@@ -52,6 +53,12 @@ public struct SplashView: View {
         .task(id: viewModel.stage) {
             guard let delayMs = viewModel.nextDelayMs else { return }
             try? await Task.sleep(for: .milliseconds(delayMs))
+            // When autoFinish is true, skip the actions stage and report
+            // completion after the welcome stage.
+            if viewModel.autoFinish && viewModel.stage == .welcome {
+                onFinished()
+                return
+            }
             viewModel.advance()
         }
     }

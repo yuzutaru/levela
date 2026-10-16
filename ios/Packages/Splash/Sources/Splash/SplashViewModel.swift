@@ -10,10 +10,16 @@ import Observation
 public final class SplashViewModel {
     public private(set) var stage: SplashStage = .brand
 
+    /// When true, the splash skips the actions stage and auto-finishes after
+    /// the welcome stage. Used for returning users who already have a profile.
+    public let autoFinish: Bool
+
     /// True once the flow has reached its final stage.
     public var isFinished: Bool { stage == .actions }
 
-    public init() {}
+    public init(autoFinish: Bool = false) {
+        self.autoFinish = autoFinish
+    }
 
     /// Delay before advancing from the current stage, or `nil` when finished.
     public var nextDelayMs: Int? {

@@ -41,15 +41,20 @@ private struct AppBootstrapView: View {
             }
             .levelaTheme()
 
-        case .ready(let container):
-            LevelaRootView(completeOnboardingUseCase: container.completeOnboardingUseCase)
+        case .ready(let container, let hasProfile):
+            LevelaRootView(
+                completeOnboardingUseCase: container.completeOnboardingUseCase,
+                hasProfile: hasProfile
+            )
         }
     }
 
     private func bootstrap() async {
         do {
             let profileData = try await ProfileData.open()
-            state = .ready(AppContainer(profileData: profileData))
+            let container = AppContainer(profileData: profileData)
+            let hasProfile = try container.userProfileRepository.activeProfile() != nil
+            state = .ready(container, hasProfile: hasProfile)
         } catch {
             state = .failed(error.localizedDescription)
         }
@@ -59,6 +64,6 @@ private struct AppBootstrapView: View {
 /// Launch-time state machine: loading → ready | failed.
 private enum AppState {
     case loading
-    case ready(AppContainer)
+    case ready(AppContainer, hasProfile: Bool)
     case failed(String)
 }

@@ -24,15 +24,21 @@ struct LevelaRootView: View {
     /// The app-side use case that persists a completed onboarding flow.
     let completeOnboardingUseCase: CompleteOnboardingUseCase
 
+    /// Whether a profile already exists. Returning users skip onboarding and
+    /// land directly on the main menu after the splash.
+    let hasProfile: Bool
+
     var body: some View {
         NavigationStack {
-            // Splash is the launch screen; tapping "Continue as a guest"
-            // reports completion and crossfades into the onboarding flow.
+            // Splash is the launch screen. For new users, tapping "Continue as a
+            // guest" reports completion and crossfades into the onboarding flow.
+            // For returning users, the splash auto-finishes and lands directly
+            // on the main menu.
             ZStack {
                 switch flow {
                 case .splash:
-                    SplashView(icon: Image("SplashIcon")) {
-                        flow = .onboarding
+                    SplashView(icon: Image("SplashIcon"), autoFinish: hasProfile) {
+                        flow = hasProfile ? .mainMenu : .onboarding
                     }
                     .transition(.opacity)
                 case .onboarding:
@@ -63,6 +69,7 @@ struct LevelaRootView: View {
     LevelaRootView(
         completeOnboardingUseCase: CompleteOnboardingUseCase(
             repository: try! ProfileData.inMemory().userProfileRepository
-        )
+        ),
+        hasProfile: false
     )
 }
