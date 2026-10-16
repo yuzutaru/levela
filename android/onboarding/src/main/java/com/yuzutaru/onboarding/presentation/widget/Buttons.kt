@@ -27,11 +27,18 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.Gray200
 import com.yuzutaru.design.ui.theme.LevelaTheme
 import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
+
+/** Test tag for the primary next / start button. */
+const val NextButtonTag: String = "onboarding:next"
+
+/** Test tag for the circular back button (its chevron carries no text). */
+const val BackButtonTag: String = "onboarding:back"
 
 /** The primary pill button shared by the onboarding steps. */
 @Composable
@@ -44,6 +51,7 @@ internal fun NextButton(
 ) {
     Row(
         modifier = modifier
+            .testTag(NextButtonTag)
             .height(56.dp)
             .clip(RoundedCornerShape(percent = 50))
             .background(
@@ -77,6 +85,7 @@ internal fun BackButton(
 ) {
     Box(
         modifier = modifier
+            .testTag(BackButtonTag)
             .size(56.dp)
             .clip(CircleShape)
             .background(OnboardingTokens.Background)

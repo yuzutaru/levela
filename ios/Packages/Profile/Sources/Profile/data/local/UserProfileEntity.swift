@@ -6,35 +6,36 @@ import SwiftData
 ///
 /// The first four stored properties are the **sync envelope**: they exist now so
 /// that an account can be attached and rows pushed later without a schema
-/// migration. Mirrors the Android `UserProfileEntity`.
+/// migration. Mirrors the Android `UserProfileEntity`; like the Room entity it
+/// stays inside the module — the app only ever sees `UserProfile`.
 @Model
-public final class UserProfile {
+final class UserProfileEntity {
     /// Client-generated UUID; also the row's identity on the backend, so a
     /// re-pushed profile upserts rather than duplicates.
-    @Attribute(.unique) public var id: String
+    @Attribute(.unique) var id: String
 
     /// Server-issued user id, `nil` until the guest registers or logs in.
-    public var accountUserId: String?
+    var accountUserId: String?
 
-    public var goal: String?
-    public var ageYears: Int
-    public var sex: String?
-    public var weightKg: Double
-    public var heightCm: Double
-    public var activityLevel: String?
-    public var weightUnit: String
-    public var heightUnit: String
-    public var onboardingCompleted: Bool
-    public var createdAt: Date
-    public var updatedAt: Date
+    var goal: String?
+    var ageYears: Int
+    var sex: String?
+    var weightKg: Double
+    var heightCm: Double
+    var activityLevel: String?
+    var weightUnit: String
+    var heightUnit: String
+    var onboardingCompleted: Bool
+    var createdAt: Date
+    var updatedAt: Date
 
     /// Backing store for `syncState`; `#Predicate` can only match stored properties.
-    public var syncStateRaw: String
+    var syncStateRaw: String
 
     /// Soft-delete tombstone, so a deletion can be propagated later.
-    public var deleted: Bool
+    var deleted: Bool
 
-    public init(
+    init(
         id: String,
         accountUserId: String?,
         goal: String?,
@@ -69,7 +70,7 @@ public final class UserProfile {
     }
 
     /// Whether the row still needs pushing to the backend.
-    public var syncState: SyncState {
+    var syncState: SyncState {
         get { SyncState(rawValue: syncStateRaw) ?? .pending }
         set { syncStateRaw = newValue.rawValue }
     }
