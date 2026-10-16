@@ -35,4 +35,11 @@ class AppContainer(application: Application) {
             initializer { OnboardingViewModel(completeOnboardingUseCase::invoke) }
         }
     }
+
+    /** Builds the root view model, which owns the launch-time "has profile?" state. */
+    val rootViewModelFactory: ViewModelProvider.Factory by lazy {
+        viewModelFactory {
+            initializer { RootViewModel(userProfileRepository) }
+        }
+    }
 }
