@@ -6,7 +6,6 @@
 //
 
 import Design
-import Profile
 import SwiftUI
 
 @main
@@ -24,20 +23,20 @@ struct LevelaApp: App {
 
 /// Handles async store bootstrap and renders the appropriate UI.
 private struct AppBootstrapView: View {
-    @State private var state: AppState = .loading
+    @State private var viewModel = RootViewModel()
 
     var body: some View {
-        switch state {
+        switch viewModel.state {
         case .loading:
             ProgressView()
                 .progressViewStyle(.circular)
                 .tint(.blue500)
                 .levelaTheme()
-                .task { await bootstrap() }
+                .task { await viewModel.bootstrap() }
 
         case .failed(let message):
             ErrorView(message: message) {
-                Task { await bootstrap() }
+                Task { await viewModel.bootstrap() }
             }
             .levelaTheme()
 
@@ -48,22 +47,4 @@ private struct AppBootstrapView: View {
             )
         }
     }
-
-    private func bootstrap() async {
-        do {
-            let profileData = try await ProfileData.open()
-            let container = AppContainer(profileData: profileData)
-            let hasProfile = try container.userProfileRepository.activeProfile() != nil
-            state = .ready(container, hasProfile: hasProfile)
-        } catch {
-            state = .failed(error.localizedDescription)
-        }
-    }
-}
-
-/// Launch-time state machine: loading → ready | failed.
-private enum AppState {
-    case loading
-    case ready(AppContainer, hasProfile: Bool)
-    case failed(String)
 }
