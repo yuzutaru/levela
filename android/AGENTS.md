@@ -23,7 +23,7 @@ Five Gradle modules, declared in `settings.gradle.kts`:
   under `profile/src/main/java/com/yuzutaru/profile/`, holding the `user_profile`
   table plus its DAO, database and repository. Room types never leave the module.
   `:app` depends on it and owns it via `AppContainer`, and it will host the profile
-  screen. The iOS counterpart is the `Persistence` package.
+  screen. The iOS counterpart is the `Profile` package.
 - **`:onboarding`** — the post-guest onboarding flow (welcome, goal, profile,
   weight, height, activity) under
   `onboarding/src/main/java/com/yuzutaru/onboarding/`. Holds a lifecycle

@@ -2,18 +2,18 @@
 import PackageDescription
 
 let package = Package(
-    name: "Persistence",
+    name: "Profile",
     platforms: [
         .iOS(.v18)
     ],
     products: [
-        .library(name: "Persistence", targets: ["Persistence"])
+        .library(name: "Profile", targets: ["Profile"])
     ],
     targets: [
-        .target(name: "Persistence"),
+        .target(name: "Profile"),
         .testTarget(
-            name: "PersistenceTests",
-            dependencies: ["Persistence"]
+            name: "ProfileTests",
+            dependencies: ["Profile"]
         )
     ],
     swiftLanguageModes: [.v5]
