@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.yuzutaru.design.ui.theme.LevelaTheme
 
@@ -30,6 +31,7 @@ fun MainMenuScreen(modifier: Modifier = Modifier) {
             text = "MainMenu",
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.testTag("mainmenu.title"),
         )
     }
 }

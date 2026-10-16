@@ -42,4 +42,29 @@ class SplashViewModelTest {
         viewModel.advance()
         assertNull(viewModel.nextDelayMs())
     }
+
+    @Test
+    fun autoFinishDefaultsToFalse() {
+        val viewModel = SplashViewModel()
+
+        assertFalse(viewModel.autoFinish)
+    }
+
+    @Test
+    fun autoFinishCanBeEnabled() {
+        val viewModel = SplashViewModel(autoFinish = true)
+
+        assertTrue(viewModel.autoFinish)
+    }
+
+    @Test
+    fun autoFinishStillAdvancesThroughStages() {
+        val viewModel = SplashViewModel(autoFinish = true)
+
+        viewModel.advance()
+        assertEquals(SplashStage.Welcome, viewModel.stage)
+
+        viewModel.advance()
+        assertEquals(SplashStage.Actions, viewModel.stage)
+    }
 }

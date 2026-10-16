@@ -90,6 +90,42 @@ class SplashViewTest {
         assertFalse(finished)
     }
 
+    @Test
+    fun autoFinishSkipsActionsAndCompletesAfterWelcome() {
+        composeTestRule.mainClock.autoAdvance = false
+        var finished = false
+        setContent(autoFinish = true, onFinished = { finished = true })
+
+        // Starts on the brand stage.
+        composeTestRule.onNodeWithText(SplashTokens.Guest).assertDoesNotExist()
+
+        composeTestRule.mainClock.advanceTimeBy(SplashTokens.AutoAdvanceBrandMs + 1)
+        composeTestRule.onNodeWithText(SplashTokens.TitleLine1).assertIsDisplayed()
+        composeTestRule.onNodeWithText(SplashTokens.Guest).assertDoesNotExist()
+
+        // After the welcome stage, autoFinish completes without showing actions.
+        composeTestRule.mainClock.advanceTimeBy(SplashTokens.AutoAdvanceWelcomeMs + 1)
+        assertTrue(finished)
+        composeTestRule.onNodeWithText(SplashTokens.Guest).assertDoesNotExist()
+    }
+
+    @Test
+    fun autoFinishNeverShowsGuestButton() {
+        composeTestRule.mainClock.autoAdvance = false
+        setContent(autoFinish = true)
+
+        // Brand stage.
+        composeTestRule.onNodeWithText(SplashTokens.Guest).assertDoesNotExist()
+
+        // Welcome stage.
+        composeTestRule.mainClock.advanceTimeBy(SplashTokens.AutoAdvanceBrandMs + 1)
+        composeTestRule.onNodeWithText(SplashTokens.Guest).assertDoesNotExist()
+
+        // After welcome would have advanced to actions, but autoFinish completes.
+        composeTestRule.mainClock.advanceTimeBy(SplashTokens.AutoAdvanceWelcomeMs + 1)
+        composeTestRule.onNodeWithText(SplashTokens.Guest).assertDoesNotExist()
+    }
+
     private fun setContentAt(
         stage: SplashStage,
         onFinished: () -> Unit = {},
@@ -102,6 +138,7 @@ class SplashViewTest {
     private fun setContent(
         viewModel: SplashViewModel = SplashViewModel(),
         onFinished: () -> Unit = {},
+        autoFinish: Boolean = false,
     ) {
         composeTestRule.mainClock.autoAdvance = false
         composeTestRule.setContent {
@@ -109,6 +146,7 @@ class SplashViewTest {
                 SplashView(
                     icon = icon,
                     onFinished = onFinished,
+                    autoFinish = autoFinish,
                     viewModel = viewModel,
                 )
             }
