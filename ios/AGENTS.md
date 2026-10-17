@@ -156,12 +156,14 @@ once, for both platforms, by the shared contract in `../assets/onboarding/`:
 
 `OnboardingView` shows the welcome step (title, subtitle, hero illustration), the
 goal step (single-select goal cards — a status dot plus title and subtitle — where
-Next stays disabled until a goal is chosen), the profile step (an age ruler picker
-plus single-select biological-sex cards, Next disabled until a sex option is
-chosen), the weight and height steps (progress segments, unit toggle, a
-draggable snapping ruler picker on a tinted value card, back + Next buttons) and
-the activity step (single-select activity-level cards, Next disabled until a level
-is chosen). Tapping Next on the last step asks the view model to `complete()`,
+Next stays disabled until a goal is chosen), the gender step (a single-screen
+snapping carousel of icon-only gender cards, Continue disabled until a gender is
+chosen, plus a **Prefer to skip this** pill), the age step (the age ruler picker,
+Next always enabled), the weight and height steps (progress segments, unit
+toggle, a draggable snapping ruler picker on a tinted value card, back + Next
+buttons) and the activity step (single-select activity-level cards, Next disabled
+until a level is chosen). Tapping Next on the last step asks the view model to
+`complete()`,
 which persists the profile through its injected save function; once saved,
 `onFinished` is called and the app moves on. The
 welcome illustration is bundled from
@@ -196,7 +198,7 @@ copy — keep both in sync.
 
 The flow is also covered end-to-end by `LevelaUITests/OnboardingUITests.swift`, a
 real XCUITest **UI-testing** bundle: it launches the app, enters through the splash
-guest button, walks all six steps and asserts the gating, the unit conversions
+guest button, walks all seven steps and asserts the gating, the unit conversions
 (`70 kg → 154 lb`, `170 cm → 5'7"`) and the final Next. It drives the app by
 accessibility identifier — `splash.guest` and the `onboarding.*` handles from
 `OnboardingAccessibility` / `SplashAccessibility` — not by visible copy. A UI-test
