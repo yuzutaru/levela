@@ -2,6 +2,7 @@ package com.yuzutaru.levela
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -15,6 +16,7 @@ import javax.inject.Inject
  * "no profile yet" (route to onboarding) and `true` means "returning user"
  * (route to main menu).
  */
+@HiltViewModel
 class RootViewModel @Inject constructor(
     hasActiveProfileUseCase: HasActiveProfileUseCase,
 ) : ViewModel() {
