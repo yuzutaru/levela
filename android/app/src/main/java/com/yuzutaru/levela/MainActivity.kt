@@ -19,26 +19,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yuzutaru.design.ui.theme.LevelaTheme
 import com.yuzutaru.onboarding.presentation.OnboardingView
 import com.yuzutaru.onboarding.presentation.OnboardingViewModel
 import com.yuzutaru.splash.SplashView
+import dagger.hilt.android.AndroidEntryPoint
 
 /** The app's top-level screens, in the order the guest walks them. */
 private enum class LevelaFlow { Splash, Onboarding, MainMenu }
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val container = (application as LevelaApplication).container
         setContent {
             LevelaTheme {
                 // The root view model owns the launch-time "has profile?" state.
                 // Returning users skip onboarding and land on the main menu.
-                val rootViewModel: RootViewModel = viewModel(factory = container.rootViewModelFactory)
+                val rootViewModel: RootViewModel = hiltViewModel()
                 val hasProfile by rootViewModel.hasProfile.collectAsStateWithLifecycle()
 
                 val resolved = hasProfile
@@ -57,8 +58,7 @@ class MainActivity : ComponentActivity() {
                     var flow by remember { mutableStateOf(LevelaFlow.Splash) }
                     // The onboarding view model owns persistence (through its use
                     // case); the activity only decides which flow is on screen.
-                    val onboardingViewModel: OnboardingViewModel =
-                        viewModel(factory = container.onboardingViewModelFactory)
+                    val onboardingViewModel: OnboardingViewModel = hiltViewModel()
                     AnimatedContent(
                         targetState = flow,
                         transitionSpec = {
