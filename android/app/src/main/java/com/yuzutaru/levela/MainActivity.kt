@@ -12,7 +12,6 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,28 +19,30 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yuzutaru.design.ui.theme.LevelaTheme
+import com.yuzutaru.levela.presentation.MainMenuScreen
+import com.yuzutaru.levela.presentation.RootViewModel
 import com.yuzutaru.onboarding.presentation.OnboardingView
 import com.yuzutaru.onboarding.presentation.OnboardingViewModel
 import com.yuzutaru.splash.SplashView
+import dagger.hilt.android.AndroidEntryPoint
 
 /** The app's top-level screens, in the order the guest walks them. */
 private enum class LevelaFlow { Splash, Onboarding, MainMenu }
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val container = (application as LevelaApplication).container
         setContent {
             LevelaTheme {
-                // Resolve whether a profile already exists before rendering the
-                // flow. Returning users skip onboarding and land on the main menu.
-                var hasProfile by remember { mutableStateOf<Boolean?>(null) }
-                LaunchedEffect(Unit) {
-                    hasProfile = container.userProfileRepository.activeProfile() != null
-                }
+                // The root view model owns the launch-time "has profile?" state.
+                // Returning users skip onboarding and land on the main menu.
+                val rootViewModel: RootViewModel = hiltViewModel()
+                val hasProfile by rootViewModel.hasProfile.collectAsStateWithLifecycle()
 
                 val resolved = hasProfile
                 if (resolved == null) {
@@ -59,8 +60,7 @@ class MainActivity : ComponentActivity() {
                     var flow by remember { mutableStateOf(LevelaFlow.Splash) }
                     // The onboarding view model owns persistence (through its use
                     // case); the activity only decides which flow is on screen.
-                    val onboardingViewModel: OnboardingViewModel =
-                        viewModel(factory = container.onboardingViewModelFactory)
+                    val onboardingViewModel: OnboardingViewModel = hiltViewModel()
                     AnimatedContent(
                         targetState = flow,
                         transitionSpec = {

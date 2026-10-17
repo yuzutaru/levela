@@ -23,6 +23,10 @@ struct LevelaApp: App {
 }
 
 /// Handles async store bootstrap and renders the appropriate UI.
+///
+/// Builds the app's dependency graph (`AppContainer`, the counterpart of
+/// Android's Hilt singleton component) once the profile store is open, then
+/// hands it to `LevelaRootView`.
 private struct AppBootstrapView: View {
     @State private var state: AppState = .loading
 
@@ -41,10 +45,10 @@ private struct AppBootstrapView: View {
             }
             .levelaTheme()
 
-        case .ready(let container, let hasProfile):
+        case .ready(let container):
             LevelaRootView(
-                completeOnboardingUseCase: container.completeOnboardingUseCase,
-                hasProfile: hasProfile
+                rootViewModel: container.rootViewModel,
+                onboardingViewModel: container.onboardingViewModel
             )
         }
     }
@@ -52,9 +56,7 @@ private struct AppBootstrapView: View {
     private func bootstrap() async {
         do {
             let profileData = try await ProfileData.open()
-            let container = AppContainer(profileData: profileData)
-            let hasProfile = try container.userProfileRepository.activeProfile() != nil
-            state = .ready(container, hasProfile: hasProfile)
+            state = .ready(AppContainer(profileData: profileData))
         } catch {
             state = .failed(error.localizedDescription)
         }
@@ -64,6 +66,6 @@ private struct AppBootstrapView: View {
 /// Launch-time state machine: loading → ready | failed.
 private enum AppState {
     case loading
-    case ready(AppContainer, hasProfile: Bool)
+    case ready(AppContainer)
     case failed(String)
 }
