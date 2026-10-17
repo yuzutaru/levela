@@ -1,5 +1,6 @@
-package com.yuzutaru.levela
+package com.yuzutaru.levela.domain.usecase
 
+import com.yuzutaru.levela.domain.model.toUserProfile
 import com.yuzutaru.onboarding.data.OnboardingProfile
 import com.yuzutaru.profile.data.repository.UserProfileRepository
 

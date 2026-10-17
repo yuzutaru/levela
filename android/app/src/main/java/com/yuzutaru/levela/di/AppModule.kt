@@ -1,5 +1,7 @@
 package com.yuzutaru.levela
 
+import com.yuzutaru.levela.domain.usecase.CompleteOnboardingUseCase
+import com.yuzutaru.levela.domain.usecase.HasActiveProfileUseCase
 import com.yuzutaru.onboarding.data.OnboardingProfile
 import com.yuzutaru.profile.data.repository.UserProfileRepository
 import dagger.Module

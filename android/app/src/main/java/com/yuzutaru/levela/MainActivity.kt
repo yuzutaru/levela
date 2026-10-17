@@ -22,6 +22,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yuzutaru.design.ui.theme.LevelaTheme
+import com.yuzutaru.levela.presentation.MainMenuScreen
+import com.yuzutaru.levela.presentation.RootViewModel
 import com.yuzutaru.onboarding.presentation.OnboardingView
 import com.yuzutaru.onboarding.presentation.OnboardingViewModel
 import com.yuzutaru.splash.SplashView

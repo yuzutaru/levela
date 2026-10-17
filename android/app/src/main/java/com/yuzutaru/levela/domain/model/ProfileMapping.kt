@@ -1,4 +1,4 @@
-package com.yuzutaru.levela
+package com.yuzutaru.levela.domain.model
 
 import com.yuzutaru.profile.data.model.UserProfile
 import com.yuzutaru.onboarding.data.OnboardingProfile
