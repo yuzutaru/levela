@@ -1,5 +1,6 @@
 package com.yuzutaru.levela
 
+import com.yuzutaru.levela.domain.model.toUserProfile
 import com.yuzutaru.onboarding.data.OnboardingProfile
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

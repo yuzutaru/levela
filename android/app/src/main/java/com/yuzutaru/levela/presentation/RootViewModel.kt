@@ -1,7 +1,8 @@
-package com.yuzutaru.levela
+package com.yuzutaru.levela.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yuzutaru.levela.domain.usecase.HasActiveProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
