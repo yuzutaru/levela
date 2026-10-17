@@ -10,7 +10,9 @@ import androidx.compose.runtime.setValue
  * The platform counterpart of the iOS `SplashViewModel`; the owning view
  * schedules the timed advancement, the view model only owns the current stage.
  */
-class SplashViewModel {
+class SplashViewModel(
+    val autoFinish: Boolean = false,
+) {
     var stage: SplashStage by mutableStateOf(SplashStage.Brand)
         private set
 

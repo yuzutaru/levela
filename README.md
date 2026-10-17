@@ -37,8 +37,8 @@ clone:
 
 ## Project layout
 
-- `android/` — Android application (Kotlin, Jetpack Compose). Modules: `:app`, `:design`, `:onboarding`, `:splash`.
-- `ios/` — iOS application (SwiftUI). Modules: `Levela` app + local packages `Design`, `Onboarding`, `Splash`.
+- `android/` — Android application (Kotlin, Jetpack Compose). Modules: `:app`, `:profile`, `:design`, `:onboarding`, `:splash`.
+- `ios/` — iOS application (SwiftUI). Modules: `Levela` app + local packages `Design`, `Onboarding`, `Splash`, `Profile`.
 - `assets/app-icon/` — master app icon + the contract that drives both platforms' icons.
 - `assets/splash/`, `assets/onboarding/` — shared flow contracts mirrored by both platforms.
 - `scripts/` — repo tooling, including `generate_icons.sh` and the parity verifiers.
@@ -70,4 +70,5 @@ so both platforms match exactly.
 | [`android/AGENTS.md`](android/AGENTS.md) | Android module layout, design system, conventions. |
 | [`ios/AGENTS.md`](ios/AGENTS.md) | iOS module layout, design system, conventions. |
 | [`THEME_COLORS.md`](THEME_COLORS.md) | Icon-derived app color palette (light + dark). |
+| [`SYNC_API.md`](SYNC_API.md) | Offline-first sync API contract (login later → sync on register). |
 | [`assets/app-icon/README.md`](assets/app-icon/README.md) | App-icon contract, generator, and outputs. |

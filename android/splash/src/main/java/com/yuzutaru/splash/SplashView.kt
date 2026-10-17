@@ -59,18 +59,24 @@ fun SplashView(
     icon: Painter,
     modifier: Modifier = Modifier,
     onFinished: () -> Unit = {},
-    viewModel: SplashViewModel = remember { SplashViewModel() },
+    autoFinish: Boolean = false,
+    viewModel: SplashViewModel = remember(autoFinish) { SplashViewModel(autoFinish) },
 ) {
     val stage = viewModel.stage
     val currentOnFinished by rememberUpdatedState(onFinished)
 
     // Advance through the timed stages once and stop on the actions stage.
     // Completion is reported when the guest button is tapped, so the app can
-    // navigate to the onboarding flow.
+    // navigate to the onboarding flow. When autoFinish is true, the splash
+    // skips the actions stage and reports completion after the welcome stage.
     LaunchedEffect(viewModel) {
         while (true) {
             val delayMs = viewModel.nextDelayMs() ?: break
             delay(delayMs)
+            if (viewModel.autoFinish && viewModel.stage == SplashStage.Welcome) {
+                currentOnFinished()
+                break
+            }
             viewModel.advance()
         }
     }

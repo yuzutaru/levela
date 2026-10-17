@@ -16,11 +16,12 @@ import SwiftUI
 /// - Parameter icon: the app icon, injected by the app.
 @MainActor
 public struct SplashView: View {
-    @State private var viewModel = SplashViewModel()
+    @State private var viewModel: SplashViewModel
     private let icon: Image
     private let onFinished: () -> Void
 
-    public init(icon: Image, onFinished: @escaping () -> Void = {}) {
+    public init(icon: Image, autoFinish: Bool = false, onFinished: @escaping () -> Void = {}) {
+        self._viewModel = State(wrappedValue: SplashViewModel(autoFinish: autoFinish))
         self.icon = icon
         self.onFinished = onFinished
     }
@@ -52,6 +53,12 @@ public struct SplashView: View {
         .task(id: viewModel.stage) {
             guard let delayMs = viewModel.nextDelayMs else { return }
             try? await Task.sleep(for: .milliseconds(delayMs))
+            // When autoFinish is true, skip the actions stage and report
+            // completion after the welcome stage.
+            if viewModel.autoFinish && viewModel.stage == .welcome {
+                onFinished()
+                return
+            }
             viewModel.advance()
         }
     }
@@ -94,12 +101,14 @@ public struct SplashView: View {
         VStack(spacing: 0) {
             if SplashTokens.showAuthActions {
                 SplashButton(
+                    identifier: SplashAccessibility.login,
                     title: SplashTokens.login,
                     background: SplashTokens.loginBackground,
                     foreground: SplashTokens.loginText
                 ) {}
 
                 SplashButton(
+                    identifier: SplashAccessibility.register,
                     title: SplashTokens.register,
                     background: SplashTokens.registerBackground,
                     foreground: SplashTokens.registerText
@@ -109,6 +118,7 @@ public struct SplashView: View {
 
             if SplashTokens.showGuestButton {
                 SplashButton(
+                    identifier: SplashAccessibility.guest,
                     title: SplashTokens.guest,
                     background: SplashTokens.registerBackground,
                     foreground: SplashTokens.registerText,
@@ -130,7 +140,18 @@ public struct SplashView: View {
     }
 }
 
+/// Accessibility identifiers for the splash controls.
+///
+/// Internal: a stable handle for the app's XCUITest UI tests (which repeat the
+/// literal, since a UI test bundle runs out of process) and for VoiceOver.
+enum SplashAccessibility {
+    static let login = "splash.login"
+    static let register = "splash.register"
+    static let guest = "splash.guest"
+}
+
 private struct SplashButton: View {
+    let identifier: String
     let title: String
     let background: Color
     let foreground: Color
@@ -146,6 +167,7 @@ private struct SplashButton: View {
                 .background(background, in: Capsule())
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier(identifier)
     }
 }
 

@@ -11,23 +11,40 @@ guide is at `../android/AGENTS.md`.
 
 ## Module layout
 
-Four Swift modules. The app and its feature packages are separate **local Swift
+Five Swift modules. The app and its feature packages are separate **local Swift
 packages**, so module boundaries are real compile boundaries — the iOS analogue
 of the Android Gradle modules.
 
 - **`Levela`** (app target) — the application shell.
-  - `Levela/LevelaApp.swift` — `@main` entry; registers fonts, shows `LevelaRootView`.
-  - `Levela/LevelaRootView.swift` — owns the `NavigationStack`, applies `.levelaTheme()`.
+  - `Levela/LevelaApp.swift` — `@main` entry; registers fonts, opens the store
+    and builds the `AppContainer`, then shows `LevelaRootView`.
+  - `Levela/LevelaRootView.swift` — owns the `NavigationStack`, applies `.levelaTheme()`,
+    and resolves the launch-time "has profile?" state through `RootViewModel`.
+  - `Levela/AppContainer.swift` — the app's dependency graph (composition root;
+    holds `ProfileData`, the use cases and the view models).
+  - `Levela/AppModule.swift` — the app-level graph bindings (the iOS counterpart
+    of Android's `AppModule.kt`).
+  - `Levela/RootViewModel.swift` — owns the launch-time profile check (the iOS
+    counterpart of Android's `RootViewModel`).
+  - `Levela/HasActiveProfileUseCase.swift` — the app-side use case behind that
+    check (the counterpart of Android's `HasActiveProfileUseCase`).
+  - `Levela/CompleteOnboardingUseCase.swift` + `Levela/ProfileMapping.swift` — the
+    app-side use case that maps `OnboardingProfile` → `UserProfile` and saves it.
   - Links the local packages.
 - **`Design`** — local Swift package at `Packages/Design`; the shared design system.
 - **`Onboarding`** — local Swift package at `Packages/Onboarding`; the onboarding
   feature. Depends on `Design`.
 - **`Splash`** — local Swift package at `Packages/Splash`; the launch welcome
   flow. Depends on `Design`. The Android counterpart is the `:splash` module.
+- **`Profile`** — local Swift package at `Packages/Profile`; the offline-first
+  SwiftData store (a `UserProfileEntity` `@Model` behind a `UserProfileDao`, a
+  `UserProfileRepository` and `ProfileData`). No dependencies. The Android
+  counterpart is the `:profile` module. It is consumed only through use cases
+  (see the Layering section).
 
 Dependency direction: `Levela → Design`, `Levela → Onboarding`, `Levela → Splash`,
-`Onboarding → Design`, `Splash → Design`. Features never depend on each other or
-on the app.
+`Levela → Profile`, `Onboarding → Design`, `Splash → Design`. Features never
+depend on each other or on the app.
 
 ## Build & run
 
@@ -41,8 +58,8 @@ Or open `Levela.xcodeproj` in Xcode and run.
 - Deployment target: iOS 18; Swift language mode 5 (`swiftLanguageModes: [.v5]`
   in each `Package.swift`, matching the app's `SWIFT_VERSION = 5.0`).
 - The packages are referenced from the project via `XCLocalSwiftPackageReference`
-  (`Packages/Design`, `Packages/Onboarding`, `Packages/Splash`) and linked to the
-  `Levela` target.
+  (`Packages/Design`, `Packages/Onboarding`, `Packages/Splash`,
+  `Packages/Profile`) and linked to the `Levela` target.
 - The Xcode project uses file-system-synchronized groups: files under `Levela/`
   are picked up automatically — no need to edit `project.pbxproj` to add sources
   there. Adding a *new package* does require editing the project.
@@ -124,7 +141,8 @@ button is tapped (the app then shows the onboarding flow). The Login /
 Register buttons are defined but hidden while accounts are deferred
 (offline-first), gated by `SplashTokens.showAuthActions`; the guest entry is a
 primary `Continue as a guest` button (`SplashTokens.showGuestButton`), with the
-old text link defined but hidden (`SplashTokens.showGuestLink`). See
+old text link defined but hidden (`SplashTokens.showGuestLink`). The buttons carry
+stable accessibility identifiers (`SplashAccessibility`) for the UI tests. See
 [`../assets/splash/README.md`](../assets/splash/README.md).
 
 ## Onboarding
@@ -136,12 +154,87 @@ once, for both platforms, by the shared contract in `../assets/onboarding/`:
 ./scripts/verify_onboarding_parity.sh --strict     # require both platforms
 ```
 
-`OnboardingView` shows the weight and height steps (progress segments, unit
-toggle, a draggable snapping ruler picker on a tinted value card, back + Next
-buttons) and reports completion through `onFinished`. Canonical values are stored
-in kg / cm; switching units converts them. It is shown from `LevelaRootView`
-after the splash guest entry. See
+`OnboardingView` shows the welcome step (title, subtitle, hero illustration), the
+goal step (single-select goal cards — a status dot plus title and subtitle — where
+Next stays disabled until a goal is chosen), the profile step (an age ruler picker
+plus single-select biological-sex cards, Next disabled until a sex option is
+chosen), the weight and height steps (progress segments, unit toggle, a
+draggable snapping ruler picker on a tinted value card, back + Next buttons) and
+the activity step (single-select activity-level cards, Next disabled until a level
+is chosen). Tapping Next on the last step asks the view model to `complete()`,
+which persists the profile through its injected save function; once saved,
+`onFinished` is called and the app moves on. The
+welcome illustration is bundled from
+`Sources/Onboarding/Resources/Assets.xcassets/WelcomeIllustration.imageset`
+(generated from `assets/onboarding/welcome-illustration.png`). Canonical values
+are stored in kg / cm; switching units converts them. It is shown from
+`LevelaRootView` after the splash guest entry. See
 [`../assets/onboarding/README.md`](../assets/onboarding/README.md).
+
+Tests: `Packages/Onboarding/Tests/OnboardingTests/` holds `OnboardingViewModelTests`
+(state/conversions) and `OnboardingViewTests` — in-process view tests that drive the
+real views (step gating, unit toggles, completion wiring) through
+[ViewInspector](https://github.com/nalexn/ViewInspector), a test-only package
+dependency. They run in the package's **unit** test bundle: ViewInspector inspects
+the live SwiftUI view tree, which only works same-process, so a UI-testing bundle
+cannot use it. Each test seeds a step via the internal
+`OnboardingView(step:save:onFinished:)` initializer and asserts against
+`OnboardingTokens`, never hardcoded copy. The view model is injected (a plain
+`let`, owned by the app), not held in `@State`, so ViewInspector's headless
+`inspect()` reads it without SwiftUI's "Accessing State ... without being
+installed" runtime warning. They mirror the Android `OnboardingViewTest`. Run
+them from `Packages/Onboarding`:
+
+```sh
+xcodebuild test -scheme Onboarding -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
+```
+
+The same sources are mirrored to `OnboardingTests/` at the app level and wired into
+the `Levela` scheme (like `SplashTests` / `ProfileTests`), so
+`xcodebuild test -scheme Levela` also runs them hosted in the app. The mirror is a
+copy — keep both in sync.
+
+The flow is also covered end-to-end by `LevelaUITests/OnboardingUITests.swift`, a
+real XCUITest **UI-testing** bundle: it launches the app, enters through the splash
+guest button, walks all six steps and asserts the gating, the unit conversions
+(`70 kg → 154 lb`, `170 cm → 5'7"`) and the final Next. It drives the app by
+accessibility identifier — `splash.guest` and the `onboarding.*` handles from
+`OnboardingAccessibility` / `SplashAccessibility` — not by visible copy. A UI-test
+bundle runs out of process and cannot import the feature modules, so those
+identifier literals are repeated in the test; keep them in sync. Run it with:
+
+```sh
+xcodebuild test -scheme Levela -only-testing:LevelaUITests/OnboardingUITests \
+  -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
+```
+
+## Profile (`Profile` package)
+
+The offline-first store, layered like Android's `:profile` so SwiftData types
+never leave the module. `Profile` holds a `UserProfileEntity` `@Model` (carrying
+the sync envelope), a `UserProfileDao` that owns the raw `ModelContext`
+operations, a `UserProfileRepository` (protocol) + `UserProfileRepositoryImpl`
+that map between the entity and the public domain `UserProfile` struct, and
+`ProfileData` — which builds the `ModelContainer` and hands out repositories. The
+app builds a `ProfileData` inside its `AppContainer` (`Levela/AppContainer.swift`)
+and binds the save function in `Levela/AppModule.swift`; the onboarding view
+model persists through that injected save function on completion, which calls
+`CompleteOnboardingUseCase.invoke(_:)` — it maps the flow's values
+(`OnboardingProfile.toUserProfile()`, defined in `Levela/ProfileMapping.swift`)
+onto a `UserProfile` and saves it as a guest-owned, pending row.
+
+The schema is **sync-ready now, synced later**: every row carries a
+client-generated `id` (UUID), a nullable `accountUserId`, a `syncState` (a
+`SyncState` enum, backed by `syncStateRaw` so `#Predicate` can match it), an
+`updatedAt` timestamp and a `deleted` tombstone. Onboarding rows are written
+guest-owned (`accountUserId = nil`, `.pending`) with no network. When accounts
+land, registering re-parents the row
+(`UserProfileRepository.attachToAccount(id:accountUserId:)`) rather than copying
+it, and the same UUID upserts on the backend.
+
+Tests: `xcodebuild test -scheme Profile -destination 'platform=iOS Simulator,name=iPhone 18 Pro'`
+from `Packages/Profile` (in-memory `ModelContainer`; `UserProfileDaoTests`,
+`UserProfileRepositoryTests`, `UserProfileMappingTests`).
 
 Related docs: [`../android/AGENTS.md`](../android/AGENTS.md) (Android counterpart),
 [`../README.md`](../README.md) (project overview).
@@ -153,13 +246,57 @@ Related docs: [`../android/AGENTS.md`](../android/AGENTS.md) (Android counterpar
   (`scripts/install-hooks.sh`) rejects a commit that stages changes under both
   `android/` and `ios/`. Keep iOS and Android changes in separate commits.
 - Cross-module symbols must be `public` (Swift packages do not expose internals).
-- Feature view models are `@Observable @MainActor` and held by the view with
-  `@State` — the iOS counterpart to Android's Hilt + `ViewModel`. There is no DI
-  container; inject via initializers / the SwiftUI environment.
-- App-level navigation lives in `LevelaRootView`. Features expose a route type
-  (e.g. `OnboardingRoute`) so the app never reaches into feature internals.
-- Persistence (SwiftData) is intentionally not wired yet; add a dedicated
-  `Core`/`Persistence` package when a feature actually needs it.
+- Feature view models are `@Observable @MainActor` — the iOS counterpart to
+  Android's `@HiltViewModel` + `ViewModel`. They are built by the app's
+  `AppContainer` and injected through initializers (e.g. `OnboardingView` takes
+  its view model through `init(viewModel:)`). Avoiding `@State` keeps
+  ViewInspector's headless `inspect()` from emitting SwiftUI's "Accessing State
+  ... without being installed" runtime warning.
+
+## Dependency injection
+
+DI is a hand-rolled composition root that mirrors Android's Hilt graph — there is
+no third-party container (Swift has no compile-time DI codegen like Hilt's KSP).
+The mapping is deliberate, so the two platforms read the same way:
+
+| Android (Hilt) | iOS |
+| --- | --- |
+| `@HiltAndroidApp` generated graph | `AppContainer` (built once after `ProfileData.open()`) |
+| `@Module @InstallIn(SingletonComponent)` + `@Provides` | `AppModule.swift` static bindings |
+| `ProfileDataModule` (`:profile`) | the `Profile` package (`ProfileData.open()`) |
+| `@Inject constructor` | plain `init`s, wired by the container |
+| `@Singleton` | the container's `let`s (built eagerly once) |
+| `@HiltViewModel` + `hiltViewModel()` | `@Observable @MainActor` view model built by the container |
+| injected `suspend (OnboardingProfile) -> Unit` | injected `@MainActor (OnboardingProfile) -> Void` save function |
+
+`AppContainer` holds `ProfileData`, the repository, `CompleteOnboardingUseCase`,
+`HasActiveProfileUseCase`, the onboarding save function, `RootViewModel` and
+`OnboardingViewModel`.
+`LevelaRootView` receives the view models from the container and only navigates;
+`RootViewModel` owns the launch-time "has profile?" check (the counterpart of
+Android's `RootViewModel` + `stateIn`), and the onboarding view model owns
+persistence through its injected save function (the counterpart of Android's
+`@HiltViewModel` receiving the save function from `AppModule`). Features never
+build storage themselves, and the entity/DAO stay inside `Profile`.
+
+App-level navigation lives in `LevelaRootView`. Features expose a route type
+(e.g. `OnboardingRoute`) so the app never reaches into feature internals.
+
+## Layering: ViewModel → UseCase → Repository
+
+Every path from the UI to persistence flows one direction: **ViewModel → UseCase
+→ Repository → data source** (SwiftData / network). A view model never depends
+on a repository (or any persistence/network type) directly — not even for a
+trivial read. Use cases are the only consumers of repositories.
+
+- **App-level view models** (e.g. `RootViewModel`) inject a use case directly
+  (`HasActiveProfileUseCase`).
+- **Feature-package view models** (e.g. `OnboardingViewModel`) inject a plain
+  closure (`@MainActor (OnboardingProfile) -> Void`), which the app backs with a
+  use case, so the feature never sees `Profile`.
+- Bind every new use case in `Levela/AppModule.swift`, build it in
+  `AppContainer`, and mirror the change on Android (see
+  [`../android/AGENTS.md`](../android/AGENTS.md), Layering section).
 
 ## Knowledge graph (graphify)
 
