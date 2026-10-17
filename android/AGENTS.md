@@ -27,7 +27,7 @@ Five Gradle modules, declared in `settings.gradle.kts`:
   repository), and it will host the profile screen. The iOS counterpart is the
   `Profile` package. It is consumed only through use cases (see the Layering
   section).
-- **`:onboarding`** — the post-guest onboarding flow (welcome, goal, profile,
+- **`:onboarding`** — the post-guest onboarding flow (welcome, goal, gender, age,
   weight, height, activity) under
   `onboarding/src/main/java/com/yuzutaru/onboarding/`. Holds a lifecycle
   `OnboardingViewModel` that persists through an injected
@@ -143,12 +143,14 @@ both platforms, by the shared contract in `../assets/onboarding/`:
 
 `OnboardingView` shows the welcome step (title, subtitle, hero illustration), the
 goal step (single-select goal cards — a status dot plus title and subtitle — where
-Next stays disabled until a goal is chosen), the profile step (an age ruler picker
-plus single-select biological-sex cards, Next disabled until a sex option is
-chosen), the weight and height steps (progress segments, unit toggle, a
-draggable snapping ruler picker on a tinted value card, back + Next buttons) and
-the activity step (single-select activity-level cards, Next disabled until a level
-is chosen). Tapping Next on the final step asks `OnboardingViewModel.complete()`,
+Next stays disabled until a goal is chosen), the gender step (a single-screen
+snapping carousel of icon-only gender cards, Continue disabled until a gender is
+chosen, plus a **Prefer to skip this** pill), the age step (the age ruler picker,
+Next always enabled), the weight and height steps (progress segments, unit
+toggle, a draggable snapping ruler picker on a tinted value card, back + Next
+buttons) and the activity step (single-select activity-level cards, Next disabled
+until a level is chosen). Tapping Next on the final step asks
+`OnboardingViewModel.complete()`,
 which persists the collected profile through its injected
 `suspend (OnboardingProfile) -> Unit` save function; once saved, the view reports
 completion through `onFinished`. The welcome illustration lives in

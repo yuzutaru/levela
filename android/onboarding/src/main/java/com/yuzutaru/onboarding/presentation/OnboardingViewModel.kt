@@ -54,7 +54,7 @@ class OnboardingViewModel @Inject constructor(
     /** The chosen age in years; starts at the contracted default. */
     val age: Int get() = ageYears
 
-    /** The chosen biological-sex option, or null until one is selected. */
+    /** The chosen gender option, or null until one is selected. */
     var sex: String? by mutableStateOf(null)
         private set
 
@@ -107,9 +107,18 @@ class OnboardingViewModel @Inject constructor(
         if (OnboardingTokens.goals.any { it.title == goal }) this.goal = goal
     }
 
-    /** Selects a biological-sex option; ignores unknown options. */
+    /** Selects a gender option; ignores unknown values. */
     fun selectSex(option: String) {
         if (option in OnboardingTokens.sexOptions) sex = option
+    }
+
+    /**
+     * Advances past the gender step with no selection, so the profile is saved
+     * without a sex value.
+     */
+    fun skipSex() {
+        sex = null
+        next()
     }
 
     /** Selects an activity-level card by title; ignores unknown titles. */
