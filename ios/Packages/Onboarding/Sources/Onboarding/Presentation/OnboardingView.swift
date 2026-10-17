@@ -8,29 +8,33 @@ import SwiftUI
 /// a welcome intro, a single-select goal step, a profile step (age + biological
 /// sex), then weight and height — the latter pair each using a draggable ruler
 /// picker and a unit toggle — and finally a single-select activity-level step.
-/// The last step reports completion through `onFinished`. Mirrors the Android
-/// `OnboardingView`.
+/// Tapping Next on the last step asks the view model to `complete()`, which
+/// persists the collected profile through its injected save function; once
+/// saved, `onFinished` is called. Mirrors the Android `OnboardingView`.
 @MainActor
 public struct OnboardingView: View {
     private let viewModel: OnboardingViewModel
-    private let onFinished: (OnboardingProfile) -> Void
+    private let onFinished: () -> Void
 
     /// Creates the flow with an injected view model. The app owns the view
-    /// model (held with `@State` in its own view) so it survives re-renders.
+    /// model (the container builds it and the root view holds it as a plain
+    /// `let`) so it survives re-renders.
     public init(viewModel: OnboardingViewModel,
-                onFinished: @escaping (OnboardingProfile) -> Void = { _ in }) {
+                onFinished: @escaping () -> Void = {}) {
         self.viewModel = viewModel
         self.onFinished = onFinished
     }
 
     /// Owns a fresh view model starting at the welcome step.
-    public init(onFinished: @escaping (OnboardingProfile) -> Void = { _ in }) {
+    public init(onFinished: @escaping () -> Void = {}) {
         self.init(viewModel: OnboardingViewModel(), onFinished: onFinished)
     }
 
     /// Opens the view on a specific step. Internal: for previews/tests.
-    init(step: OnboardingStep, onFinished: @escaping (OnboardingProfile) -> Void = { _ in }) {
-        self.init(viewModel: OnboardingViewModel(step: step), onFinished: onFinished)
+    init(step: OnboardingStep,
+         save: @escaping @MainActor (OnboardingProfile) -> Void = { _ in },
+         onFinished: @escaping () -> Void = {}) {
+        self.init(viewModel: OnboardingViewModel(step: step, save: save), onFinished: onFinished)
     }
 
     public var body: some View {
@@ -62,6 +66,15 @@ public struct OnboardingView: View {
         .padding(.horizontal, 24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(OnboardingTokens.background)
+    }
+
+    /// Asks the view model to persist the collected profile (its injected save
+    /// function) and reports completion once saved. The save is synchronous on
+    /// iOS, so — unlike Android, whose `suspend` save needs a
+    /// `LaunchedEffect(isComplete)` — the completion can be reported inline.
+    private func complete() {
+        viewModel.complete()
+        if viewModel.isComplete { onFinished() }
     }
 
     /// Push forward (next): the new step enters from the right, the old one
@@ -259,7 +272,7 @@ public struct OnboardingView: View {
                 BackButton(action: goBack)
                 NextButton(label: OnboardingTokens.next, enabled: viewModel.hasActivity) {
                     if viewModel.isLastStep {
-                        onFinished(viewModel.makeProfile())
+                        complete()
                     } else {
                         goNext()
                     }
@@ -290,7 +303,7 @@ public struct OnboardingView: View {
                 BackButton(action: goBack)
                 NextButton(label: OnboardingTokens.next) {
                     if viewModel.isLastStep {
-                        onFinished(viewModel.makeProfile())
+                        complete()
                     } else {
                         goNext()
                     }
