@@ -1,4 +1,4 @@
-package com.yuzutaru.levela
+package com.yuzutaru.levela.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

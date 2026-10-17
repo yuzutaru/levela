@@ -4,11 +4,17 @@ import Observation
 /// Drives the post-guest onboarding flow.
 ///
 /// `@Observable` + `@MainActor` is the iOS counterpart to the Android
-/// `OnboardingViewModel`; the app owns it and injects it into
+/// `@HiltViewModel` + `ViewModel`; the app owns it and injects it into
 /// `OnboardingView` (rather than the view holding it in `@State`, which
 /// ViewInspector cannot read cleanly). The canonical value is always stored in
 /// kg / cm; the UI shows the selected unit and conversions are applied on
 /// read/write so switching units preserves the measurement.
+///
+/// The view model owns completion: `complete()` hands the collected profile to
+/// the injected save function and flips `isComplete` once it is saved. The host
+/// app supplies that function (mirroring Android's injected
+/// `suspend (OnboardingProfile) -> Unit`), so this module never sees
+/// persistence types.
 @Observable
 @MainActor
 public final class OnboardingViewModel {
@@ -40,11 +46,24 @@ public final class OnboardingViewModel {
 
     public var hasActivity: Bool { activityLevel != nil }
 
-    public init() {}
+    /// True once the collected profile has been saved through the save function.
+    public private(set) var isComplete: Bool = false
+
+    /// Persists the collected profile; injected by the host app so this module
+    /// stays free of persistence types (Android injects
+    /// `suspend (OnboardingProfile) -> Unit` the same way). The default is a
+    /// no-op, for previews and tests.
+    private let save: @MainActor (OnboardingProfile) -> Void
+
+    /// Creates a view model with the injected save function.
+    public init(save: @escaping @MainActor (OnboardingProfile) -> Void = { _ in }) {
+        self.save = save
+    }
 
     /// Creates a view model positioned at `step`. Internal: for previews/tests.
-    init(step: OnboardingStep) {
+    init(step: OnboardingStep, save: @escaping @MainActor (OnboardingProfile) -> Void = { _ in }) {
         self.step = step
+        self.save = save
     }
 
     public var stepIndex: Int { OnboardingTokens.steps.firstIndex(of: step) ?? 0 }
@@ -117,6 +136,15 @@ public final class OnboardingViewModel {
     /// Sets the height from the value shown in the current unit.
     public func setHeightDisplay(_ value: Int) {
         heightCm = heightUnit == "cm" ? value : Self.inToCm(value)
+    }
+
+    /// Persists the collected profile through the injected save function, then
+    /// flips `isComplete`. Re-entrant calls are ignored, so a double tap saves
+    /// once. Mirrors the Android `complete()`.
+    public func complete() {
+        if isComplete { return }
+        save(makeProfile())
+        isComplete = true
     }
 
     /// The collected values, ready for the host app to persist.

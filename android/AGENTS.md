@@ -15,15 +15,18 @@ Five Gradle modules, declared in `settings.gradle.kts`:
 - **`:app`** — the application. Entry point is
   `app/src/main/java/com/yuzutaru/levela/MainActivity.kt`
   (`ComponentActivity` → `setContent` → `LevelaTheme` → `SplashView`, then
-  `OnboardingView` after the guest entry).
+  `OnboardingView` after the guest entry). Hosts the app-level use cases; view
+  models follow ViewModel → UseCase → Repository (see the Layering section).
 - **`:design`** — a library module holding the shared design system under
   `design/src/main/java/com/yuzutaru/design/ui/theme/`. `:app` depends on
   `project(":design")`, so all theme primitives live here, not in `:app`.
 - **`:profile`** — the profile feature: the offline-first persistence layer (Room)
   under `profile/src/main/java/com/yuzutaru/profile/`, holding the `user_profile`
   table plus its DAO, database and repository. Room types never leave the module.
-  `:app` depends on it and owns it via `AppContainer`, and it will host the profile
-  screen. The iOS counterpart is the `Profile` package.
+  `:app` depends on it and owns it via Hilt (`ProfileDataModule` provides the
+  repository), and it will host the profile screen. The iOS counterpart is the
+  `Profile` package. It is consumed only through use cases (see the Layering
+  section).
 - **`:onboarding`** — the post-guest onboarding flow (welcome, goal, profile,
   weight, height, activity) under
   `onboarding/src/main/java/com/yuzutaru/onboarding/`. Holds a lifecycle
@@ -31,7 +34,8 @@ Five Gradle modules, declared in `settings.gradle.kts`:
   `suspend (OnboardingProfile) -> Unit` save function (the app supplies the
   persistence-backed implementation, so this module never sees `:profile`).
   Depends on `:design` and `lifecycle-viewmodel`; the iOS counterpart is the
-  `Onboarding` Swift package.
+  `Onboarding` Swift package. The injected function is backed by an app-side use
+  case (see the Layering section).
 - **`:splash`** — the launch welcome flow under
   `splash/src/main/java/com/yuzutaru/splash/`. Depends on `:design`; `:app`
   depends on it. The iOS counterpart is the `Splash` Swift package.
@@ -157,15 +161,61 @@ splash guest entry. See
 Related docs: [`../ios/AGENTS.md`](../ios/AGENTS.md) (iOS counterpart),
 [`../README.md`](../README.md) (project overview).
 
+## Dependency injection (Hilt)
+
+DI is Hilt (`com.google.dagger.hilt.android` plugin, `hilt-android` +
+`hilt-compiler` via KSP, centrally versioned in `gradle/libs.versions.toml` —
+must be 2.60+ for AGP 9 support). `LevelaApplication` is `@HiltAndroidApp` and
+`MainActivity` is `@AndroidEntryPoint`. The old hand-rolled `AppContainer` was
+removed; the graph is now:
+
+- `app/di/AppModule.kt` — binds `CompleteOnboardingUseCase`,
+  `HasActiveProfileUseCase` and the `suspend (OnboardingProfile) -> Unit` save
+  function.
+- `profile/src/main/java/com/yuzutaru/profile/data/di/ProfileDataModule.kt` —
+  provides `ProfileData` and `UserProfileRepository`.
+- View models are `@HiltViewModel` with `@Inject` constructors and are resolved
+  in Compose with `hiltViewModel()`; features (`:onboarding`) may declare their
+  own `@HiltViewModel` but must not depend on `:profile`.
+
+When injecting Kotlin functional types, annotate both the `@Provides` return
+type and the injection site with `@JvmSuppressWildcards` so the generic
+signatures match.
+
+The iOS counterpart is a hand-rolled composition root that mirrors this graph
+(no third-party container): `ios/Levela/AppModule.swift` is the `@Module`,
+`ios/Levela/AppContainer.swift` is the composition root, and view models
+(`RootViewModel`, `OnboardingViewModel`) are built there instead of by
+`hiltViewModel()`. Keep the two graphs in step when either changes — see
+[`../ios/AGENTS.md`](../ios/AGENTS.md#dependency-injection).
+
+## Layering: ViewModel → UseCase → Repository
+
+Every path from the UI to persistence flows one direction: **ViewModel → UseCase
+→ Repository → data source** (Room / network). A view model never depends on a
+repository (or any persistence/network type) directly — not even for a trivial
+read. Use cases are the only consumers of repositories.
+
+- **App-level view models** (e.g. `RootViewModel`) inject a use case directly
+  (`HasActiveProfileUseCase`).
+- **Feature-module view models** (e.g. `OnboardingViewModel`) inject a plain
+  functional type (`suspend (OnboardingProfile) -> Unit`), which `:app` backs
+  with a use case, so the feature never sees `:profile`.
+- Bind every new use case in `app/di/AppModule.kt` and mirror the change on iOS
+  (see [`../ios/AGENTS.md`](../ios/AGENTS.md), Layering section).
+
 ## Persistence (`:profile`)
 
 The offline-first store. `:profile` holds a Room database (`ProfileDatabase`) with
 one `user_profile` table and a `UserProfileRepository`. Room types never leave the
-module: `ProfileData` builds the database and hands out repositories, and `:app`
-owns one via `AppContainer`. Onboarding completion is persisted by `:app`'s
-`CompleteOnboardingUseCase` — it maps `OnboardingProfile` to a `UserProfile` row
-(`ProfileMapping.kt`) and calls the repository. `MainActivity` builds the view
-model from `AppContainer.onboardingViewModelFactory` and only handles navigation.
+module: `ProfileData` builds the database and hands out repositories, Hilt
+provides it to `:app` through `ProfileDataModule`. Onboarding completion is
+persisted by `:app`'s `CompleteOnboardingUseCase` — it maps `OnboardingProfile`
+to a `UserProfile` row (`ProfileMapping.kt`) and calls the repository. The use
+case and the `suspend (OnboardingProfile) -> Unit` save function are bound in
+`app/di/AppModule.kt`; view models are `@HiltViewModel` classes retrieved with
+`hiltViewModel()`, and `MainActivity` (`@AndroidEntryPoint`) only handles
+navigation.
 
 The schema is **sync-ready now, synced later**: every row carries a
 client-generated `id` (UUID), a nullable `accountUserId`, a `syncState` (a
