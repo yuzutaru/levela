@@ -20,6 +20,9 @@ final class AppContainer {
     /// The onboarding completion use case.
     let completeOnboardingUseCase: CompleteOnboardingUseCase
 
+    /// The launch-time "has profile?" use case.
+    let hasActiveProfileUseCase: HasActiveProfileUseCase
+
     /// The app-side save function injected into the onboarding view model
     /// (the counterpart of Android's `suspend (OnboardingProfile) -> Unit`).
     let onboardingSave: @MainActor (OnboardingProfile) -> Void
@@ -36,12 +39,14 @@ final class AppContainer {
         let repository = profileData.userProfileRepository
         let useCase = AppModule.completeOnboardingUseCase(repository: repository)
         let save = AppModule.onboardingSave(useCase: useCase)
+        let hasActiveProfileUseCase = AppModule.hasActiveProfileUseCase(repository: repository)
 
         self.profileData = profileData
         self.userProfileRepository = repository
         self.completeOnboardingUseCase = useCase
+        self.hasActiveProfileUseCase = hasActiveProfileUseCase
         self.onboardingSave = save
-        self.rootViewModel = RootViewModel(repository: repository)
+        self.rootViewModel = RootViewModel(hasActiveProfileUseCase: hasActiveProfileUseCase)
         self.onboardingViewModel = OnboardingViewModel(save: save)
     }
 }

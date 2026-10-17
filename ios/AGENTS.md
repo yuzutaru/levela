@@ -26,6 +26,8 @@ of the Android Gradle modules.
     of Android's `AppModule.kt`).
   - `Levela/RootViewModel.swift` — owns the launch-time profile check (the iOS
     counterpart of Android's `RootViewModel`).
+  - `Levela/HasActiveProfileUseCase.swift` — the app-side use case behind that
+    check (the counterpart of Android's `HasActiveProfileUseCase`).
   - `Levela/CompleteOnboardingUseCase.swift` + `Levela/ProfileMapping.swift` — the
     app-side use case that maps `OnboardingProfile` → `UserProfile` and saves it.
   - Links the local packages.
@@ -37,7 +39,8 @@ of the Android Gradle modules.
 - **`Profile`** — local Swift package at `Packages/Profile`; the offline-first
   SwiftData store (a `UserProfileEntity` `@Model` behind a `UserProfileDao`, a
   `UserProfileRepository` and `ProfileData`). No dependencies. The Android
-  counterpart is the `:profile` module.
+  counterpart is the `:profile` module. It is consumed only through use cases
+  (see the Layering section).
 
 Dependency direction: `Levela → Design`, `Levela → Onboarding`, `Levela → Splash`,
 `Levela → Profile`, `Onboarding → Design`, `Splash → Design`. Features never
@@ -267,7 +270,8 @@ The mapping is deliberate, so the two platforms read the same way:
 | injected `suspend (OnboardingProfile) -> Unit` | injected `@MainActor (OnboardingProfile) -> Void` save function |
 
 `AppContainer` holds `ProfileData`, the repository, `CompleteOnboardingUseCase`,
-the onboarding save function, `RootViewModel` and `OnboardingViewModel`.
+`HasActiveProfileUseCase`, the onboarding save function, `RootViewModel` and
+`OnboardingViewModel`.
 `LevelaRootView` receives the view models from the container and only navigates;
 `RootViewModel` owns the launch-time "has profile?" check (the counterpart of
 Android's `RootViewModel` + `stateIn`), and the onboarding view model owns
@@ -277,6 +281,22 @@ build storage themselves, and the entity/DAO stay inside `Profile`.
 
 App-level navigation lives in `LevelaRootView`. Features expose a route type
 (e.g. `OnboardingRoute`) so the app never reaches into feature internals.
+
+## Layering: ViewModel → UseCase → Repository
+
+Every path from the UI to persistence flows one direction: **ViewModel → UseCase
+→ Repository → data source** (SwiftData / network). A view model never depends
+on a repository (or any persistence/network type) directly — not even for a
+trivial read. Use cases are the only consumers of repositories.
+
+- **App-level view models** (e.g. `RootViewModel`) inject a use case directly
+  (`HasActiveProfileUseCase`).
+- **Feature-package view models** (e.g. `OnboardingViewModel`) inject a plain
+  closure (`@MainActor (OnboardingProfile) -> Void`), which the app backs with a
+  use case, so the feature never sees `Profile`.
+- Bind every new use case in `Levela/AppModule.swift`, build it in
+  `AppContainer`, and mirror the change on Android (see
+  [`../android/AGENTS.md`](../android/AGENTS.md), Layering section).
 
 ## Knowledge graph (graphify)
 

@@ -18,6 +18,14 @@ enum AppModule {
         CompleteOnboardingUseCase(repository: repository)
     }
 
+    /// The app-side use case for the launch-time "has profile?" check
+    /// (`@Provides @Singleton fun provideHasActiveProfileUseCase`).
+    static func hasActiveProfileUseCase(
+        repository: UserProfileRepository
+    ) -> HasActiveProfileUseCase {
+        HasActiveProfileUseCase(repository: repository)
+    }
+
     /// Persists the onboarding result; the app-side implementation of the save
     /// function, injected into the onboarding view model as a plain
     /// `@MainActor (OnboardingProfile) -> Void` closure so the feature package

@@ -73,7 +73,11 @@ struct LevelaRootView: View {
 #Preview {
     let profileData = try! ProfileData.inMemory()
     LevelaRootView(
-        rootViewModel: RootViewModel(repository: profileData.userProfileRepository),
+        rootViewModel: RootViewModel(
+            hasActiveProfileUseCase: HasActiveProfileUseCase(
+                repository: profileData.userProfileRepository
+            )
+        ),
         onboardingViewModel: OnboardingViewModel()
     )
 }
