@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.yuzutaru.onboarding.data.OnboardingProfile
 import com.yuzutaru.onboarding.presentation.model.OnboardingStep
 import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
@@ -23,8 +25,11 @@ import kotlinx.coroutines.launch
  * injected save function and flips [isComplete] once it is saved. The host app
  * supplies that function (persistence stays out of this module).
  */
-class OnboardingViewModel(
-    private val completeOnboarding: suspend (OnboardingProfile) -> Unit,
+@HiltViewModel
+class OnboardingViewModel @Inject constructor(
+    // `@JvmSuppressWildcards` keeps the injected functional type's Java generic
+    // signature identical to the `@Provides` binding in `:app`'s AppModule.
+    private val completeOnboarding: @JvmSuppressWildcards suspend (OnboardingProfile) -> Unit,
 ) : ViewModel() {
     var step: OnboardingStep by mutableStateOf(OnboardingTokens.steps.first())
         private set

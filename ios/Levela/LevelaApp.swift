@@ -6,6 +6,7 @@
 //
 
 import Design
+import Profile
 import SwiftUI
 
 @main
@@ -22,29 +23,49 @@ struct LevelaApp: App {
 }
 
 /// Handles async store bootstrap and renders the appropriate UI.
+///
+/// Builds the app's dependency graph (`AppContainer`, the counterpart of
+/// Android's Hilt singleton component) once the profile store is open, then
+/// hands it to `LevelaRootView`.
 private struct AppBootstrapView: View {
-    @State private var viewModel = RootViewModel()
+    @State private var state: AppState = .loading
 
     var body: some View {
-        switch viewModel.state {
+        switch state {
         case .loading:
             ProgressView()
                 .progressViewStyle(.circular)
                 .tint(.blue500)
                 .levelaTheme()
-                .task { await viewModel.bootstrap() }
+                .task { await bootstrap() }
 
         case .failed(let message):
             ErrorView(message: message) {
-                Task { await viewModel.bootstrap() }
+                Task { await bootstrap() }
             }
             .levelaTheme()
 
-        case .ready(let container, let hasProfile):
+        case .ready(let container):
             LevelaRootView(
-                completeOnboardingUseCase: container.completeOnboardingUseCase,
-                hasProfile: hasProfile
+                rootViewModel: container.rootViewModel,
+                onboardingViewModel: container.onboardingViewModel
             )
         }
     }
+
+    private func bootstrap() async {
+        do {
+            let profileData = try await ProfileData.open()
+            state = .ready(AppContainer(profileData: profileData))
+        } catch {
+            state = .failed(error.localizedDescription)
+        }
+    }
+}
+
+/// Launch-time state machine: loading → ready | failed.
+private enum AppState {
+    case loading
+    case ready(AppContainer)
+    case failed(String)
 }

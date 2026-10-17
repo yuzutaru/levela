@@ -175,4 +175,32 @@ final class OnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(profile.weightUnit, OnboardingTokens.defaultWeightUnit)
         XCTAssertEqual(profile.heightUnit, OnboardingTokens.defaultHeightUnit)
     }
+
+    func testCompleteSavesTheCollectedProfileAndMarksComplete() {
+        var saved: OnboardingProfile?
+        let viewModel = OnboardingViewModel { profile in
+            saved = profile
+        }
+        viewModel.selectGoal("Gain muscle")
+
+        XCTAssertFalse(viewModel.isComplete)
+
+        viewModel.complete()
+
+        XCTAssertTrue(viewModel.isComplete)
+        XCTAssertEqual(saved?.goal, "Gain muscle")
+    }
+
+    func testCompleteOnlySavesOnce() {
+        var saveCount = 0
+        let viewModel = OnboardingViewModel { _ in
+            saveCount += 1
+        }
+
+        viewModel.complete()
+        viewModel.complete()
+
+        XCTAssertEqual(saveCount, 1)
+        XCTAssertTrue(viewModel.isComplete)
+    }
 }

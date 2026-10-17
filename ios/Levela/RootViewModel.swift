@@ -2,29 +2,27 @@ import Foundation
 import Observation
 import Profile
 
-/// Launch-time state machine: loading → ready | failed.
-enum AppState {
-    case loading
-    case failed(String)
-    case ready(AppContainer, hasProfile: Bool)
-}
-
-/// Owns the app's launch-time bootstrap: opening the profile store, building the
-/// container, and resolving whether a profile already exists. The repository is
-/// reached through this view model instead of being touched by the app shell.
+/// Owns the app's launch-time state: whether a profile already exists.
+///
+/// The repository stays inside the view model instead of being touched directly
+/// by the root view. `nil` means "still loading", `false` means "no profile yet"
+/// (route to onboarding) and `true` means "returning user" (route to main menu).
+/// Mirrors the Android `RootViewModel`.
 @Observable
 @MainActor
 final class RootViewModel {
-    private(set) var state: AppState = .loading
+    private let repository: UserProfileRepository
 
-    func bootstrap() async {
-        do {
-            let profileData = try await ProfileData.open()
-            let container = AppContainer(profileData: profileData)
-            let hasProfile = try container.userProfileRepository.activeProfile() != nil
-            state = .ready(container, hasProfile: hasProfile)
-        } catch {
-            state = .failed(error.localizedDescription)
-        }
+    /// The launch-time profile state; `nil` until the check completes.
+    private(set) var hasProfile: Bool?
+
+    init(repository: UserProfileRepository) {
+        self.repository = repository
+    }
+
+    /// Resolves whether a profile already exists. Called once from the root
+    /// view's `.task` (the counterpart of Android's `stateIn` flow collection).
+    func load() {
+        hasProfile = (try? repository.activeProfile()) != nil
     }
 }
