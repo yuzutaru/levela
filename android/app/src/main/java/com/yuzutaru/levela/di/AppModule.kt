@@ -25,6 +25,17 @@ object AppModule {
     ): CompleteOnboardingUseCase = CompleteOnboardingUseCase(repository)
 
     /**
+     * Resolves whether an active profile exists for the launch-time check. Keeps
+     * the repository out of `RootViewModel` and mirrors the iOS
+     * `HasActiveProfileUseCase`.
+     */
+    @Provides
+    @Singleton
+    fun provideHasActiveProfileUseCase(
+        repository: UserProfileRepository,
+    ): HasActiveProfileUseCase = HasActiveProfileUseCase(repository)
+
+    /**
      * Persists the onboarding result; the `:app`-side implementation of the
      * save function, injected into the `:onboarding` view model as a plain
      * `suspend (OnboardingProfile) -> Unit` so the feature module never sees
