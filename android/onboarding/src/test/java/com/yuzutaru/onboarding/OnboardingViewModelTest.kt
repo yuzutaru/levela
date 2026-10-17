@@ -39,7 +39,7 @@ class OnboardingViewModelTest {
     fun exposesTheFullFlow() {
         val viewModel = OnboardingViewModel { }
 
-        assertEquals(6, viewModel.stepCount)
+        assertEquals(7, viewModel.stepCount)
         assertEquals(0, viewModel.stepIndex)
 
         viewModel.next()
@@ -47,20 +47,24 @@ class OnboardingViewModelTest {
         assertEquals(1, viewModel.stepIndex)
 
         viewModel.next()
-        assertEquals(OnboardingStep.Profile, viewModel.step)
+        assertEquals(OnboardingStep.Gender, viewModel.step)
         assertEquals(2, viewModel.stepIndex)
 
         viewModel.next()
-        assertEquals(OnboardingStep.Weight, viewModel.step)
+        assertEquals(OnboardingStep.Age, viewModel.step)
         assertEquals(3, viewModel.stepIndex)
 
         viewModel.next()
-        assertEquals(OnboardingStep.Height, viewModel.step)
+        assertEquals(OnboardingStep.Weight, viewModel.step)
         assertEquals(4, viewModel.stepIndex)
 
         viewModel.next()
-        assertEquals(OnboardingStep.Activity, viewModel.step)
+        assertEquals(OnboardingStep.Height, viewModel.step)
         assertEquals(5, viewModel.stepIndex)
+
+        viewModel.next()
+        assertEquals(OnboardingStep.Activity, viewModel.step)
+        assertEquals(6, viewModel.stepIndex)
         assertTrue(viewModel.isLastStep)
 
         viewModel.back()
@@ -74,6 +78,7 @@ class OnboardingViewModelTest {
         viewModel.back()
         assertEquals(OnboardingStep.Welcome, viewModel.step)
 
+        viewModel.next()
         viewModel.next()
         viewModel.next()
         viewModel.next()
@@ -103,7 +108,7 @@ class OnboardingViewModelTest {
     }
 
     @Test
-    fun startsProfileWithDefaultAgeAndNoSex() {
+    fun startsGenderWithDefaultAgeAndNoSex() {
         val viewModel = OnboardingViewModel { }
 
         assertEquals(OnboardingTokens.ageDefault, viewModel.age)
@@ -124,6 +129,19 @@ class OnboardingViewModelTest {
 
         viewModel.setAge(42)
         assertEquals(42, viewModel.age)
+    }
+
+    @Test
+    fun skippingGenderClearsTheSelectionAndAdvancesToAge() {
+        val viewModel = OnboardingViewModel { }
+        while (viewModel.step != OnboardingStep.Gender) viewModel.next()
+        viewModel.selectSex("Female")
+
+        viewModel.skipSex()
+
+        assertNull(viewModel.sex)
+        assertFalse(viewModel.hasSex)
+        assertEquals(OnboardingStep.Age, viewModel.step)
     }
 
     @Test

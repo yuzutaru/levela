@@ -10,7 +10,8 @@ package com.yuzutaru.onboarding.presentation.model
 enum class OnboardingStep {
     Welcome,
     Goal,
-    Profile,
+    Gender,
+    Age,
     Weight,
     Height,
     Activity,

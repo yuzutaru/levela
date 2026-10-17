@@ -1,8 +1,8 @@
 # Onboarding — single source of truth
 
-The Levela post-guest onboarding flow (welcome, goal, profile, weight, height,
-activity) is defined **once** here and mirrored by the Android and iOS apps, so
-the two platforms cannot drift apart:
+The Levela post-guest onboarding flow (welcome, goal, gender, age, weight,
+height, activity) is defined **once** here and mirrored by the Android and iOS
+apps, so the two platforms cannot drift apart:
 
 ```
 assets/onboarding/onboarding-contract.json   # THE CONTRACT: steps, copy, units, ranges, colours, targets
@@ -10,32 +10,41 @@ scripts/verify_onboarding_parity.sh          # checks both platforms against the
 ```
 
 The colour tokens are the primitives from [`../../THEME_COLORS.md`](../../THEME_COLORS.md)
-(`Blue100/300/500`, `LightBlue100/300`, `Navy900`, `White`, `Gray100/200/300/500`).
+(`Blue100/300/500/700`, `LightBlue100/300`, `Navy900`, `White`, `Gray100/200/300/500`).
 The mockup's dark accents are toned to the app palette: a white canvas with
 `Navy900` text and `Blue500` actions (matching the splash), and the value cards
 tinted light blue (`LightBlue100` for weight, `Blue100` for height).
 
 ## The flow
 
-Six steps, shown after the user taps **Continue as a guest** on the splash:
+Seven steps, shown after the user taps **Continue as a guest** on the splash:
 
 | Step | Shown |
 | --- | --- |
 | `welcome` | progress segments + hero illustration + **Start your Fitness Journey** + subtitle + **Let's start** |
 | `goal` | progress segments + **What is your goal?** + seven single-select goal cards (dot + title + subtitle) + back / Next |
-| `profile` | progress segments + **Tell us about you** + **Age** (ruler picker, `years`) + **Biological sex** + three single-select cards (dot + label) + back / Next |
+| `gender` | progress segments + **What is your Gender?** + subtitle + a single-screen carousel of three gender cards (symbol + label + check) + **Prefer to skip this** + back / Continue |
+| `age` | progress segments + **Age** (ruler picker, `years`) + back / Next |
 | `weight` | progress segments + **What is your weight?** + `lb` / `kg` toggle + value card (ruler picker) |
 | `height` | progress segments + **What is your height?** + `ft/in` / `cm` toggle + value card (ruler picker) |
 | `activity` | progress segments + **What is your activity level?** + five single-select activity cards (dot + title + subtitle) + back / Next |
 
-The welcome step has a single primary **Let's start** button. The goal, profile,
-weight, height and activity steps each have a circular back button and a primary
-**Next** button; the last step (activity) reports completion through
-`onFinished`. The goal, profile and activity steps use single-select cards
-(choosing one activates it and deactivates the others), and their **Next** button
-stays disabled until a choice is made — a goal, a biological sex, or an activity
-level (the age always has a default). The progress indicator has one segment per
-step (six).
+The welcome step has a single primary **Let's start** button. The goal, gender,
+age, weight, height and activity steps each have a circular back button and a
+primary **Continue** or **Next** button; the last step (activity) reports
+completion through `onFinished`. The goal, gender and activity steps use
+single-select cards (choosing one activates it and deactivates the others), and
+their primary button stays disabled until a choice is made — a goal, a gender,
+or an activity level (the age always has a default). The gender step also has a
+secondary **Prefer to skip this** pill that advances with the gender left unset. The
+progress indicator has one segment per step (seven).
+
+The gender cards are icon-only: a large gender symbol (female / male / neutral)
+drawn from strokes, on a tinted disc, with a small check indicator. The selected
+card is `Blue500` with white content; unselected cards are white with a
+`Gray200` border. The cards sit in a snapping carousel with the selected card
+centred and its neighbours peeking at the edges, so the whole step fits one
+screen without vertical scrolling.
 
 The welcome step shows the hero illustration
 (`assets/onboarding/welcome-illustration.png`) between the subtitle and the
@@ -94,7 +103,7 @@ contract:
 
 - a step name, copy string, unit label or default unit differs;
 - a goal card's title or subtitle, an activity-level card's title or subtitle,
-  or a biological-sex option, is missing;
+  or a gender option's persisted value, label or symbol, is missing;
 - a value range min/max/step/default number is missing;
 - a colour token is renamed or missing;
 - the welcome illustration source or a platform rendition is missing or the wrong size;
