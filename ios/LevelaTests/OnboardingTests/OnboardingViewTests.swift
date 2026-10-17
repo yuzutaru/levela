@@ -6,7 +6,7 @@ import XCTest
 /// UI tests for ``OnboardingView``.
 ///
 /// Each test drops the flow onto a chosen step (through the internal
-/// `init(step:onFinished:)` the previews use) and drives it through the real
+/// `init(step:save:onFinished:)` the previews use) and drives it through the real
 /// SwiftUI view, so the step gating, unit toggles and completion wiring are
 /// exercised. Content is asserted against the shared ``OnboardingTokens`` (never
 /// hardcoded copy); the text-less back button is located by its accessibility
@@ -131,9 +131,8 @@ final class OnboardingViewTests: XCTestCase {
     func testActivityStepGatesNextAndCompletes() throws {
         var finished = false
         var saved: OnboardingProfile?
-        let view = OnboardingView(step: .activity) { profile in
+        let view = OnboardingView(step: .activity, save: { saved = $0 }) {
             finished = true
-            saved = profile
         }
 
         ViewHosting.host(view: view)
@@ -155,9 +154,8 @@ final class OnboardingViewTests: XCTestCase {
     func testWalksTheWholeFlowAndFinishesOnce() throws {
         var finished = 0
         var saved: [OnboardingProfile] = []
-        let view = OnboardingView(step: .welcome) { profile in
+        let view = OnboardingView(step: .welcome, save: { saved.append($0) }) {
             finished += 1
-            saved.append(profile)
         }
 
         ViewHosting.host(view: view)

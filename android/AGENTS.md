@@ -178,6 +178,13 @@ When injecting Kotlin functional types, annotate both the `@Provides` return
 type and the injection site with `@JvmSuppressWildcards` so the generic
 signatures match.
 
+The iOS counterpart is a hand-rolled composition root that mirrors this graph
+(no third-party container): `ios/Levela/AppModule.swift` is the `@Module`,
+`ios/Levela/AppContainer.swift` is the composition root, and view models
+(`RootViewModel`, `OnboardingViewModel`) are built there instead of by
+`hiltViewModel()`. Keep the two graphs in step when either changes — see
+[`../ios/AGENTS.md`](../ios/AGENTS.md#dependency-injection).
+
 ## Persistence (`:profile`)
 
 The offline-first store. `:profile` holds a Room database (`ProfileDatabase`) with
