@@ -136,7 +136,7 @@
     },
     "ios": {
       "package": "Onboarding",
-      "tokensFile": "ios/Packages/Onboarding/Sources/Onboarding/OnboardingTokens.swift",
+      "tokensFile": "ios/Packages/Onboarding/Sources/Onboarding/Presentation/Model/OnboardingTokens.swift",
       "designColorFile": "ios/Packages/Design/Sources/Design/Color.swift"
     }
   }
