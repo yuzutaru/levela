@@ -147,7 +147,7 @@ fun OnboardingView(
                     OnboardingStep.Gender ->
                         GenderStep(
                             selectedSex = viewModel.sex,
-                            selectSex = viewModel::selectSex,
+                            toggleSex = viewModel::toggleSex,
                             hasSex = viewModel.hasSex,
                             backOnClicked = viewModel::back,
                             next = viewModel::next,
@@ -387,14 +387,14 @@ private fun OptionDot(
 
 /**
  * The gender step: title + subtitle + a single-screen carousel of three
- * single-select gender cards + a "prefer to skip this" pill + back / Continue.
- * Continue stays disabled until a gender is chosen; skipping advances with the
- * gender value left unset.
+ * toggleable gender cards + a "prefer to skip this" pill + back / Continue.
+ * Continue stays disabled until a gender is chosen; tapping the selected card
+ * again clears the choice, and skipping advances with the value left unset.
  */
 @Composable
 private fun ColumnScope.GenderStep(
     selectedSex: String?,
-    selectSex: (String) -> Unit,
+    toggleSex: (String) -> Unit,
     hasSex: Boolean,
     backOnClicked: () -> Unit,
     next: () -> Unit,
@@ -425,7 +425,7 @@ private fun ColumnScope.GenderStep(
     GenderCarousel(
         options = OnboardingTokens.genderOptions,
         selectedSex = selectedSex,
-        selectSex = selectSex,
+        toggleSex = toggleSex,
         modifier = Modifier
             .weight(1f)
             .fillMaxWidth(),
@@ -502,14 +502,14 @@ private fun ColumnScope.AgeStep(
 
 /**
  * The gender carousel: a swipeable, snapping row with the selected card centred
- * and the neighbouring cards peeking at the edges. Tapping a card selects it and
+ * and the neighbouring cards peeking at the edges. Tapping a card toggles it and
  * scrolls it to the centre.
  */
 @Composable
 private fun GenderCarousel(
     options: List<GenderOption>,
     selectedSex: String?,
-    selectSex: (String) -> Unit,
+    toggleSex: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val initialPage = remember {
@@ -545,7 +545,7 @@ private fun GenderCarousel(
                     option = option,
                     isSelected = option.value == selectedSex,
                     onClick = {
-                        selectSex(option.value)
+                        toggleSex(option.value)
                         scope.launch { pagerState.animateScrollToPage(page) }
                     },
                     modifier = Modifier
@@ -566,30 +566,19 @@ private fun GenderCard(
     modifier: Modifier = Modifier,
 ) {
     val shape = RoundedCornerShape(OnboardingTokens.GenderCardCorner.dp)
-    val background = if (isSelected) {
-        OnboardingTokens.GenderCardActive
-    } else {
-        OnboardingTokens.GenderCardInactive
-    }
-    val border = if (isSelected) {
-        OnboardingTokens.GenderCardActiveBorder
-    } else {
-        OnboardingTokens.GenderCardInactiveBorder
-    }
-    val content = if (isSelected) {
-        OnboardingTokens.GenderCardActiveText
-    } else {
-        OnboardingTokens.GenderCardInactiveText
-    }
-    val icon = if (isSelected) {
-        OnboardingTokens.GenderCardIconActive
-    } else {
-        OnboardingTokens.GenderCardIconInactive
-    }
+    val background = if (isSelected) option.selected else option.surface
+    val border = if (isSelected) option.selected else OnboardingTokens.GenderCardInactiveBorder
+    val content = if (isSelected) option.onSelected else OnboardingTokens.GenderCardInactiveText
+    val icon = if (isSelected) option.onSelected else option.accent
     val iconBackground = if (isSelected) {
-        OnboardingTokens.GenderCardIconBackgroundActive
+        option.onSelected.copy(alpha = 0.20f)
     } else {
-        OnboardingTokens.GenderCardIconBackgroundInactive
+        option.accent.copy(alpha = 0.14f)
+    }
+    val symbolBackground = if (isSelected) {
+        option.onSelected.copy(alpha = 0.16f)
+    } else {
+        option.accent.copy(alpha = 0.10f)
     }
 
     Column(
@@ -627,7 +616,7 @@ private fun GenderCard(
 
             Spacer(Modifier.width(8.dp))
 
-            GenderCheck(isSelected = isSelected)
+            GenderCheck(isSelected = isSelected, mark = option.accent)
         }
 
         Box(
@@ -641,7 +630,7 @@ private fun GenderCard(
                     .fillMaxWidth(0.82f)
                     .aspectRatio(1f)
                     .clip(CircleShape)
-                    .background(iconBackground.copy(alpha = if (isSelected) 0.35f else 0.55f)),
+                    .background(symbolBackground),
             )
             GenderSymbol(
                 symbol = option.symbol,
@@ -662,6 +651,7 @@ private fun GenderCard(
 @Composable
 private fun GenderCheck(
     isSelected: Boolean,
+    mark: Color,
     modifier: Modifier = Modifier,
 ) {
     val shape = RoundedCornerShape(8.dp)
@@ -686,14 +676,14 @@ private fun GenderCheck(
         if (isSelected) {
             Canvas(modifier = Modifier.size(width = 13.dp, height = 10.dp)) {
                 drawLine(
-                    color = OnboardingTokens.GenderCheckActiveMark,
+                    color = mark,
                     start = Offset(0f, size.height * 0.55f),
                     end = Offset(size.width * 0.38f, size.height),
                     strokeWidth = 2.dp.toPx(),
                     cap = StrokeCap.Round,
                 )
                 drawLine(
-                    color = OnboardingTokens.GenderCheckActiveMark,
+                    color = mark,
                     start = Offset(size.width * 0.38f, size.height),
                     end = Offset(size.width, 0f),
                     strokeWidth = 2.dp.toPx(),
@@ -924,7 +914,7 @@ private fun GenderStepPreview() {
         ) {
             GenderStep(
                 selectedSex = sex,
-                selectSex = { sex = it },
+                toggleSex = { sex = if (sex == it) null else it },
                 hasSex = sex != null,
                 backOnClicked = {},
                 next = {},

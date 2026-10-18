@@ -44,9 +44,33 @@
   ],
 
   "gender": [
-    { "value": "Female", "label": "I Am Female", "symbol": "female" },
-    { "value": "Male", "label": "I Am Male", "symbol": "male" },
-    { "value": "Prefer not to say", "label": "Prefer not to say", "symbol": "neutral" }
+    {
+      "value": "Female",
+      "label": "I Am Female",
+      "symbol": "female",
+      "surface": "Pink100",
+      "accent": "Pink700",
+      "selected": "Pink700",
+      "onSelected": "White"
+    },
+    {
+      "value": "Male",
+      "label": "I Am Male",
+      "symbol": "male",
+      "surface": "Blue100",
+      "accent": "Blue500",
+      "selected": "Blue500",
+      "onSelected": "White"
+    },
+    {
+      "value": "Prefer not to say",
+      "label": "Prefer not to say",
+      "symbol": "neutral",
+      "surface": "Orange100",
+      "accent": "Orange700",
+      "selected": "Orange500",
+      "onSelected": "Navy900"
+    }
   ],
 
   "units": {
@@ -84,7 +108,11 @@
     "Blue300": "#7FB6FF",
     "Blue500": "#0078F0",
     "LightBlue100": "#E6F6FE",
-    "LightBlue300": "#A0E0F8"
+    "LightBlue300": "#A0E0F8",
+    "Pink100": "#FCE7F3",
+    "Pink300": "#F9A8D4",
+    "Pink500": "#EC4899",
+    "Pink700": "#BE185D"
   },
 
   "colors": {
@@ -115,18 +143,9 @@
     "toggleSelectedBackground": "Blue500",
     "toggleSelectedText": "White",
     "toggleUnselectedText": "Gray500",
-    "genderCardActive": "Blue500",
-    "genderCardActiveText": "White",
-    "genderCardActiveBorder": "Blue500",
-    "genderCardInactive": "White",
     "genderCardInactiveText": "Navy900",
     "genderCardInactiveBorder": "Gray200",
-    "genderCardIconActive": "Blue500",
-    "genderCardIconInactive": "Blue500",
-    "genderCardIconBackgroundActive": "White",
-    "genderCardIconBackgroundInactive": "Blue100",
     "genderCheckActive": "White",
-    "genderCheckActiveMark": "Blue500",
     "genderCheckInactiveBorder": "Gray200",
     "skipBackground": "Blue100",
     "skipText": "Blue700"
