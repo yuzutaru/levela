@@ -27,7 +27,7 @@ Five Gradle modules, declared in `settings.gradle.kts`:
   repository), and it will host the profile screen. The iOS counterpart is the
   `Profile` package. It is consumed only through use cases (see the Layering
   section).
-- **`:onboarding`** — the post-guest onboarding flow (welcome, goal, gender, age,
+- **`:onboarding`** — the post-guest onboarding flow (welcome, goal, profile,
   weight, height, activity) under
   `onboarding/src/main/java/com/yuzutaru/onboarding/`. Holds a lifecycle
   `OnboardingViewModel` that persists through an injected
@@ -69,7 +69,7 @@ All theme code is in `com/yuzutaru/design/ui/theme/`:
 
 | File | Contents |
 | --- | --- |
-| `Color.kt` | The icon-derived primitive scale from `THEME_COLORS.md` (`Blue500`, `Green500`, `Orange500`, `LightBlue*`, `Pink*`, `Gray*`, `Navy*`, `Ink100`, `White`). |
+| `Color.kt` | The icon-derived primitive scale from `THEME_COLORS.md` (`Blue500`, `Green500`, `Orange500`, `LightBlue*`, `Gray*`, `Navy*`, `Ink100`, `White`). |
 | `Font.kt` | `FontFamily` definitions backed by `res/font/*.ttf`. |
 | `Type.kt` | The Material 3 `Typography` scale mapping styles → families. |
 | `Theme.kt` | `LevelaTheme` composable: light/dark color schemes + typography + (opt-in) dynamic color. |
@@ -109,7 +109,7 @@ monochrome layer. See [`../assets/app-icon/README.md`](../assets/app-icon/README
 
 `Color.kt` holds the icon-derived primitive scale from
 [`../THEME_COLORS.md`](../THEME_COLORS.md) (`Blue500`, `Green500`, `Orange500`,
-`LightBlue*`, `Pink*`, `Gray*`, `Navy*`, `Ink100`, `White`). `LevelaTheme` maps these onto
+`LightBlue*`, `Gray*`, `Navy*`, `Ink100`, `White`). `LevelaTheme` maps these onto
 the Material 3 light/dark `ColorScheme`s: a white light background with
 blue/green/orange accents, and a deep-navy dark theme.
 
@@ -143,15 +143,12 @@ both platforms, by the shared contract in `../assets/onboarding/`:
 
 `OnboardingView` shows the welcome step (title, subtitle, hero illustration), the
 goal step (single-select goal cards — a status dot plus title and subtitle — where
-Next stays disabled until a goal is chosen), the gender step (a single-screen
-snapping carousel of colour-coded icon-only gender cards — pink female, blue
-male, orange neutral — where Continue stays disabled until a gender is chosen,
-plus a **Prefer to skip this** pill), the age step (the age ruler picker,
-Next always enabled), the weight and height steps (progress segments, unit
-toggle, a draggable snapping ruler picker on a tinted value card, back + Next
-buttons) and the activity step (single-select activity-level cards, Next disabled
-until a level is chosen). Tapping Next on the final step asks
-`OnboardingViewModel.complete()`,
+Next stays disabled until a goal is chosen), the profile step (an age ruler picker
+plus single-select biological-sex cards, Next disabled until a sex option is
+chosen), the weight and height steps (progress segments, unit toggle, a
+draggable snapping ruler picker on a tinted value card, back + Next buttons) and
+the activity step (single-select activity-level cards, Next disabled until a level
+is chosen). Tapping Next on the final step asks `OnboardingViewModel.complete()`,
 which persists the collected profile through its injected
 `suspend (OnboardingProfile) -> Unit` save function; once saved, the view reports
 completion through `onFinished`. The welcome illustration lives in

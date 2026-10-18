@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -40,9 +39,6 @@ const val NextButtonTag: String = "onboarding:next"
 
 /** Test tag for the circular back button (its chevron carries no text). */
 const val BackButtonTag: String = "onboarding:back"
-
-/** Test tag for the secondary skip button on the gender step. */
-const val SkipButtonTag: String = "onboarding:skip"
 
 /** The primary pill button shared by the onboarding steps. */
 @Composable
@@ -78,39 +74,6 @@ internal fun NextButton(
                 count = 3,
             )
         }
-    }
-}
-
-/** The secondary "prefer to skip this" pill on the gender step. */
-@Composable
-internal fun SkipButton(
-    label: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .testTag(SkipButtonTag)
-            .height(56.dp)
-            .clip(RoundedCornerShape(percent = 50))
-            .background(OnboardingTokens.SkipBackground)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 24.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelLarge,
-            color = OnboardingTokens.SkipText,
-        )
-        Spacer(Modifier.width(8.dp))
-        Text(
-            text = "+",
-            style = MaterialTheme.typography.titleMedium,
-            color = OnboardingTokens.SkipText,
-        )
     }
 }
 

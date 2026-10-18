@@ -36,7 +36,7 @@ public final class OnboardingViewModel {
     /// The chosen age in years; starts at the contracted default.
     public private(set) var age: Int = OnboardingTokens.ageDefault
 
-    /// The chosen gender option, or nil until one is selected.
+    /// The chosen biological-sex option, or nil until one is selected.
     public private(set) var sex: String?
 
     public var hasSex: Bool { sex != nil }
@@ -108,22 +108,9 @@ public final class OnboardingViewModel {
         if OnboardingTokens.goals.contains(where: { $0.title == goal }) { self.goal = goal }
     }
 
-    /// Selects a gender option; ignores unknown values.
+    /// Selects a biological-sex option; ignores unknown options.
     public func selectSex(_ option: String) {
         if OnboardingTokens.sexOptions.contains(option) { sex = option }
-    }
-
-    /// Toggles a gender option: selecting the current choice again clears it.
-    public func toggleSex(_ option: String) {
-        guard OnboardingTokens.sexOptions.contains(option) else { return }
-        sex = sex == option ? nil : option
-    }
-
-    /// Advances past the gender step with no selection, so the profile is saved
-    /// without a sex value.
-    public func skipSex() {
-        sex = nil
-        next()
     }
 
     /// Selects an activity-level card by title; ignores unknown titles.

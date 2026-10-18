@@ -20,7 +20,7 @@ final class ReturningUserUITests: XCTestCase {
         static let mainMenu = "mainmenu.title"
 
         static func goalCard(_ index: Int) -> String { "onboarding.goal.\(index)" }
-        static func genderCard(_ index: Int) -> String { "onboarding.gender.\(index)" }
+        static func sexOption(_ index: Int) -> String { "onboarding.sex.\(index)" }
         static func activityCard(_ index: Int) -> String { "onboarding.activity.\(index)" }
     }
 
@@ -40,8 +40,7 @@ final class ReturningUserUITests: XCTestCase {
         tapNext(in: app)
         tap(button(Identifier.goalCard(0), in: app))
         tapNext(in: app)
-        tap(button(Identifier.genderCard(1), in: app))
-        tapNext(in: app)
+        tap(button(Identifier.sexOption(0), in: app))
         tapNext(in: app)
         tapNext(in: app)
         tapNext(in: app)
