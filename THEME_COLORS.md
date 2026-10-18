@@ -37,6 +37,10 @@ food plate and leaves, **Orange** from the clock.
 | **`LightBlue100`** | `#E6F6FE` | — |
 | **`LightBlue300`** | `#A0E0F8` | Person silhouette (glow) |
 | **`LightBlue500`** | `#5AC8FA` | Person silhouette |
+| **`Pink100`** | `#FCE7F3` | Female gender card surface |
+| **`Pink300`** | `#F9A8D4` | — |
+| **`Pink500`** | `#EC4899` | — |
+| **`Pink700`** | `#BE185D` | Female gender card accent |
 | **`Green100`** | `#D9F7E6` | — |
 | **`Green300`** | `#7FE0A8` | Dark-theme secondary |
 | **`Green500`** | `#18B060` | Food plate — **secondary** |

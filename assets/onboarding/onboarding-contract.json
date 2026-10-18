@@ -1,25 +1,27 @@
 {
-  "version": 3,
-  "description": "Single source of truth for the Levela post-guest onboarding flow (welcome, goal, profile, weight, height, activity). scripts/verify_onboarding_parity.sh checks that the Android and iOS Onboarding features expose the same steps, copy, units, defaults, value ranges, goals, sex options, activity levels, colours and welcome illustration. Colour names refer to the primitive labels in THEME_COLORS.md.",
+  "version": 4,
+  "description": "Single source of truth for the Levela post-guest onboarding flow (welcome, goal, gender, age, weight, height, activity). scripts/verify_onboarding_parity.sh checks that the Android and iOS Onboarding features expose the same steps, copy, units, defaults, value ranges, goals, gender options, activity levels, colours and welcome illustration. Colour names refer to the primitive labels in THEME_COLORS.md.",
   "verifier": "scripts/verify_onboarding_parity.sh",
   "themeReference": "THEME_COLORS.md",
 
   "flow": {
-    "steps": ["welcome", "goal", "profile", "weight", "height", "activity"]
+    "steps": ["welcome", "goal", "gender", "age", "weight", "height", "activity"]
   },
 
   "text": {
     "welcomeTitle": "Start your Fitness Journey",
     "welcomeSubtitle": "Start your fitness journey with our app's guidance and support",
     "goalTitle": "What is your goal?",
-    "profileTitle": "Tell us about you",
+    "genderTitle": "What is your Gender?",
+    "genderSubtitle": "Please select your gender for better personalized health experience.",
     "ageTitle": "Age",
-    "sexTitle": "Biological sex",
     "weightTitle": "What is your weight?",
     "heightTitle": "What is your height?",
     "activityTitle": "What is your activity level?",
     "start": "Let's start",
     "next": "Next",
+    "continue": "Continue",
+    "skip": "Prefer to skip this",
     "back": "Back"
   },
 
@@ -41,7 +43,35 @@
     { "title": "Extra active", "subtitle": "A physical job plus daily activity" }
   ],
 
-  "sex": ["Female", "Male", "Prefer not to say"],
+  "gender": [
+    {
+      "value": "Female",
+      "label": "I Am Female",
+      "symbol": "female",
+      "surface": "Pink100",
+      "accent": "Pink700",
+      "selected": "Pink700",
+      "onSelected": "White"
+    },
+    {
+      "value": "Male",
+      "label": "I Am Male",
+      "symbol": "male",
+      "surface": "Blue100",
+      "accent": "Blue500",
+      "selected": "Blue500",
+      "onSelected": "White"
+    },
+    {
+      "value": "Prefer not to say",
+      "label": "Prefer not to say",
+      "symbol": "neutral",
+      "surface": "Orange100",
+      "accent": "Orange700",
+      "selected": "Orange500",
+      "onSelected": "Navy900"
+    }
+  ],
 
   "units": {
     "weight": ["lb", "kg"],
@@ -78,7 +108,11 @@
     "Blue300": "#7FB6FF",
     "Blue500": "#0078F0",
     "LightBlue100": "#E6F6FE",
-    "LightBlue300": "#A0E0F8"
+    "LightBlue300": "#A0E0F8",
+    "Pink100": "#FCE7F3",
+    "Pink300": "#F9A8D4",
+    "Pink500": "#EC4899",
+    "Pink700": "#BE185D"
   },
 
   "colors": {
@@ -108,7 +142,13 @@
     "toggleTrack": "Gray100",
     "toggleSelectedBackground": "Blue500",
     "toggleSelectedText": "White",
-    "toggleUnselectedText": "Gray500"
+    "toggleUnselectedText": "Gray500",
+    "genderCardInactiveText": "Navy900",
+    "genderCardInactiveBorder": "Gray200",
+    "genderCheckActive": "White",
+    "genderCheckInactiveBorder": "Gray200",
+    "skipBackground": "Blue100",
+    "skipText": "Blue700"
   },
 
   "illustration": {
