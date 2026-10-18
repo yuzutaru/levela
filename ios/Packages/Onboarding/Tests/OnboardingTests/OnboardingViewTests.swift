@@ -91,6 +91,20 @@ final class OnboardingViewTests: XCTestCase {
         XCTAssertFalse(try nextButton(try view.inspect()).isDisabled())
     }
 
+    func testGenderStepTogglesTheSelectedCardOff() throws {
+        let view = OnboardingView(step: .gender)
+
+        ViewHosting.host(view: view)
+        defer { ViewHosting.expel() }
+
+        let label = OnboardingTokens.genderOptions[1].label
+        try view.inspect().find(button: label).tap()
+        XCTAssertFalse(try nextButton(try view.inspect()).isDisabled())
+
+        try view.inspect().find(button: label).tap()
+        XCTAssertTrue(try nextButton(try view.inspect()).isDisabled())
+    }
+
     func testGenderStepSkipAdvancesWithoutASelection() throws {
         let view = OnboardingView(step: .gender)
 

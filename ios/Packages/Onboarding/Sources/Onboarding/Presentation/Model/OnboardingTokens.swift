@@ -37,11 +37,36 @@ public enum OnboardingTokens {
         GoalOption(title: "Train for an event", subtitle: "Prepare for a race or competition"),
     ]
 
-    // Gender — the single-select cards (persisted value, card label, icon symbol).
+    // Gender — the single-select cards. Each carries its label, icon symbol and
+    // pastel surface / saturated accent colours.
     public static let genderOptions: [GenderOption] = [
-        GenderOption(value: "Female", label: "I Am Female", symbol: "female"),
-        GenderOption(value: "Male", label: "I Am Male", symbol: "male"),
-        GenderOption(value: "Prefer not to say", label: "Prefer not to say", symbol: "neutral"),
+        GenderOption(
+            value: "Female",
+            label: "I Am Female",
+            symbol: "female",
+            surface: .pink100,
+            accent: .pink700,
+            selected: .pink700,
+            onSelected: .white
+        ),
+        GenderOption(
+            value: "Male",
+            label: "I Am Male",
+            symbol: "male",
+            surface: .blue100,
+            accent: .blue500,
+            selected: .blue500,
+            onSelected: .white
+        ),
+        GenderOption(
+            value: "Prefer not to say",
+            label: "Prefer not to say",
+            symbol: "neutral",
+            surface: .orange100,
+            accent: .orange700,
+            selected: .orange500,
+            onSelected: .navy900
+        ),
     ]
 
     // The persisted values, used to validate selections.
@@ -117,19 +142,10 @@ public enum OnboardingTokens {
     public static let toggleSelectedText = Color.white
     public static let toggleUnselectedText = Color.gray500
 
-    // Gender cards
-    public static let genderCardActive = Color.blue500
-    public static let genderCardActiveText = Color.white
-    public static let genderCardActiveBorder = Color.blue500
-    public static let genderCardInactive = Color.white
+    // Gender cards (per-option colours live on GenderOption)
     public static let genderCardInactiveText = Color.navy900
     public static let genderCardInactiveBorder = Color.gray200
-    public static let genderCardIconActive = Color.blue500
-    public static let genderCardIconInactive = Color.blue500
-    public static let genderCardIconBackgroundActive = Color.white
-    public static let genderCardIconBackgroundInactive = Color.blue100
     public static let genderCheckActive = Color.white
-    public static let genderCheckActiveMark = Color.blue500
     public static let genderCheckInactiveBorder = Color.gray200
     public static let skipBackground = Color.blue100
     public static let skipText = Color.blue700
@@ -154,15 +170,31 @@ public struct GoalOption: Hashable, Sendable {
     }
 }
 
-/// A gender card: the persisted value, its display label and its icon symbol.
+/// A gender card: persisted value, display label, icon symbol and card colours.
 public struct GenderOption: Hashable, Sendable {
     public let value: String
     public let label: String
     public let symbol: String
+    public let surface: Color
+    public let accent: Color
+    public let selected: Color
+    public let onSelected: Color
 
-    public init(value: String, label: String, symbol: String) {
+    public init(
+        value: String,
+        label: String,
+        symbol: String,
+        surface: Color,
+        accent: Color,
+        selected: Color,
+        onSelected: Color
+    ) {
         self.value = value
         self.label = label
         self.symbol = symbol
+        self.surface = surface
+        self.accent = accent
+        self.selected = selected
+        self.onSelected = onSelected
     }
 }

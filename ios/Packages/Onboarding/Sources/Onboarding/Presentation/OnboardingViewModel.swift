@@ -113,6 +113,12 @@ public final class OnboardingViewModel {
         if OnboardingTokens.sexOptions.contains(option) { sex = option }
     }
 
+    /// Toggles a gender option: selecting the current choice again clears it.
+    public func toggleSex(_ option: String) {
+        guard OnboardingTokens.sexOptions.contains(option) else { return }
+        sex = sex == option ? nil : option
+    }
+
     /// Advances past the gender step with no selection, so the profile is saved
     /// without a sex value.
     public func skipSex() {
