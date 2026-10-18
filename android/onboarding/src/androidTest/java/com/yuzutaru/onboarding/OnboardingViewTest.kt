@@ -15,7 +15,6 @@ import com.yuzutaru.onboarding.presentation.model.OnboardingStep
 import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
 import com.yuzutaru.onboarding.presentation.widget.BackButtonTag
 import com.yuzutaru.onboarding.presentation.widget.NextButtonTag
-import com.yuzutaru.onboarding.presentation.widget.SkipButtonTag
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -71,52 +70,16 @@ class OnboardingViewTest {
     }
 
     @Test
-    fun genderStepGatesContinueUntilAGenderIsChosen() {
-        setContent(step = OnboardingStep.Gender)
+    fun profileStepGatesNextUntilSexIsChosen() {
+        setContent(step = OnboardingStep.Profile)
 
-        composeTestRule.onNodeWithText(OnboardingTokens.GenderTitle).assertIsDisplayed()
-        composeTestRule.onNodeWithText(OnboardingTokens.GenderSubtitle).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(NextButtonTag).assertIsNotEnabled()
-
-        // The carousel opens on the middle card (Male).
-        composeTestRule.onNodeWithText(OnboardingTokens.genderOptions[1].label).performClick()
-
-        composeTestRule.onNodeWithTag(NextButtonTag).assertIsEnabled()
-    }
-
-    @Test
-    fun genderStepTogglesTheSelectedCardOff() {
-        setContent(step = OnboardingStep.Gender)
-
-        val label = OnboardingTokens.genderOptions[1].label
-        composeTestRule.onNodeWithText(label).performClick()
-        composeTestRule.onNodeWithTag(NextButtonTag).assertIsEnabled()
-
-        composeTestRule.onNodeWithText(label).performClick()
-        composeTestRule.onNodeWithTag(NextButtonTag).assertIsNotEnabled()
-    }
-
-    @Test
-    fun genderStepSkipAdvancesWithoutASelection() {
-        setContent(step = OnboardingStep.Gender)
-
-        composeTestRule.onNodeWithTag(NextButtonTag).assertIsNotEnabled()
-        composeTestRule.onNodeWithTag(SkipButtonTag).performClick()
-
-        composeTestRule.onNodeWithText(OnboardingTokens.AgeTitle).assertIsDisplayed()
-    }
-
-    @Test
-    fun ageStepShowsTheDefaultAndAdvances() {
-        setContent(step = OnboardingStep.Age)
-
-        composeTestRule.onNodeWithText(OnboardingTokens.AgeTitle).assertIsDisplayed()
+        composeTestRule.onNodeWithText(OnboardingTokens.ProfileTitle).assertIsDisplayed()
         composeTestRule.onNodeWithText(OnboardingTokens.ageDefault.toString()).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(NextButtonTag).assertIsNotEnabled()
+
+        composeTestRule.onNodeWithText(OnboardingTokens.sexOptions.first()).performClick()
+
         composeTestRule.onNodeWithTag(NextButtonTag).assertIsEnabled()
-
-        composeTestRule.onNodeWithTag(NextButtonTag).performClick()
-
-        composeTestRule.onNodeWithText(OnboardingTokens.WeightTitle).assertIsDisplayed()
     }
 
     @Test
@@ -178,19 +141,14 @@ class OnboardingViewTest {
         composeTestRule.onNodeWithText(OnboardingTokens.WelcomeTitle).assertIsDisplayed()
         composeTestRule.onNodeWithTag(NextButtonTag).performClick()
 
-        // Goal -> Gender
+        // Goal -> Profile
         composeTestRule.onNodeWithText(OnboardingTokens.GoalTitle).assertIsDisplayed()
         composeTestRule.onNodeWithText(OnboardingTokens.goals.first().title).performClick()
         composeTestRule.onNodeWithTag(NextButtonTag).performClick()
 
-        // Gender -> Age
-        composeTestRule.onNodeWithText(OnboardingTokens.GenderTitle).assertIsDisplayed()
-        composeTestRule.onNodeWithText(OnboardingTokens.genderOptions[1].label).performClick()
-        composeTestRule.onNodeWithTag(NextButtonTag).performClick()
-
-        // Age -> Weight
-        composeTestRule.onNodeWithText(OnboardingTokens.AgeTitle).assertIsDisplayed()
-        composeTestRule.onNodeWithText(OnboardingTokens.ageDefault.toString()).assertIsDisplayed()
+        // Profile -> Weight
+        composeTestRule.onNodeWithText(OnboardingTokens.ProfileTitle).assertIsDisplayed()
+        composeTestRule.onNodeWithText(OnboardingTokens.sexOptions.first()).performClick()
         composeTestRule.onNodeWithTag(NextButtonTag).performClick()
 
         // Weight -> Height
@@ -210,7 +168,6 @@ class OnboardingViewTest {
         composeTestRule.waitUntil(timeoutMillis = 5_000) { finished }
         assertTrue(finished)
         assertEquals(1, saved.size)
-        assertEquals(OnboardingTokens.genderOptions[1].value, saved.first().sex)
     }
 
     /**

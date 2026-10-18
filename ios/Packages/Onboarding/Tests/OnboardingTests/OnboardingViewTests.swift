@@ -72,69 +72,22 @@ final class OnboardingViewTests: XCTestCase {
         _ = try inspectedAgain.find(text: OnboardingTokens.welcomeTitle)
     }
 
-    // MARK: - Gender & age
+    // MARK: - Profile
 
-    func testGenderStepGatesContinueUntilAGenderIsChosen() throws {
-        let view = OnboardingView(step: .gender)
-
-        ViewHosting.host(view: view)
-        defer { ViewHosting.expel() }
-
-        let inspected = try view.inspect()
-        _ = try inspected.find(text: OnboardingTokens.genderTitle)
-        _ = try inspected.find(text: OnboardingTokens.genderSubtitle)
-        XCTAssertTrue(try nextButton(inspected).isDisabled())
-
-        // The carousel opens on the middle card (Male).
-        try inspected.find(button: OnboardingTokens.genderOptions[1].label).tap()
-
-        XCTAssertFalse(try nextButton(try view.inspect()).isDisabled())
-    }
-
-    func testGenderStepTogglesTheSelectedCardOff() throws {
-        let view = OnboardingView(step: .gender)
-
-        ViewHosting.host(view: view)
-        defer { ViewHosting.expel() }
-
-        let label = OnboardingTokens.genderOptions[1].label
-        try view.inspect().find(button: label).tap()
-        XCTAssertFalse(try nextButton(try view.inspect()).isDisabled())
-
-        try view.inspect().find(button: label).tap()
-        XCTAssertTrue(try nextButton(try view.inspect()).isDisabled())
-    }
-
-    func testGenderStepSkipAdvancesWithoutASelection() throws {
-        let view = OnboardingView(step: .gender)
+    func testProfileStepGatesNextUntilSexIsChosen() throws {
+        let view = OnboardingView(step: .profile)
 
         ViewHosting.host(view: view)
         defer { ViewHosting.expel() }
 
         let inspected = try view.inspect()
-        XCTAssertTrue(try nextButton(inspected).isDisabled())
-
-        try skipButton(inspected).tap()
-
-        let inspectedAgain = try view.inspect()
-        _ = try inspectedAgain.find(text: OnboardingTokens.ageTitle)
-    }
-
-    func testAgeStepShowsTheDefaultAndAdvances() throws {
-        let view = OnboardingView(step: .age)
-
-        ViewHosting.host(view: view)
-        defer { ViewHosting.expel() }
-
-        let inspected = try view.inspect()
-        _ = try inspected.find(text: OnboardingTokens.ageTitle)
+        _ = try inspected.find(text: OnboardingTokens.profileTitle)
         _ = try inspected.find(text: "\(OnboardingTokens.ageDefault)")
-        XCTAssertFalse(try nextButton(inspected).isDisabled())
+        XCTAssertTrue(try nextButton(inspected).isDisabled())
 
-        try nextButton(inspected).tap()
+        try inspected.find(button: OnboardingTokens.sexOptions[0]).tap()
 
-        let inspectedAgain = try view.inspect()
-        _ = try inspectedAgain.find(text: OnboardingTokens.weightTitle)
+        XCTAssertFalse(try nextButton(try view.inspect()).isDisabled())
     }
 
     // MARK: - Weight & height
@@ -213,45 +166,39 @@ final class OnboardingViewTests: XCTestCase {
         _ = try inspected.find(text: OnboardingTokens.welcomeTitle)
         try nextButton(inspected).tap()
 
-        // Goal -> Gender
+        // Goal -> Profile
         let inspected2 = try view.inspect()
         _ = try inspected2.find(text: OnboardingTokens.goalTitle)
         try inspected2.find(button: OnboardingTokens.goals[0].title).tap()
         try nextButton(try view.inspect()).tap()
 
-        // Gender -> Age
+        // Profile -> Weight
         let inspected3 = try view.inspect()
-        _ = try inspected3.find(text: OnboardingTokens.genderTitle)
-        try inspected3.find(button: OnboardingTokens.genderOptions[1].label).tap()
-        try nextButton(try view.inspect()).tap()
-
-        // Age -> Weight
-        let inspected4 = try view.inspect()
-        _ = try inspected4.find(text: OnboardingTokens.ageTitle)
-        _ = try inspected4.find(text: "\(OnboardingTokens.ageDefault)")
+        _ = try inspected3.find(text: OnboardingTokens.profileTitle)
+        try inspected3.find(button: OnboardingTokens.sexOptions[0]).tap()
         try nextButton(try view.inspect()).tap()
 
         // Weight -> Height
-        let inspected5 = try view.inspect()
-        _ = try inspected5.find(text: OnboardingTokens.weightTitle)
+        let inspected4 = try view.inspect()
+        _ = try inspected4.find(text: OnboardingTokens.weightTitle)
         try nextButton(try view.inspect()).tap()
 
         // Height -> Activity
-        let inspected6 = try view.inspect()
-        _ = try inspected6.find(text: OnboardingTokens.heightTitle)
+        let inspected5 = try view.inspect()
+        _ = try inspected5.find(text: OnboardingTokens.heightTitle)
         try nextButton(try view.inspect()).tap()
 
         // Activity -> finish
-        let inspected7 = try view.inspect()
-        _ = try inspected7.find(text: OnboardingTokens.activityTitle)
-        XCTAssertTrue(try nextButton(inspected7).isDisabled())
-        try inspected7.find(button: OnboardingTokens.activityLevels[0].title).tap()
+        let inspected6 = try view.inspect()
+        _ = try inspected6.find(text: OnboardingTokens.activityTitle)
+        XCTAssertTrue(try nextButton(inspected6).isDisabled())
+        try inspected6.find(button: OnboardingTokens.activityLevels[0].title).tap()
         try nextButton(try view.inspect()).tap()
 
         XCTAssertEqual(finished, 1)
         XCTAssertEqual(saved.count, 1)
         XCTAssertEqual(saved.first?.goal, OnboardingTokens.goals[0].title)
-        XCTAssertEqual(saved.first?.sex, OnboardingTokens.genderOptions[1].value)
+        XCTAssertEqual(saved.first?.sex, OnboardingTokens.sexOptions[0])
         XCTAssertEqual(saved.first?.ageYears, OnboardingTokens.ageDefault)
         XCTAssertEqual(saved.first?.weightKg, Double(OnboardingTokens.weightKgDefault))
         XCTAssertEqual(saved.first?.heightCm, Double(OnboardingTokens.heightCmDefault))
@@ -272,13 +219,6 @@ final class OnboardingViewTests: XCTestCase {
     private func backButton(_ view: InspectableView<ViewType.ClassifiedView>) throws -> InspectableView<ViewType.Button> {
         try view.find(ViewType.Button.self) { button in
             try button.accessibilityIdentifier() == OnboardingAccessibility.back
-        }
-    }
-
-    /// The secondary skip pill, located by its identifier.
-    private func skipButton(_ view: InspectableView<ViewType.ClassifiedView>) throws -> InspectableView<ViewType.Button> {
-        try view.find(ViewType.Button.self) { button in
-            try button.accessibilityIdentifier() == OnboardingAccessibility.skip
         }
     }
 }

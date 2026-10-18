@@ -1,12 +1,12 @@
 import Design
 import SwiftUI
 
-/// The Levela post-guest onboarding flow (welcome, goal, gender, age, weight,
-/// height, activity).
+/// The Levela post-guest onboarding flow (welcome, goal, profile, weight, height,
+/// activity).
 ///
-/// Shown after the user taps **Continue as a guest** on the splash. Seven steps:
-/// a welcome intro, a single-select goal step, a gender carousel, an age ruler
-/// step, then weight and height — the latter pair each using a draggable ruler
+/// Shown after the user taps **Continue as a guest** on the splash. Six steps:
+/// a welcome intro, a single-select goal step, a profile step (age + biological
+/// sex), then weight and height — the latter pair each using a draggable ruler
 /// picker and a unit toggle — and finally a single-select activity-level step.
 /// Tapping Next on the last step asks the view model to `complete()`, which
 /// persists the collected profile through its injected save function; once
@@ -48,10 +48,8 @@ public struct OnboardingView: View {
                         welcomeStep
                     } else if viewModel.step == .goal {
                         goalStep
-                    } else if viewModel.step == .gender {
-                        genderStep
-                    } else if viewModel.step == .age {
-                        ageStep
+                    } else if viewModel.step == .profile {
+                        profileStep
                     } else if viewModel.step == .activity {
                         activityStep
                     } else {
@@ -183,66 +181,55 @@ public struct OnboardingView: View {
         }
     }
 
-    /// The gender step: title + subtitle + a single-screen carousel of three
-    /// toggleable gender cards + a "prefer to skip this" pill + back /
-    /// Continue. Continue stays disabled until a gender is chosen; tapping the
-    /// selected card again clears the choice, and skipping advances with the
-    /// value left unset.
-    private var genderStep: some View {
+    /// The profile step: title + an age ruler card + a list of single-select
+    /// biological-sex cards + back / Next. Next stays disabled until a sex option
+    /// is chosen (the age always has a default).
+    private var profileStep: some View {
         VStack(spacing: 0) {
-            Text(OnboardingTokens.genderTitle)
-                .font(LevelaTypography.headlineMedium.bold())
-                .foregroundStyle(OnboardingTokens.title)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.top, 28)
-
-            Text(OnboardingTokens.genderSubtitle)
-                .font(LevelaTypography.bodyLarge)
-                .foregroundStyle(OnboardingTokens.subtitle)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.top, 8)
-
-            GenderCarousel(
-                options: OnboardingTokens.genderOptions,
-                selectedSex: viewModel.sex,
-                toggleSex: viewModel.toggleSex
-            )
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.top, 16)
-
-            SkipButton(label: OnboardingTokens.skip) {
-                withAnimation(.easeInOut(duration: 0.3)) { viewModel.skipSex() }
-            }
-            .padding(.bottom, 12)
-
-            HStack(spacing: 12) {
-                BackButton(action: goBack)
-                NextButton(label: OnboardingTokens.continueLabel, enabled: viewModel.hasSex) {
-                    goNext()
-                }
-            }
-            .padding(.bottom, 24)
-        }
-    }
-
-    /// The age step: title + the age ruler card + back / Next. The age always has
-    /// a default, so Next is always enabled.
-    private var ageStep: some View {
-        VStack(spacing: 0) {
-            Text(OnboardingTokens.ageTitle)
+            Text(OnboardingTokens.profileTitle)
                 .font(LevelaTypography.headlineMedium.bold())
                 .foregroundStyle(OnboardingTokens.title)
                 .multilineTextAlignment(.center)
                 .padding(.top, 28)
 
+            Text(OnboardingTokens.ageTitle)
+                .font(LevelaTypography.titleMedium.bold())
+                .foregroundStyle(OnboardingTokens.title)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 24)
+
             AgeCard(age: viewModel.age, onAgeChange: viewModel.setAge)
-                .padding(.top, 32)
+                .padding(.top, 12)
+
+            Text(OnboardingTokens.sexTitle)
+                .font(LevelaTypography.titleMedium.bold())
+                .foregroundStyle(OnboardingTokens.title)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 24)
+
+            ScrollView {
+                VStack(spacing: 12) {
+                    ForEach(OnboardingTokens.sexOptions.indices, id: \.self) { index in
+                        let option = OnboardingTokens.sexOptions[index]
+                        OptionCard(
+                            id: OnboardingAccessibility.sexOption(index),
+                            title: option,
+                            subtitle: nil,
+                            isSelected: viewModel.sex == option
+                        ) {
+                            viewModel.selectSex(option)
+                        }
+                    }
+                }
+                .padding(.top, 12)
+                .padding(.bottom, 4)
+            }
 
             Spacer(minLength: 16)
 
             HStack(spacing: 12) {
                 BackButton(action: goBack)
-                NextButton(label: OnboardingTokens.next) {
+                NextButton(label: OnboardingTokens.next, enabled: viewModel.hasSex) {
                     goNext()
                 }
             }
@@ -330,8 +317,7 @@ public struct OnboardingView: View {
         switch viewModel.step {
         case .welcome: OnboardingTokens.welcomeTitle
         case .goal: OnboardingTokens.goalTitle
-        case .gender: OnboardingTokens.genderTitle
-        case .age: OnboardingTokens.ageTitle
+        case .profile: OnboardingTokens.profileTitle
         case .weight: OnboardingTokens.weightTitle
         case .height: OnboardingTokens.heightTitle
         case .activity: OnboardingTokens.activityTitle
@@ -402,281 +388,6 @@ public struct OnboardingView: View {
             majorEvery: 12,
             label: OnboardingViewModel.formatFtIn
         )
-        }
-    }
-}
-
-/// The gender carousel: a swipeable, snapping row with the selected card
-/// centred and the neighbouring cards peeking at the edges. Tapping a card
-/// toggles it and scrolls it to the centre.
-private struct GenderCarousel: View {
-    let options: [GenderOption]
-    let selectedSex: String?
-    let toggleSex: (String) -> Void
-
-    @State private var scrolledID: Int?
-
-    init(options: [GenderOption],
-         selectedSex: String?,
-         toggleSex: @escaping (String) -> Void) {
-        self.options = options
-        self.selectedSex = selectedSex
-        self.toggleSex = toggleSex
-        let initial = options.firstIndex(where: { $0.value == selectedSex }) ?? (options.count / 2)
-        _scrolledID = State(initialValue: initial)
-    }
-
-    var body: some View {
-        GeometryReader { proxy in
-            let cardWidth = min(
-                proxy.size.width * OnboardingTokens.genderCardWidthFraction,
-                proxy.size.height * OnboardingTokens.genderCardAspectRatio
-            )
-            let cardHeight = cardWidth / OnboardingTokens.genderCardAspectRatio
-            let horizontalMargin = max(0, (proxy.size.width - cardWidth) / 2)
-
-            ScrollView(.horizontal) {
-                LazyHStack(spacing: CGFloat(OnboardingTokens.genderCardSpacing)) {
-                    ForEach(options.indices, id: \.self) { index in
-                        let option = options[index]
-                        GenderCard(
-                            id: OnboardingAccessibility.genderCard(index),
-                            option: option,
-                            isSelected: option.value == selectedSex
-                        ) {
-                            toggleSex(option.value)
-                            withAnimation(.easeInOut(duration: 0.25)) {
-                                scrolledID = index
-                            }
-                        }
-                        .frame(width: cardWidth, height: cardHeight)
-                        .id(index)
-                    }
-                }
-                .scrollTargetLayout()
-            }
-            .contentMargins(.horizontal, horizontalMargin, for: .scrollContent)
-            .scrollTargetBehavior(.viewAligned)
-            .scrollPosition(id: $scrolledID)
-            .scrollIndicators(.hidden)
-        }
-    }
-}
-
-/// A single gender card: symbol + label + selection check, with a large symbol.
-private struct GenderCard: View {
-    let id: String
-    let option: GenderOption
-    let isSelected: Bool
-    let action: () -> Void
-
-    private var shape: RoundedRectangle {
-        RoundedRectangle(cornerRadius: CGFloat(OnboardingTokens.genderCardCorner), style: .continuous)
-    }
-
-    private var background: Color {
-        isSelected ? option.selected : option.surface
-    }
-
-    private var border: Color {
-        isSelected ? option.selected : OnboardingTokens.genderCardInactiveBorder
-    }
-
-    private var content: Color {
-        isSelected ? option.onSelected : OnboardingTokens.genderCardInactiveText
-    }
-
-    private var icon: Color {
-        isSelected ? option.onSelected : option.accent
-    }
-
-    private var iconBackground: Color {
-        isSelected ? option.onSelected.opacity(0.20) : option.accent.opacity(0.14)
-    }
-
-    private var symbolBackground: Color {
-        isSelected ? option.onSelected.opacity(0.16) : option.accent.opacity(0.10)
-    }
-
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: 0) {
-                HStack(spacing: 10) {
-                    ZStack {
-                        Circle()
-                            .fill(iconBackground)
-                            .frame(width: 36, height: 36)
-
-                        GenderSymbol(symbol: option.symbol, color: icon)
-                            .frame(width: 20, height: 20)
-                    }
-
-                    Text(option.label)
-                        .font(LevelaTypography.titleMedium.bold())
-                        .foregroundStyle(content)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .multilineTextAlignment(.leading)
-
-                    GenderCheck(isSelected: isSelected, mark: option.accent)
-                }
-
-                GeometryReader { proxy in
-                    let side = min(proxy.size.width, proxy.size.height)
-                    ZStack {
-                        Circle()
-                            .fill(symbolBackground)
-                            .frame(width: side * 0.82, height: side * 0.82)
-
-                        GenderSymbol(symbol: option.symbol, color: icon)
-                            .frame(width: side * 0.46, height: side * 0.46)
-
-                        GenderSparkles(color: icon.opacity(0.75))
-                            .frame(width: side, height: side)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
-            }
-            .padding(18)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .background(background, in: shape)
-            .overlay(shape.stroke(border, lineWidth: 1))
-        }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier(id)
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
-    }
-}
-
-/// The card's selection indicator: a check when selected, an empty box otherwise.
-private struct GenderCheck: View {
-    let isSelected: Bool
-    let mark: Color
-
-    var body: some View {
-        RoundedRectangle(cornerRadius: 8, style: .continuous)
-            .fill(isSelected ? OnboardingTokens.genderCheckActive : .clear)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .stroke(
-                        isSelected
-                            ? OnboardingTokens.genderCheckActive
-                            : OnboardingTokens.genderCheckInactiveBorder,
-                        lineWidth: 1
-                    )
-            )
-            .frame(width: 26, height: 26)
-            .overlay {
-                if isSelected {
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(mark)
-                }
-            }
-            .accessibilityHidden(true)
-    }
-}
-
-/// A large gender symbol drawn with strokes, so both platforms stay consistent.
-private struct GenderSymbol: View {
-    let symbol: String
-    let color: Color
-
-    var body: some View {
-        Canvas { context, size in
-            let w = size.width
-            let h = size.height
-            let radius = min(w, h) * 0.21
-            let lineWidth = min(w, h) * 0.075
-            let style = StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round)
-
-            func stroke(_ path: Path) {
-                context.stroke(path, with: .color(color), style: style)
-            }
-
-            func line(_ start: CGPoint, _ end: CGPoint) {
-                var path = Path()
-                path.move(to: start)
-                path.addLine(to: end)
-                stroke(path)
-            }
-
-            switch symbol {
-            case "female":
-                let cx = w * 0.5
-                let cy = h * 0.36
-                stroke(Path(ellipseIn: CGRect(
-                    x: cx - radius,
-                    y: cy - radius,
-                    width: radius * 2,
-                    height: radius * 2
-                )))
-                line(CGPoint(x: cx, y: cy + radius), CGPoint(x: cx, y: h * 0.92))
-                line(CGPoint(x: w * 0.28, y: h * 0.78), CGPoint(x: w * 0.72, y: h * 0.78))
-
-            case "male":
-                let cx = w * 0.40
-                let cy = h * 0.62
-                stroke(Path(ellipseIn: CGRect(
-                    x: cx - radius,
-                    y: cy - radius,
-                    width: radius * 2,
-                    height: radius * 2
-                )))
-                let start = CGPoint(
-                    x: cx + radius * 0.7071,
-                    y: cy - radius * 0.7071
-                )
-                let end = CGPoint(x: w * 0.86, y: h * 0.14)
-                line(start, end)
-                line(end, CGPoint(x: w * 0.62, y: h * 0.14))
-                line(end, CGPoint(x: w * 0.86, y: h * 0.40))
-
-            default:
-                let cx = w * 0.46
-                let cy = h * 0.58
-                stroke(Path(ellipseIn: CGRect(
-                    x: cx - radius,
-                    y: cy - radius,
-                    width: radius * 2,
-                    height: radius * 2
-                )))
-                let start = CGPoint(
-                    x: cx + radius * 0.7071,
-                    y: cy - radius * 0.7071
-                )
-                let end = CGPoint(x: w * 0.88, y: h * 0.10)
-                line(start, end)
-                line(end, CGPoint(x: w * 0.66, y: h * 0.10))
-                line(end, CGPoint(x: w * 0.88, y: h * 0.34))
-                line(CGPoint(x: cx, y: cy + radius), CGPoint(x: cx, y: h * 0.95))
-                line(CGPoint(x: w * 0.26, y: h * 0.82), CGPoint(x: w * 0.66, y: h * 0.82))
-            }
-        }
-    }
-}
-
-/// Small decorative dots around the central symbol, matching the reference cards.
-private struct GenderSparkles: View {
-    let color: Color
-
-    var body: some View {
-        Canvas { context, size in
-            let radius = min(size.width, size.height) * 0.018
-            let dots = [
-                CGPoint(x: size.width * 0.16, y: size.height * 0.22),
-                CGPoint(x: size.width * 0.84, y: size.height * 0.32),
-                CGPoint(x: size.width * 0.72, y: size.height * 0.78)
-            ]
-            for (index, point) in dots.enumerated() {
-                let scale = index == 0 ? 1.0 : 0.7
-                let rect = CGRect(
-                    x: point.x - radius * scale,
-                    y: point.y - radius * scale,
-                    width: radius * 2 * scale,
-                    height: radius * 2 * scale
-                )
-                context.fill(Path(ellipseIn: rect), with: .color(color))
-            }
         }
     }
 }
@@ -776,40 +487,14 @@ private struct AgeCard: View {
 enum OnboardingAccessibility {
     static let back = "onboarding.back"
     static let next = "onboarding.next"
-    static let skip = "onboarding.skip"
     /// The big value on the age / weight / height cards.
     static let value = "onboarding.value"
 
     static func goalCard(_ index: Int) -> String { "onboarding.goal.\(index)" }
-    static func genderCard(_ index: Int) -> String { "onboarding.gender.\(index)" }
+    static func sexOption(_ index: Int) -> String { "onboarding.sex.\(index)" }
     static func activityCard(_ index: Int) -> String { "onboarding.activity.\(index)" }
     /// A unit-toggle option, keyed by its label (e.g. `lb`, `ft/in`).
     static func unit(_ unit: String) -> String { "onboarding.unit.\(unit)" }
-}
-
-/// The secondary "prefer to skip this" pill on the gender step.
-private struct SkipButton: View {
-    let label: String
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 8) {
-                Text(label)
-                    .font(LevelaTypography.labelLarge)
-                    .foregroundStyle(OnboardingTokens.skipText)
-
-                Image(systemName: "plus")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(OnboardingTokens.skipText)
-            }
-            .frame(maxWidth: .infinity)
-            .frame(height: 56)
-            .background(OnboardingTokens.skipBackground, in: Capsule())
-        }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier(OnboardingAccessibility.skip)
-    }
 }
 
 private struct BackButton: View {
@@ -945,13 +630,8 @@ private struct OptionDot: View {
         .levelaTheme()
 }
 
-#Preview("Gender") {
-    OnboardingView(step: .gender)
-        .levelaTheme()
-}
-
-#Preview("Age") {
-    OnboardingView(step: .age)
+#Preview("Profile") {
+    OnboardingView(step: .profile)
         .levelaTheme()
 }
 
