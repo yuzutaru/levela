@@ -66,6 +66,26 @@ final class OnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.step, .activity)
     }
 
+    func testTogglingTheSelectedGenderClearsIt() {
+        let viewModel = OnboardingViewModel()
+
+        viewModel.toggleSex("Female")
+        XCTAssertEqual(viewModel.sex, "Female")
+        XCTAssertTrue(viewModel.hasSex)
+
+        viewModel.toggleSex("Female")
+        XCTAssertNil(viewModel.sex)
+        XCTAssertFalse(viewModel.hasSex)
+
+        // Toggling a different option replaces the current one.
+        viewModel.toggleSex("Female")
+        viewModel.toggleSex("Male")
+        XCTAssertEqual(viewModel.sex, "Male")
+
+        viewModel.toggleSex("Not an option")
+        XCTAssertEqual(viewModel.sex, "Male")
+    }
+
     func testSkippingGenderClearsTheSelectionAndAdvancesToAge() {
         let viewModel = OnboardingViewModel()
         while viewModel.step != .gender { viewModel.next() }

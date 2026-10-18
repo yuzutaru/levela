@@ -184,9 +184,10 @@ public struct OnboardingView: View {
     }
 
     /// The gender step: title + subtitle + a single-screen carousel of three
-    /// single-select gender cards + a "prefer to skip this" pill + back /
-    /// Continue. Continue stays disabled until a gender is chosen; skipping
-    /// advances with the gender value left unset.
+    /// toggleable gender cards + a "prefer to skip this" pill + back /
+    /// Continue. Continue stays disabled until a gender is chosen; tapping the
+    /// selected card again clears the choice, and skipping advances with the
+    /// value left unset.
     private var genderStep: some View {
         VStack(spacing: 0) {
             Text(OnboardingTokens.genderTitle)
@@ -204,7 +205,7 @@ public struct OnboardingView: View {
             GenderCarousel(
                 options: OnboardingTokens.genderOptions,
                 selectedSex: viewModel.sex,
-                selectSex: viewModel.selectSex
+                toggleSex: viewModel.toggleSex
             )
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(.top, 16)
@@ -407,20 +408,20 @@ public struct OnboardingView: View {
 
 /// The gender carousel: a swipeable, snapping row with the selected card
 /// centred and the neighbouring cards peeking at the edges. Tapping a card
-/// selects it and scrolls it to the centre.
+/// toggles it and scrolls it to the centre.
 private struct GenderCarousel: View {
     let options: [GenderOption]
     let selectedSex: String?
-    let selectSex: (String) -> Void
+    let toggleSex: (String) -> Void
 
     @State private var scrolledID: Int?
 
     init(options: [GenderOption],
          selectedSex: String?,
-         selectSex: @escaping (String) -> Void) {
+         toggleSex: @escaping (String) -> Void) {
         self.options = options
         self.selectedSex = selectedSex
-        self.selectSex = selectSex
+        self.toggleSex = toggleSex
         let initial = options.firstIndex(where: { $0.value == selectedSex }) ?? (options.count / 2)
         _scrolledID = State(initialValue: initial)
     }
@@ -443,7 +444,7 @@ private struct GenderCarousel: View {
                             option: option,
                             isSelected: option.value == selectedSex
                         ) {
-                            selectSex(option.value)
+                            toggleSex(option.value)
                             withAnimation(.easeInOut(duration: 0.25)) {
                                 scrolledID = index
                             }
@@ -474,25 +475,27 @@ private struct GenderCard: View {
     }
 
     private var background: Color {
-        isSelected ? OnboardingTokens.genderCardActive : OnboardingTokens.genderCardInactive
+        isSelected ? option.selected : option.surface
     }
 
     private var border: Color {
-        isSelected ? OnboardingTokens.genderCardActiveBorder : OnboardingTokens.genderCardInactiveBorder
+        isSelected ? option.selected : OnboardingTokens.genderCardInactiveBorder
     }
 
     private var content: Color {
-        isSelected ? OnboardingTokens.genderCardActiveText : OnboardingTokens.genderCardInactiveText
+        isSelected ? option.onSelected : OnboardingTokens.genderCardInactiveText
     }
 
     private var icon: Color {
-        isSelected ? OnboardingTokens.genderCardIconActive : OnboardingTokens.genderCardIconInactive
+        isSelected ? option.onSelected : option.accent
     }
 
     private var iconBackground: Color {
-        isSelected
-            ? OnboardingTokens.genderCardIconBackgroundActive
-            : OnboardingTokens.genderCardIconBackgroundInactive
+        isSelected ? option.onSelected.opacity(0.20) : option.accent.opacity(0.14)
+    }
+
+    private var symbolBackground: Color {
+        isSelected ? option.onSelected.opacity(0.16) : option.accent.opacity(0.10)
     }
 
     var body: some View {
@@ -514,14 +517,14 @@ private struct GenderCard: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .multilineTextAlignment(.leading)
 
-                    GenderCheck(isSelected: isSelected)
+                    GenderCheck(isSelected: isSelected, mark: option.accent)
                 }
 
                 GeometryReader { proxy in
                     let side = min(proxy.size.width, proxy.size.height)
                     ZStack {
                         Circle()
-                            .fill(iconBackground.opacity(isSelected ? 0.35 : 0.55))
+                            .fill(symbolBackground)
                             .frame(width: side * 0.82, height: side * 0.82)
 
                         GenderSymbol(symbol: option.symbol, color: icon)
@@ -547,6 +550,7 @@ private struct GenderCard: View {
 /// The card's selection indicator: a check when selected, an empty box otherwise.
 private struct GenderCheck: View {
     let isSelected: Bool
+    let mark: Color
 
     var body: some View {
         RoundedRectangle(cornerRadius: 8, style: .continuous)
@@ -565,7 +569,7 @@ private struct GenderCheck: View {
                 if isSelected {
                     Image(systemName: "checkmark")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(OnboardingTokens.genderCheckActiveMark)
+                        .foregroundStyle(mark)
                 }
             }
             .accessibilityHidden(true)

@@ -70,7 +70,7 @@ All theme code is in `Packages/Design/Sources/Design/`:
 
 | File | Contents |
 | --- | --- |
-| `Color.swift` | `Color` extensions: the icon-derived primitive scale from `THEME_COLORS.md` (`blue500`, `green500`, `orange500`, `lightBlue*`, `gray*`, `navy*`, `ink100`). |
+| `Color.swift` | `Color` extensions: the icon-derived primitive scale from `THEME_COLORS.md` (`blue500`, `green500`, `orange500`, `lightBlue*`, `pink*`, `gray*`, `navy*`, `ink100`). |
 | `Fonts.swift` | `LevelaFontFamily`, `LevelaFontWeight`, `LevelaFonts.registerAll()`. |
 | `Typography.swift` | `LevelaTypography`: the type scale mapping roles → families. |
 | `Theme.swift` | `LevelaColors` (light/dark), the `levelaColors` environment value, and the `levelaTheme()` view modifier. |
@@ -119,7 +119,7 @@ requirements. See [`../assets/app-icon/README.md`](../assets/app-icon/README.md)
 
 `Color.swift` holds the icon-derived primitive scale from
 [`../THEME_COLORS.md`](../THEME_COLORS.md) (`blue500`, `green500`, `orange500`,
-`lightBlue*`, `gray*`, `navy*`, `ink100`). `LevelaColors` in `Theme.swift` maps
+`lightBlue*`, `pink*`, `gray*`, `navy*`, `ink100`). `LevelaColors` in `Theme.swift` maps
 these to semantic roles for light (white background, blue/green/orange accents)
 and dark (deep navy) appearances; `levelaTheme()` picks by system appearance.
 
@@ -157,8 +157,9 @@ once, for both platforms, by the shared contract in `../assets/onboarding/`:
 `OnboardingView` shows the welcome step (title, subtitle, hero illustration), the
 goal step (single-select goal cards — a status dot plus title and subtitle — where
 Next stays disabled until a goal is chosen), the gender step (a single-screen
-snapping carousel of icon-only gender cards, Continue disabled until a gender is
-chosen, plus a **Prefer to skip this** pill), the age step (the age ruler picker,
+snapping carousel of colour-coded icon-only gender cards — pink female, blue
+male, orange neutral — where Continue stays disabled until a gender is chosen,
+plus a **Prefer to skip this** pill), the age step (the age ruler picker,
 Next always enabled), the weight and height steps (progress segments, unit
 toggle, a draggable snapping ruler picker on a tinted value card, back + Next
 buttons) and the activity step (single-select activity-level cards, Next disabled
