@@ -110,11 +110,15 @@ def check_platform(key):
             if value and value not in tokens:
                 errors.append(f"{tokens_rel}: missing goals[{i}].{field} = \"{value}\"")
 
-    # gender options: the persisted value, card label and icon symbol
+    # gender options: persisted value, card label, icon symbol and card colours.
+    # Colour names are matched case-insensitively (Android `Pink100`, Swift `.pink100`).
     for i, option in enumerate(c.get("gender", [])):
-        for field in ("value", "label", "symbol"):
+        for field in ("value", "label", "symbol", "surface", "accent", "selected", "onSelected"):
             value = option.get(field)
-            if value and value not in tokens:
+            if not value:
+                continue
+            hit = value.lower() in low if field in ("surface", "accent", "selected", "onSelected") else value in tokens
+            if not hit:
                 errors.append(f"{tokens_rel}: missing gender[{i}].{field} = \"{value}\"")
 
     # activity-level options (title + subtitle copy), single-select cards

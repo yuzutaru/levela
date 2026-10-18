@@ -12,6 +12,11 @@ import com.yuzutaru.design.ui.theme.Gray500
 import com.yuzutaru.design.ui.theme.LightBlue100
 import com.yuzutaru.design.ui.theme.LightBlue300
 import com.yuzutaru.design.ui.theme.Navy900
+import com.yuzutaru.design.ui.theme.Orange100
+import com.yuzutaru.design.ui.theme.Orange500
+import com.yuzutaru.design.ui.theme.Orange700
+import com.yuzutaru.design.ui.theme.Pink100
+import com.yuzutaru.design.ui.theme.Pink700
 import com.yuzutaru.design.ui.theme.White
 
 /**
@@ -60,11 +65,36 @@ object OnboardingTokens {
         GoalOption("Train for an event", "Prepare for a race or competition"),
     )
 
-    // Gender — the single-select cards (persisted value, card label, icon symbol).
+    // Gender — the single-select cards. Each carries its label, icon symbol and
+    // pastel surface / saturated accent colours.
     val genderOptions: List<GenderOption> = listOf(
-        GenderOption("Female", "I Am Female", "female"),
-        GenderOption("Male", "I Am Male", "male"),
-        GenderOption("Prefer not to say", "Prefer not to say", "neutral"),
+        GenderOption(
+            value = "Female",
+            label = "I Am Female",
+            symbol = "female",
+            surface = Pink100,
+            accent = Pink700,
+            selected = Pink700,
+            onSelected = White,
+        ),
+        GenderOption(
+            value = "Male",
+            label = "I Am Male",
+            symbol = "male",
+            surface = Blue100,
+            accent = Blue500,
+            selected = Blue500,
+            onSelected = White,
+        ),
+        GenderOption(
+            value = "Prefer not to say",
+            label = "Prefer not to say",
+            symbol = "neutral",
+            surface = Orange100,
+            accent = Orange700,
+            selected = Orange500,
+            onSelected = Navy900,
+        ),
     )
 
     // The persisted values, used to validate selections.
@@ -140,19 +170,10 @@ object OnboardingTokens {
     val ToggleSelectedText: Color = White
     val ToggleUnselectedText: Color = Gray500
 
-    // Gender cards
-    val GenderCardActive: Color = Blue500
-    val GenderCardActiveText: Color = White
-    val GenderCardActiveBorder: Color = Blue500
-    val GenderCardInactive: Color = White
+    // Gender cards (per-option colours live on GenderOption)
     val GenderCardInactiveText: Color = Navy900
     val GenderCardInactiveBorder: Color = Gray200
-    val GenderCardIconActive: Color = Blue500
-    val GenderCardIconInactive: Color = Blue500
-    val GenderCardIconBackgroundActive: Color = White
-    val GenderCardIconBackgroundInactive: Color = Blue100
     val GenderCheckActive: Color = White
-    val GenderCheckActiveMark: Color = Blue500
     val GenderCheckInactiveBorder: Color = Gray200
     val SkipBackground: Color = Blue100
     val SkipText: Color = Blue700
@@ -174,9 +195,13 @@ data class GoalOption(
     val subtitle: String,
 )
 
-/** A gender card: the persisted value, its display label and its icon symbol. */
+/** A gender card: persisted value, display label, icon symbol and card colours. */
 data class GenderOption(
     val value: String,
     val label: String,
     val symbol: String,
+    val surface: Color,
+    val accent: Color,
+    val selected: Color,
+    val onSelected: Color,
 )

@@ -10,7 +10,8 @@ scripts/verify_onboarding_parity.sh          # checks both platforms against the
 ```
 
 The colour tokens are the primitives from [`../../THEME_COLORS.md`](../../THEME_COLORS.md)
-(`Blue100/300/500/700`, `LightBlue100/300`, `Navy900`, `White`, `Gray100/200/300/500`).
+(`Blue100/300/500/700`, `LightBlue100/300`, `Orange100/500/700`,
+`Pink100/300/500/700`, `Navy900`, `White`, `Gray100/200/300/500`).
 The mockup's dark accents are toned to the app palette: a white canvas with
 `Navy900` text and `Blue500` actions (matching the splash), and the value cards
 tinted light blue (`LightBlue100` for weight, `Blue100` for height).
@@ -40,11 +41,14 @@ secondary **Prefer to skip this** pill that advances with the gender left unset.
 progress indicator has one segment per step (seven).
 
 The gender cards are icon-only: a large gender symbol (female / male / neutral)
-drawn from strokes, on a tinted disc, with a small check indicator. The selected
-card is `Blue500` with white content; unselected cards are white with a
-`Gray200` border. The cards sit in a snapping carousel with the selected card
-centred and its neighbours peeking at the edges, so the whole step fits one
-screen without vertical scrolling.
+drawn from strokes, on a tinted disc, with a small check indicator. Each card is
+colour-coded: female uses the `Pink` scale, male uses `Blue`, and
+**Prefer not to say** uses `Orange`. Unselected cards use a pastel surface
+(`Pink100` / `Blue100` / `Orange100`) with the matching accent; the selected card
+fills with its saturated accent and uses the accent's on-colour for text. The
+cards sit in a snapping carousel with the selected card centred and its
+neighbours peeking at the edges, so the whole step fits one screen without
+vertical scrolling.
 
 The welcome step shows the hero illustration
 (`assets/onboarding/welcome-illustration.png`) between the subtitle and the
@@ -103,7 +107,7 @@ contract:
 
 - a step name, copy string, unit label or default unit differs;
 - a goal card's title or subtitle, an activity-level card's title or subtitle,
-  or a gender option's persisted value, label or symbol, is missing;
+  or a gender option's persisted value, label, symbol or card colours, is missing;
 - a value range min/max/step/default number is missing;
 - a colour token is renamed or missing;
 - the welcome illustration source or a platform rendition is missing or the wrong size;

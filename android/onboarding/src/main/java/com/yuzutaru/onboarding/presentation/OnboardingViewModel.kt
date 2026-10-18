@@ -112,6 +112,12 @@ class OnboardingViewModel @Inject constructor(
         if (option in OnboardingTokens.sexOptions) sex = option
     }
 
+    /** Toggles a gender option: selecting the current choice again clears it. */
+    fun toggleSex(option: String) {
+        if (option !in OnboardingTokens.sexOptions) return
+        sex = if (sex == option) null else option
+    }
+
     /**
      * Advances past the gender step with no selection, so the profile is saved
      * without a sex value.

@@ -85,6 +85,18 @@ class OnboardingViewTest {
     }
 
     @Test
+    fun genderStepTogglesTheSelectedCardOff() {
+        setContent(step = OnboardingStep.Gender)
+
+        val label = OnboardingTokens.genderOptions[1].label
+        composeTestRule.onNodeWithText(label).performClick()
+        composeTestRule.onNodeWithTag(NextButtonTag).assertIsEnabled()
+
+        composeTestRule.onNodeWithText(label).performClick()
+        composeTestRule.onNodeWithTag(NextButtonTag).assertIsNotEnabled()
+    }
+
+    @Test
     fun genderStepSkipAdvancesWithoutASelection() {
         setContent(step = OnboardingStep.Gender)
 
