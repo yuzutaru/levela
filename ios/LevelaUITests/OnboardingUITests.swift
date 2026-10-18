@@ -29,6 +29,7 @@ final class OnboardingUITests: XCTestCase {
         static func goalCard(_ index: Int) -> String { "onboarding.goal.\(index)" }
         static func genderCard(_ index: Int) -> String { "onboarding.gender.\(index)" }
         static func activityCard(_ index: Int) -> String { "onboarding.activity.\(index)" }
+        static func age(_ value: Int) -> String { "onboarding.age.\(value)" }
         static func unit(_ unit: String) -> String { "onboarding.unit.\(unit)" }
     }
 
@@ -66,6 +67,17 @@ final class OnboardingUITests: XCTestCase {
         tapNext(in: app)
         assertValue(in: app, equals: "30") // OnboardingTokens.ageDefault
         XCTAssertTrue(nextButton(in: app).isEnabled)
+
+        // The age wheel selects a tapped neighbour and centres it.
+        let nextAge = Identifier.age(31) // ageDefault + 1
+        let ageRow = app.staticTexts[nextAge]
+        XCTAssertTrue(ageRow.waitForExistence(timeout: 20))
+        // The wheel must open centred, with the neighbouring age on screen.
+        XCTAssertTrue(ageRow.isHittable)
+        // Tap by coordinate: selecting a row swaps its identifier to
+        // `onboarding.value`, so the element handle is stale straight after.
+        ageRow.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        assertValue(in: app, equals: "31")
 
         // Age -> weight: the unit toggle converts 70 kg to 154 lb.
         tapNext(in: app)
@@ -163,8 +175,9 @@ final class OnboardingUITests: XCTestCase {
         element.tap()
     }
 
-    /// Reads the big value card (age / weight / height) and waits for it to show
-    /// `expected` — the value changes in place when the unit is toggled.
+    /// Reads the age wheel's centred row (or the weight / height value card) and
+    /// waits for it to show `expected` — the value changes in place when the
+    /// wheel moves or the unit is toggled.
     @MainActor
     private func assertValue(
         in app: XCUIApplication,

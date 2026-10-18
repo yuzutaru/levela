@@ -159,7 +159,8 @@ goal step (single-select goal cards — a status dot plus title and subtitle —
 Next stays disabled until a goal is chosen), the gender step (a single-screen
 snapping carousel of colour-coded icon-only gender cards — pink female, blue
 male, orange neutral — where Continue stays disabled until a gender is chosen,
-plus a **Prefer to skip this** pill), the age step (the age ruler picker,
+plus a **Prefer to skip this** pill), the age step (a vertical snapping wheel
+picker — the centred age in a solid blue card, neighbours scaled and faded —
 Next always enabled), the weight and height steps (progress segments, unit
 toggle, a draggable snapping ruler picker on a tinted value card, back + Next
 buttons) and the activity step (single-select activity-level cards, Next disabled
