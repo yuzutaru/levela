@@ -18,12 +18,6 @@ val LightBlue100 = Color(0xFFE6F6FE)
 val LightBlue300 = Color(0xFFA0E0F8)
 val LightBlue500 = Color(0xFF5AC8FA)
 
-// Pink — accent used by the onboarding gender cards.
-val Pink100 = Color(0xFFFCE7F3)
-val Pink300 = Color(0xFFF9A8D4)
-val Pink500 = Color(0xFFEC4899)
-val Pink700 = Color(0xFFBE185D)
-
 // Green — secondary (food / leaves).
 val Green100 = Color(0xFFD9F7E6)
 val Green300 = Color(0xFF7FE0A8)

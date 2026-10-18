@@ -5,7 +5,7 @@
 # Contract enforcement for the Levela post-guest onboarding flow. Reads
 # assets/onboarding/onboarding-contract.json and checks that each platform's
 # OnboardingTokens file carries the same steps, copy, units, defaults, value
-# ranges, goals, gender options, activity levels and colour tokens, that its design-system Color
+# ranges, goals, activity levels and colour tokens, that its design-system Color
 # file defines the contracted palette, and that the welcome illustration ships on
 # both platforms at the contracted sizes.
 #
@@ -110,16 +110,10 @@ def check_platform(key):
             if value and value not in tokens:
                 errors.append(f"{tokens_rel}: missing goals[{i}].{field} = \"{value}\"")
 
-    # gender options: persisted value, card label, icon symbol and card colours.
-    # Colour names are matched case-insensitively (Android `Pink100`, Swift `.pink100`).
-    for i, option in enumerate(c.get("gender", [])):
-        for field in ("value", "label", "symbol", "surface", "accent", "selected", "onSelected"):
-            value = option.get(field)
-            if not value:
-                continue
-            hit = value.lower() in low if field in ("surface", "accent", "selected", "onSelected") else value in tokens
-            if not hit:
-                errors.append(f"{tokens_rel}: missing gender[{i}].{field} = \"{value}\"")
+    # biological sex options, single-select cards
+    for i, option in enumerate(c.get("sex", [])):
+        if option not in tokens:
+            errors.append(f"{tokens_rel}: missing sex[{i}] = \"{option}\"")
 
     # activity-level options (title + subtitle copy), single-select cards
     for i, level in enumerate(c.get("activityLevels", [])):

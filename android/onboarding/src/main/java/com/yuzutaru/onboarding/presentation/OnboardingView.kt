@@ -6,26 +6,19 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,6 +26,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,45 +35,34 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.selected
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LevelaTheme
-import com.yuzutaru.onboarding.R
-import com.yuzutaru.onboarding.presentation.model.GenderOption
 import com.yuzutaru.onboarding.presentation.model.OnboardingStep
+import com.yuzutaru.onboarding.R
 import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
 import com.yuzutaru.onboarding.presentation.widget.BackButton
 import com.yuzutaru.onboarding.presentation.widget.NextButton
 import com.yuzutaru.onboarding.presentation.widget.RulerPicker
-import com.yuzutaru.onboarding.presentation.widget.SkipButton
 import com.yuzutaru.onboarding.presentation.widget.StepProgress
 import com.yuzutaru.onboarding.presentation.widget.ValueStep
-import kotlinx.coroutines.launch
 
 /**
- * The Levela post-guest onboarding flow (welcome, goal, gender, age, weight,
- * height, activity).
+ * The Levela post-guest onboarding flow (welcome, goal, profile, weight, height,
+ * activity).
  *
- * Shown after the user taps **Continue as a guest** on the splash. Seven steps:
- * a welcome intro, a single-select goal step, a gender carousel, an age ruler
- * step, then weight and height — the latter pair each using a draggable ruler
+ * Shown after the user taps **Continue as a guest** on the splash. Six steps:
+ * a welcome intro, a single-select goal step, a profile step (age + biological
+ * sex), then weight and height — the latter pair each using a draggable ruler
  * picker and a unit toggle — and finally a single-select activity-level step.
  * Tapping Next on the last step asks [OnboardingViewModel.complete] to persist
  * the collected profile through its use case; once saved, [onFinished] is called
@@ -144,19 +128,13 @@ fun OnboardingView(
                             backOnClicked = viewModel::back,
                             next = viewModel::next,
                         )
-                    OnboardingStep.Gender ->
-                        GenderStep(
-                            selectedSex = viewModel.sex,
-                            toggleSex = viewModel::toggleSex,
-                            hasSex = viewModel.hasSex,
-                            backOnClicked = viewModel::back,
-                            next = viewModel::next,
-                            skip = viewModel::skipSex,
-                        )
-                    OnboardingStep.Age ->
-                        AgeStep(
+                    OnboardingStep.Profile ->
+                        ProfileStep(
                             age = viewModel.age,
                             setAge = viewModel::setAge,
+                            selectedSex = viewModel.sex,
+                            selectSex = viewModel::selectSex,
+                            hasSex = viewModel.hasSex,
                             backOnClicked = viewModel::back,
                             next = viewModel::next,
                         )
@@ -316,7 +294,7 @@ private fun ColumnScope.GoalStep(
 
 /**
  * A single-select option card: a status dot on the left, then a title and an
- * optional subtitle. Shared by the goal and activity steps.
+ * optional subtitle. Shared by the goal and profile steps.
  */
 @Composable
 private fun OptionCard(
@@ -386,103 +364,71 @@ private fun OptionDot(
 }
 
 /**
- * The gender step: title + subtitle + a single-screen carousel of three
- * toggleable gender cards + a "prefer to skip this" pill + back / Continue.
- * Continue stays disabled until a gender is chosen; tapping the selected card
- * again clears the choice, and skipping advances with the value left unset.
+ * The profile step: title + an age ruler card + a list of single-select
+ * biological-sex cards + back / Next. Next stays disabled until a sex option is
+ * chosen (the age always has a default).
  */
 @Composable
-private fun ColumnScope.GenderStep(
+private fun ColumnScope.ProfileStep(
+    age: Int,
+    setAge: (Int) -> Unit,
     selectedSex: String?,
-    toggleSex: (String) -> Unit,
+    selectSex: (String) -> Unit,
     hasSex: Boolean,
     backOnClicked: () -> Unit,
     next: () -> Unit,
-    skip: () -> Unit,
 ) {
     Spacer(Modifier.height(28.dp))
 
     Text(
-        text = OnboardingTokens.GenderTitle,
-        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-        color = OnboardingTokens.Title,
-        modifier = Modifier.fillMaxWidth(),
-        textAlign = TextAlign.Start,
-    )
-
-    Spacer(Modifier.height(8.dp))
-
-    Text(
-        text = OnboardingTokens.GenderSubtitle,
-        style = MaterialTheme.typography.bodyLarge,
-        color = OnboardingTokens.Subtitle,
-        modifier = Modifier.fillMaxWidth(),
-        textAlign = TextAlign.Start,
-    )
-
-    Spacer(Modifier.height(16.dp))
-
-    GenderCarousel(
-        options = OnboardingTokens.genderOptions,
-        selectedSex = selectedSex,
-        toggleSex = toggleSex,
-        modifier = Modifier
-            .weight(1f)
-            .fillMaxWidth(),
-    )
-
-    Spacer(Modifier.height(16.dp))
-
-    SkipButton(
-        label = OnboardingTokens.Skip,
-        onClick = skip,
-        modifier = Modifier.fillMaxWidth(),
-    )
-
-    Spacer(Modifier.height(12.dp))
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        BackButton(onClick = backOnClicked)
-        Spacer(Modifier.width(12.dp))
-        NextButton(
-            label = OnboardingTokens.ContinueLabel,
-            onClick = next,
-            enabled = hasSex,
-            modifier = Modifier.weight(1f),
-        )
-    }
-
-    Spacer(Modifier.height(24.dp))
-}
-
-/**
- * The age step: title + the age ruler card + back / Next. The age always has a
- * default, so Next is always enabled.
- */
-@Composable
-private fun ColumnScope.AgeStep(
-    age: Int,
-    setAge: (Int) -> Unit,
-    backOnClicked: () -> Unit,
-    next: () -> Unit,
-) {
-    Spacer(Modifier.height(28.dp))
-
-    Text(
-        text = OnboardingTokens.AgeTitle,
+        text = OnboardingTokens.ProfileTitle,
         style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
         color = OnboardingTokens.Title,
         textAlign = TextAlign.Center,
     )
 
-    Spacer(Modifier.height(32.dp))
+    Spacer(Modifier.height(24.dp))
+
+    Text(
+        text = OnboardingTokens.AgeTitle,
+        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+        color = OnboardingTokens.Title,
+        modifier = Modifier.fillMaxWidth(),
+    )
+
+    Spacer(Modifier.height(12.dp))
 
     AgeCard(age = age, onAgeChange = setAge)
 
-    Spacer(Modifier.weight(1f))
+    Spacer(Modifier.height(24.dp))
+
+    Text(
+        text = OnboardingTokens.SexTitle,
+        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+        color = OnboardingTokens.Title,
+        modifier = Modifier.fillMaxWidth(),
+    )
+
+    Spacer(Modifier.height(12.dp))
+
+    Column(
+        modifier = Modifier
+            .weight(1f)
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        OnboardingTokens.sexOptions.forEach { option ->
+            OptionCard(
+                title = option,
+                subtitle = null,
+                isSelected = option == selectedSex,
+                onClick = { selectSex(option) },
+            )
+        }
+    }
+
+    Spacer(Modifier.height(20.dp))
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -493,285 +439,12 @@ private fun ColumnScope.AgeStep(
         NextButton(
             label = OnboardingTokens.Next,
             onClick = next,
+            enabled = hasSex,
             modifier = Modifier.weight(1f),
         )
     }
 
     Spacer(Modifier.height(24.dp))
-}
-
-/**
- * The gender carousel: a swipeable, snapping row with the selected card centred
- * and the neighbouring cards peeking at the edges. Tapping a card toggles it and
- * scrolls it to the centre.
- */
-@Composable
-private fun GenderCarousel(
-    options: List<GenderOption>,
-    selectedSex: String?,
-    toggleSex: (String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val initialPage = remember {
-        options.indexOfFirst { it.value == selectedSex }.takeIf { it >= 0 }
-            ?: (options.size / 2)
-    }
-    val pagerState = rememberPagerState(initialPage = initialPage, pageCount = { options.size })
-    val scope = rememberCoroutineScope()
-
-    BoxWithConstraints(
-        modifier = modifier,
-        contentAlignment = Alignment.Center,
-    ) {
-        val cardWidth = minOf(
-            maxWidth * OnboardingTokens.GenderCardWidthFraction,
-            maxHeight * OnboardingTokens.GenderCardAspectRatio,
-        )
-        val cardHeight = cardWidth / OnboardingTokens.GenderCardAspectRatio
-        val horizontalPadding = (maxWidth - cardWidth) / 2f
-
-        HorizontalPager(
-            state = pagerState,
-            pageSpacing = OnboardingTokens.GenderCardSpacing.dp,
-            contentPadding = PaddingValues(horizontal = horizontalPadding),
-            modifier = Modifier.fillMaxSize(),
-        ) { page ->
-            val option = options[page]
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                GenderCard(
-                    option = option,
-                    isSelected = option.value == selectedSex,
-                    onClick = {
-                        toggleSex(option.value)
-                        scope.launch { pagerState.animateScrollToPage(page) }
-                    },
-                    modifier = Modifier
-                        .width(cardWidth)
-                        .height(cardHeight),
-                )
-            }
-        }
-    }
-}
-
-/** A single gender card: symbol + label + selection check, with a large symbol. */
-@Composable
-private fun GenderCard(
-    option: GenderOption,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val shape = RoundedCornerShape(OnboardingTokens.GenderCardCorner.dp)
-    val background = if (isSelected) option.selected else option.surface
-    val border = if (isSelected) option.selected else OnboardingTokens.GenderCardInactiveBorder
-    val content = if (isSelected) option.onSelected else OnboardingTokens.GenderCardInactiveText
-    val icon = if (isSelected) option.onSelected else option.accent
-    val iconBackground = if (isSelected) {
-        option.onSelected.copy(alpha = 0.20f)
-    } else {
-        option.accent.copy(alpha = 0.14f)
-    }
-    val symbolBackground = if (isSelected) {
-        option.onSelected.copy(alpha = 0.16f)
-    } else {
-        option.accent.copy(alpha = 0.10f)
-    }
-
-    Column(
-        modifier = modifier
-            .clip(shape)
-            .background(background)
-            .border(1.dp, border, shape)
-            .clickable(onClick = onClick)
-            .semantics { selected = isSelected }
-            .padding(18.dp),
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(CircleShape)
-                    .background(iconBackground),
-                contentAlignment = Alignment.Center,
-            ) {
-                GenderSymbol(
-                    symbol = option.symbol,
-                    color = icon,
-                    modifier = Modifier.size(20.dp),
-                )
-            }
-
-            Spacer(Modifier.width(10.dp))
-
-            Text(
-                text = option.label,
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                color = content,
-                modifier = Modifier.weight(1f),
-            )
-
-            Spacer(Modifier.width(8.dp))
-
-            GenderCheck(isSelected = isSelected, mark = option.accent)
-        }
-
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center,
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.82f)
-                    .aspectRatio(1f)
-                    .clip(CircleShape)
-                    .background(symbolBackground),
-            )
-            GenderSymbol(
-                symbol = option.symbol,
-                color = icon,
-                modifier = Modifier
-                    .fillMaxWidth(0.46f)
-                    .aspectRatio(1f),
-            )
-            GenderSparkles(
-                color = icon.copy(alpha = 0.75f),
-                modifier = Modifier.fillMaxSize(),
-            )
-        }
-    }
-}
-
-/** The card's selection indicator: a check when selected, an empty box otherwise. */
-@Composable
-private fun GenderCheck(
-    isSelected: Boolean,
-    mark: Color,
-    modifier: Modifier = Modifier,
-) {
-    val shape = RoundedCornerShape(8.dp)
-    Box(
-        modifier = modifier
-            .size(26.dp)
-            .clip(shape)
-            .background(
-                if (isSelected) OnboardingTokens.GenderCheckActive else Color.Transparent
-            )
-            .border(
-                width = 1.dp,
-                color = if (isSelected) {
-                    OnboardingTokens.GenderCheckActive
-                } else {
-                    OnboardingTokens.GenderCheckInactiveBorder
-                },
-                shape = shape,
-            ),
-        contentAlignment = Alignment.Center,
-    ) {
-        if (isSelected) {
-            Canvas(modifier = Modifier.size(width = 13.dp, height = 10.dp)) {
-                drawLine(
-                    color = mark,
-                    start = Offset(0f, size.height * 0.55f),
-                    end = Offset(size.width * 0.38f, size.height),
-                    strokeWidth = 2.dp.toPx(),
-                    cap = StrokeCap.Round,
-                )
-                drawLine(
-                    color = mark,
-                    start = Offset(size.width * 0.38f, size.height),
-                    end = Offset(size.width, 0f),
-                    strokeWidth = 2.dp.toPx(),
-                    cap = StrokeCap.Round,
-                )
-            }
-        }
-    }
-}
-
-/** A large gender symbol drawn with strokes, so both platforms stay consistent. */
-@Composable
-private fun GenderSymbol(
-    symbol: String,
-    color: Color,
-    modifier: Modifier = Modifier,
-) {
-    Canvas(modifier = modifier) {
-        val w = size.width
-        val h = size.height
-        val radius = minOf(w, h) * 0.21f
-        val strokeWidth = minOf(w, h) * 0.075f
-        val stroke = Stroke(width = strokeWidth, cap = StrokeCap.Round, join = StrokeJoin.Round)
-
-        fun line(start: Offset, end: Offset) {
-            drawLine(
-                color = color,
-                start = start,
-                end = end,
-                strokeWidth = strokeWidth,
-                cap = StrokeCap.Round,
-            )
-        }
-
-        when (symbol) {
-            "female" -> {
-                val cx = w * 0.5f
-                val cy = h * 0.36f
-                drawCircle(color = color, radius = radius, center = Offset(cx, cy), style = stroke)
-                line(Offset(cx, cy + radius), Offset(cx, h * 0.92f))
-                line(Offset(w * 0.28f, h * 0.78f), Offset(w * 0.72f, h * 0.78f))
-            }
-
-            "male" -> {
-                val cx = w * 0.40f
-                val cy = h * 0.62f
-                drawCircle(color = color, radius = radius, center = Offset(cx, cy), style = stroke)
-                val start = Offset(
-                    cx + radius * 0.7071f,
-                    cy - radius * 0.7071f,
-                )
-                val end = Offset(w * 0.86f, h * 0.14f)
-                line(start, end)
-                line(end, Offset(w * 0.62f, h * 0.14f))
-                line(end, Offset(w * 0.86f, h * 0.40f))
-            }
-
-            else -> {
-                val cx = w * 0.46f
-                val cy = h * 0.58f
-                drawCircle(color = color, radius = radius, center = Offset(cx, cy), style = stroke)
-                val start = Offset(
-                    cx + radius * 0.7071f,
-                    cy - radius * 0.7071f,
-                )
-                val end = Offset(w * 0.88f, h * 0.10f)
-                line(start, end)
-                line(end, Offset(w * 0.66f, h * 0.10f))
-                line(end, Offset(w * 0.88f, h * 0.34f))
-                line(Offset(cx, cy + radius), Offset(cx, h * 0.95f))
-                line(Offset(w * 0.26f, h * 0.82f), Offset(w * 0.66f, h * 0.82f))
-            }
-        }
-    }
-}
-
-/** Small decorative dots around the central symbol, matching the reference cards. */
-@Composable
-private fun GenderSparkles(
-    color: Color,
-    modifier: Modifier = Modifier,
-) {
-    Canvas(modifier = modifier) {
-        val radius = size.minDimension * 0.018f
-        drawCircle(color, radius, Offset(size.width * 0.16f, size.height * 0.22f))
-        drawCircle(color, radius * 0.75f, Offset(size.width * 0.84f, size.height * 0.32f))
-        drawCircle(color, radius * 0.6f, Offset(size.width * 0.72f, size.height * 0.78f))
-    }
 }
 
 /**
@@ -905,37 +578,20 @@ private fun GoalStepPreview() {
 
 @Preview(showBackground = true, heightDp = 900)
 @Composable
-private fun GenderStepPreview() {
-    LevelaTheme {
-        var sex by remember { mutableStateOf<String?>("Male") }
-        Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            GenderStep(
-                selectedSex = sex,
-                toggleSex = { sex = if (sex == it) null else it },
-                hasSex = sex != null,
-                backOnClicked = {},
-                next = {},
-                skip = {},
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true, heightDp = 900)
-@Composable
-private fun AgeStepPreview() {
+private fun ProfileStepPreview() {
     LevelaTheme {
         var age by remember { mutableStateOf(OnboardingTokens.ageDefault) }
+        var sex by remember { mutableStateOf<String?>("Female") }
         Column(
             modifier = Modifier.fillMaxSize().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            AgeStep(
+            ProfileStep(
                 age = age,
                 setAge = { age = it },
+                selectedSex = sex,
+                selectSex = { sex = it },
+                hasSex = sex != null,
                 backOnClicked = {},
                 next = {},
             )

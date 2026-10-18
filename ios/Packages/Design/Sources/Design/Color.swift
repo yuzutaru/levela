@@ -16,12 +16,6 @@ public extension Color {
     static let lightBlue300 = Color(hex: 0xA0E0F8)
     static let lightBlue500 = Color(hex: 0x5AC8FA)
 
-    // Pink — accent used by the onboarding gender cards.
-    static let pink100 = Color(hex: 0xFCE7F3)
-    static let pink300 = Color(hex: 0xF9A8D4)
-    static let pink500 = Color(hex: 0xEC4899)
-    static let pink700 = Color(hex: 0xBE185D)
-
     // Green — secondary (food / leaves).
     static let green100 = Color(hex: 0xD9F7E6)
     static let green300 = Color(hex: 0x7FE0A8)
