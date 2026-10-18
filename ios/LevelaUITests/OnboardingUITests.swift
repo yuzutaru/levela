@@ -22,11 +22,12 @@ final class OnboardingUITests: XCTestCase {
         static let guest = "splash.guest"
         static let next = "onboarding.next"
         static let back = "onboarding.back"
+        static let skip = "onboarding.skip"
         static let value = "onboarding.value"
         static let mainMenu = "mainmenu.title"
 
         static func goalCard(_ index: Int) -> String { "onboarding.goal.\(index)" }
-        static func sexOption(_ index: Int) -> String { "onboarding.sex.\(index)" }
+        static func genderCard(_ index: Int) -> String { "onboarding.gender.\(index)" }
         static func activityCard(_ index: Int) -> String { "onboarding.activity.\(index)" }
         static func unit(_ unit: String) -> String { "onboarding.unit.\(unit)" }
     }
@@ -37,7 +38,7 @@ final class OnboardingUITests: XCTestCase {
 
     // MARK: - The full flow
 
-    /// Walks all six steps the way a guest would: the splash guest entry, the
+    /// Walks all seven steps the way a guest would: the splash guest entry, the
     /// gating on each single-select step, the weight/height unit toggles (which
     /// must convert without losing the measurement) and the final Next, which
     /// navigates on to the mock main menu.
@@ -55,14 +56,18 @@ final class OnboardingUITests: XCTestCase {
         tap(button(Identifier.goalCard(0), in: app))
         XCTAssertTrue(nextButton(in: app).isEnabled)
 
-        // Goal -> profile: the age always has a default, but Next waits for a sex.
+        // Goal -> gender: Continue waits for a gender choice.
         tapNext(in: app)
-        assertValue(in: app, equals: "30") // OnboardingTokens.ageDefault
         XCTAssertFalse(nextButton(in: app).isEnabled)
-        tap(button(Identifier.sexOption(0), in: app))
+        tap(button(Identifier.genderCard(1), in: app))
         XCTAssertTrue(nextButton(in: app).isEnabled)
 
-        // Profile -> weight: the unit toggle converts 70 kg to 154 lb.
+        // Gender -> age: the age always has a default, so Next is enabled.
+        tapNext(in: app)
+        assertValue(in: app, equals: "30") // OnboardingTokens.ageDefault
+        XCTAssertTrue(nextButton(in: app).isEnabled)
+
+        // Age -> weight: the unit toggle converts 70 kg to 154 lb.
         tapNext(in: app)
         assertValue(in: app, equals: "70") // weightKgDefault
         tap(button(Identifier.unit("lb"), in: app))

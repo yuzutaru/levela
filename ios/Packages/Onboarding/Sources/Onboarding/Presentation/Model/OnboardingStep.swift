@@ -8,7 +8,8 @@ import Foundation
 public enum OnboardingStep: String, CaseIterable, Hashable, Sendable {
     case welcome
     case goal
-    case profile
+    case gender
+    case age
     case weight
     case height
     case activity

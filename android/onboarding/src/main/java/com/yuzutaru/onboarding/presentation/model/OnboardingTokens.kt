@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.yuzutaru.design.ui.theme.Blue100
 import com.yuzutaru.design.ui.theme.Blue300
 import com.yuzutaru.design.ui.theme.Blue500
+import com.yuzutaru.design.ui.theme.Blue700
 import com.yuzutaru.design.ui.theme.Gray100
 import com.yuzutaru.design.ui.theme.Gray200
 import com.yuzutaru.design.ui.theme.Gray300
@@ -11,6 +12,11 @@ import com.yuzutaru.design.ui.theme.Gray500
 import com.yuzutaru.design.ui.theme.LightBlue100
 import com.yuzutaru.design.ui.theme.LightBlue300
 import com.yuzutaru.design.ui.theme.Navy900
+import com.yuzutaru.design.ui.theme.Orange100
+import com.yuzutaru.design.ui.theme.Orange500
+import com.yuzutaru.design.ui.theme.Orange700
+import com.yuzutaru.design.ui.theme.Pink100
+import com.yuzutaru.design.ui.theme.Pink700
 import com.yuzutaru.design.ui.theme.White
 
 /**
@@ -21,11 +27,12 @@ import com.yuzutaru.design.ui.theme.White
  * `scripts/verify_onboarding_parity.sh`.
  */
 object OnboardingTokens {
-    // Flow — steps: welcome, goal, profile, weight, height, activity
+    // Flow — steps: welcome, goal, gender, age, weight, height, activity
     val steps: List<OnboardingStep> = listOf(
         OnboardingStep.Welcome,
         OnboardingStep.Goal,
-        OnboardingStep.Profile,
+        OnboardingStep.Gender,
+        OnboardingStep.Age,
         OnboardingStep.Weight,
         OnboardingStep.Height,
         OnboardingStep.Activity,
@@ -35,14 +42,16 @@ object OnboardingTokens {
     const val WelcomeTitle = "Start your Fitness Journey"
     const val WelcomeSubtitle = "Start your fitness journey with our app's guidance and support"
     const val GoalTitle = "What is your goal?"
-    const val ProfileTitle = "Tell us about you"
+    const val GenderTitle = "What is your Gender?"
+    const val GenderSubtitle = "Please select your gender for better personalized health experience."
     const val AgeTitle = "Age"
-    const val SexTitle = "Biological sex"
     const val WeightTitle = "What is your weight?"
     const val HeightTitle = "What is your height?"
     const val ActivityTitle = "What is your activity level?"
     const val Start = "Let's start"
     const val Next = "Next"
+    const val ContinueLabel = "Continue"
+    const val Skip = "Prefer to skip this"
     const val Back = "Back"
 
     // Goals — the single-select goal cards (title + subtitle).
@@ -56,8 +65,40 @@ object OnboardingTokens {
         GoalOption("Train for an event", "Prepare for a race or competition"),
     )
 
-    // Biological sex — the single-select options.
-    val sexOptions = listOf("Female", "Male", "Prefer not to say")
+    // Gender — the single-select cards. Each carries its label, icon symbol and
+    // pastel surface / saturated accent colours.
+    val genderOptions: List<GenderOption> = listOf(
+        GenderOption(
+            value = "Female",
+            label = "I Am Female",
+            symbol = "female",
+            surface = Pink100,
+            accent = Pink700,
+            selected = Pink700,
+            onSelected = White,
+        ),
+        GenderOption(
+            value = "Male",
+            label = "I Am Male",
+            symbol = "male",
+            surface = Blue100,
+            accent = Blue500,
+            selected = Blue500,
+            onSelected = White,
+        ),
+        GenderOption(
+            value = "Prefer not to say",
+            label = "Prefer not to say",
+            symbol = "neutral",
+            surface = Orange100,
+            accent = Orange700,
+            selected = Orange500,
+            onSelected = Navy900,
+        ),
+    )
+
+    // The persisted values, used to validate selections.
+    val sexOptions: List<String> = genderOptions.map { it.value }
 
     // Activity level outside workouts — the single-select cards (title + subtitle).
     val activityLevels: List<GoalOption> = listOf(
@@ -129,15 +170,38 @@ object OnboardingTokens {
     val ToggleSelectedText: Color = White
     val ToggleUnselectedText: Color = Gray500
 
+    // Gender cards (per-option colours live on GenderOption)
+    val GenderCardInactiveText: Color = Navy900
+    val GenderCardInactiveBorder: Color = Gray200
+    val GenderCheckActive: Color = White
+    val GenderCheckInactiveBorder: Color = Gray200
+    val SkipBackground: Color = Blue100
+    val SkipText: Color = Blue700
+
     // Layout
     val HorizontalPadding = 24
     val CardCorner = 28
     val WelcomeIllustrationCorner = 28
     val GoalCardCorner = 20
+    val GenderCardCorner = 32
+    val GenderCardWidthFraction = 0.72f
+    val GenderCardAspectRatio = 0.72f
+    val GenderCardSpacing = 12
 }
 
 /** A single-select goal option: a card title and its supporting subtitle. */
 data class GoalOption(
     val title: String,
     val subtitle: String,
+)
+
+/** A gender card: persisted value, display label, icon symbol and card colours. */
+data class GenderOption(
+    val value: String,
+    val label: String,
+    val symbol: String,
+    val surface: Color,
+    val accent: Color,
+    val selected: Color,
+    val onSelected: Color,
 )
