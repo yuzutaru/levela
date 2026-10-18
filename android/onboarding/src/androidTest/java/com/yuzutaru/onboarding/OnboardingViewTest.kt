@@ -3,6 +3,7 @@ package com.yuzutaru.onboarding
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -13,9 +14,11 @@ import com.yuzutaru.onboarding.presentation.OnboardingView
 import com.yuzutaru.onboarding.presentation.OnboardingViewModel
 import com.yuzutaru.onboarding.presentation.model.OnboardingStep
 import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
+import com.yuzutaru.onboarding.presentation.widget.AgeWheelValueTag
 import com.yuzutaru.onboarding.presentation.widget.BackButtonTag
 import com.yuzutaru.onboarding.presentation.widget.NextButtonTag
 import com.yuzutaru.onboarding.presentation.widget.SkipButtonTag
+import com.yuzutaru.onboarding.presentation.widget.ageWheelRowTag
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -117,6 +120,22 @@ class OnboardingViewTest {
         composeTestRule.onNodeWithTag(NextButtonTag).performClick()
 
         composeTestRule.onNodeWithText(OnboardingTokens.WeightTitle).assertIsDisplayed()
+    }
+
+    @Test
+    fun ageStepWheelSelectsATappedAge() {
+        setContent(step = OnboardingStep.Age)
+
+        composeTestRule.onNodeWithTag(AgeWheelValueTag)
+            .assertTextEquals(OnboardingTokens.ageDefault.toString())
+
+        val nextAge = OnboardingTokens.ageDefault + 1
+        composeTestRule.onNodeWithTag(ageWheelRowTag(nextAge)).performClick()
+        composeTestRule.waitForIdle()
+
+        // The tapped age is now the centred, selected row.
+        composeTestRule.onNodeWithTag(AgeWheelValueTag)
+            .assertTextEquals(nextAge.toString())
     }
 
     @Test

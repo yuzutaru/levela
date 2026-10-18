@@ -151,6 +151,10 @@ object OnboardingTokens {
     val RulerTick: Color = Gray300
     val RulerLabel: Color = Gray500
     val RulerAccent: Color = Blue500
+    val AgeWheelSelectedBackground: Color = Blue500
+    val AgeWheelSelectedText: Color = White
+    val AgeWheelText: Color = Navy900
+    val AgeWheelFadedText: Color = Gray300
     val CardWeight: Color = LightBlue100
     val CardWeightAccent: Color = LightBlue300
     val CardHeight: Color = Blue100
@@ -187,6 +191,10 @@ object OnboardingTokens {
     val GenderCardWidthFraction = 0.72f
     val GenderCardAspectRatio = 0.72f
     val GenderCardSpacing = 12
+    // The age wheel: five rows tall, the middle one carrying the selected age.
+    const val ageWheelVisibleRows = 5
+    const val ageWheelRowHeight = 84
+    const val ageWheelCorner = 26
 }
 
 /** A single-select goal option: a card title and its supporting subtitle. */

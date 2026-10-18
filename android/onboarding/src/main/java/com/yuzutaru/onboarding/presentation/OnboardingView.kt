@@ -64,9 +64,9 @@ import com.yuzutaru.onboarding.R
 import com.yuzutaru.onboarding.presentation.model.GenderOption
 import com.yuzutaru.onboarding.presentation.model.OnboardingStep
 import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
+import com.yuzutaru.onboarding.presentation.widget.AgeWheelPicker
 import com.yuzutaru.onboarding.presentation.widget.BackButton
 import com.yuzutaru.onboarding.presentation.widget.NextButton
-import com.yuzutaru.onboarding.presentation.widget.RulerPicker
 import com.yuzutaru.onboarding.presentation.widget.SkipButton
 import com.yuzutaru.onboarding.presentation.widget.StepProgress
 import com.yuzutaru.onboarding.presentation.widget.ValueStep
@@ -77,7 +77,7 @@ import kotlinx.coroutines.launch
  * height, activity).
  *
  * Shown after the user taps **Continue as a guest** on the splash. Seven steps:
- * a welcome intro, a single-select goal step, a gender carousel, an age ruler
+ * a welcome intro, a single-select goal step, a gender carousel, an age wheel
  * step, then weight and height — the latter pair each using a draggable ruler
  * picker and a unit toggle — and finally a single-select activity-level step.
  * Tapping Next on the last step asks [OnboardingViewModel.complete] to persist
@@ -459,7 +459,7 @@ private fun ColumnScope.GenderStep(
 }
 
 /**
- * The age step: title + the age ruler card + back / Next. The age always has a
+ * The age step: title + the age wheel + back / Next. The age always has a
  * default, so Next is always enabled.
  */
 @Composable
@@ -478,9 +478,9 @@ private fun ColumnScope.AgeStep(
         textAlign = TextAlign.Center,
     )
 
-    Spacer(Modifier.height(32.dp))
+    Spacer(Modifier.height(24.dp))
 
-    AgeCard(age = age, onAgeChange = setAge)
+    AgeWheelPicker(age = age, onAgeChange = setAge)
 
     Spacer(Modifier.weight(1f))
 
@@ -833,44 +833,6 @@ private fun ColumnScope.ActivityStep(
     }
 
     Spacer(Modifier.height(24.dp))
-}
-
-/** The age ruler card: the value + a single `years` scale + a unit label. */
-@Composable
-private fun AgeCard(
-    age: Int,
-    onAgeChange: (Int) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(OnboardingTokens.CardCorner.dp))
-            .background(OnboardingTokens.CardWeight)
-            .padding(vertical = 20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            text = age.toString(),
-            style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
-            color = OnboardingTokens.Value,
-        )
-        Spacer(Modifier.height(6.dp))
-        RulerPicker(
-            value = age,
-            rangeStart = OnboardingTokens.ageMin,
-            rangeEnd = OnboardingTokens.ageMax,
-            step = OnboardingTokens.ageStep,
-            onValueChange = onAgeChange,
-            accentColor = OnboardingTokens.CardWeightAccent,
-        )
-        Spacer(Modifier.height(2.dp))
-        Text(
-            text = OnboardingTokens.ageUnit,
-            style = MaterialTheme.typography.labelMedium,
-            color = OnboardingTokens.RulerLabel,
-        )
-    }
 }
 
 @Preview(showBackground = true, heightDp = 900)
