@@ -307,6 +307,12 @@ trivial read. Use cases are the only consumers of repositories.
   `AppContainer`, and mirror the change on Android (see
   [`../android/AGENTS.md`](../android/AGENTS.md), Layering section).
 
+Both app-level use cases and `RootViewModel` are unit-tested in
+`LevelaTests/CompleteOnboardingUseCaseTests`, `HasActiveProfileUseCaseTests` and
+`RootViewModelTests`, using a shared in-memory `FakeUserProfileRepository`
+(`LevelaTests/FakeUserProfileRepository.swift`). They mirror the Android tests in
+`android/app/src/test/.../domain/usecase/` and `.../presentation/`.
+
 ## Knowledge graph (graphify)
 
 A graphify knowledge graph can be generated in `graphify-out/`. That directory is
