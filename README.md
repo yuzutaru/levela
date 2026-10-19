@@ -1,6 +1,6 @@
 # Levela
 
-Cross-platform app: Android (Kotlin + Jetpack Compose) and iOS (SwiftUI).
+Native mobile app: Android (Kotlin + Jetpack Compose) and iOS (SwiftUI).
 
 ## Requirements
 
