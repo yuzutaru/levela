@@ -18,7 +18,8 @@ Five Gradle modules, declared in `settings.gradle.kts`:
   `LevelaFlow` (`Splash` → `Onboarding` → `MainMenu`) crossfade. `RootViewModel`
   resolves the launch-time "has profile?" state: a new guest walks
   `SplashView` → `OnboardingView` → `MainMenuScreen` (`presentation/MainMenuScreen.kt`,
-  a placeholder home), while a returning user (profile already saved) skips
+  the bottom-navigation main menu: Today · Nutrition · Train · Profile), while a
+  returning user (profile already saved) skips
   onboarding and lands on `MainMenuScreen` straight after the splash. Hosts the
   app-level use cases; view models follow ViewModel → UseCase → Repository (see
   the Layering section).

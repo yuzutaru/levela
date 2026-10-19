@@ -42,13 +42,14 @@ class MainActivityRoutingTest {
 
         scenario = ActivityScenario.launch(MainActivity::class.java)
 
-        // Wait for the main menu to appear (splash auto-finishes → main menu).
+        // Wait for the main menu to appear (splash auto-finishes → main menu),
+        // landing on the Today destination.
         composeTestRule.waitUntil(timeoutMillis = 5_000) {
-            composeTestRule.onAllNodesWithTag("mainmenu.title")
+            composeTestRule.onAllNodesWithTag("mainmenu.today")
                 .fetchSemanticsNodes().isNotEmpty()
         }
 
-        composeTestRule.onNodeWithTag("mainmenu.title").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("mainmenu.today").assertIsDisplayed()
     }
 
     private fun seedProfile() {

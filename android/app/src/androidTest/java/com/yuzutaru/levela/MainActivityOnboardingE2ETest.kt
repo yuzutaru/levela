@@ -122,8 +122,8 @@ class MainActivityOnboardingE2ETest {
         composeTestRule.onNodeWithTag(NextButtonTag).assertIsEnabled()
         onClickTag(NextButtonTag)
 
-        waitForTag("mainmenu.title")
-        composeTestRule.onNodeWithTag("mainmenu.title").assertIsDisplayed()
+        waitForTag("mainmenu.today")
+        composeTestRule.onNodeWithTag("mainmenu.today").assertIsDisplayed()
 
         // The guest profile was persisted with the collected values, in kg / cm.
         val profile = runBlocking {
