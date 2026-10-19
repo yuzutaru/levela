@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "description": "Single source of truth for the Levela colour palette. scripts/verify_theme_parity.sh checks that the Android and iOS design systems declare exactly these primitives with these hexes, map the same semantic roles onto the same primitives in light and dark, and that THEME_COLORS.md renders the same tables. To change a colour: edit it here, update both platforms, then run the verifier.",
+  "verifier": "scripts/verify_theme_parity.sh",
+  "source": "assets/app-icon/source.png",
+  "humanDoc": "THEME_COLORS.md",
+
+  "primitives": {
+    "Blue100": "#D6E9FF",
+    "Blue300": "#7FB6FF",
+    "Blue500": "#0078F0",
+    "Blue600": "#0064D6",
+    "Blue700": "#0058D0",
+    "Blue900": "#0B2A5B",
+    "LightBlue100": "#E6F6FE",
+    "LightBlue300": "#A0E0F8",
+    "LightBlue500": "#5AC8FA",
+    "Pink100": "#FCE7F3",
+    "Pink300": "#F9A8D4",
+    "Pink500": "#EC4899",
+    "Pink700": "#BE185D",
+    "Green100": "#D9F7E6",
+    "Green300": "#7FE0A8",
+    "Green500": "#18B060",
+    "Green600": "#10A868",
+    "Green700": "#0E8F55",
+    "Teal500": "#08A0A0",
+    "Orange100": "#FFF1D6",
+    "Orange300": "#FFD27F",
+    "Orange500": "#F8A800",
+    "Orange700": "#C97E00",
+    "White": "#FFFFFF",
+    "Gray50": "#F7F9FC",
+    "Gray100": "#EEF2F7",
+    "Gray200": "#E2E8F0",
+    "Gray300": "#CBD5E1",
+    "Gray400": "#94A3B8",
+    "Gray500": "#64748B",
+    "Gray700": "#334155",
+    "Navy700": "#1E293B",
+    "Navy800": "#131C2E",
+    "Navy900": "#0B1220",
+    "Ink100": "#E6EDF7"
+  },
+
+  "semantic": {
+    "light": {
+      "background": "White",
+      "surface": "White",
+      "surfaceVariant": "Gray100",
+      "primary": "Blue500",
+      "secondary": "Green500",
+      "tertiary": "Orange500",
+      "onPrimary": "White",
+      "onSecondary": "White",
+      "onTertiary": "Navy900",
+      "onBackground": "Navy900",
+      "onSurface": "Navy900",
+      "onSurfaceVariant": "Gray700",
+      "outline": "Gray200"
+    },
+    "dark": {
+      "background": "Navy900",
+      "surface": "Navy800",
+      "surfaceVariant": "Navy700",
+      "primary": "Blue300",
+      "secondary": "Green300",
+      "tertiary": "Orange300",
+      "onPrimary": "Navy900",
+      "onSecondary": "Navy900",
+      "onTertiary": "Navy900",
+      "onBackground": "Ink100",
+      "onSurface": "Ink100",
+      "onSurfaceVariant": "Gray300",
+      "outline": "Gray700"
+    }
+  },
+
+  "targets": {
+    "android": {
+      "module": ":design",
+      "primitivesFile": "android/design/src/main/java/com/yuzutaru/design/ui/theme/Color.kt",
+      "themeFile": "android/design/src/main/java/com/yuzutaru/design/ui/theme/Theme.kt",
+      "naming": "PascalCase",
+      "systemPrimitives": {}
+    },
+    "ios": {
+      "package": "Design",
+      "primitivesFile": "ios/Packages/Design/Sources/Design/Color.swift",
+      "themeFile": "ios/Packages/Design/Sources/Design/Theme.swift",
+      "naming": "camelCase",
+      "systemPrimitives": {
+        "White": "white"
+      }
+    }
+  }
+}

@@ -15,10 +15,11 @@ per-platform guides below.
   `:profile`, `:onboarding`, `:splash`.
 - `ios/` — SwiftUI app + local Swift packages `Design`, `Onboarding`, `Splash`,
   `Profile`.
-- `assets/` — single-source-of-truth flow contracts shared by both platforms:
-  `app-icon/`, `splash/`, `onboarding/` (each has its own `README.md`), plus
-  `sync/` — the not-yet-implemented sync contract.
-- `scripts/` — icon generator, parity verifiers, and the tracked git hooks.
+- `assets/` — single-source-of-truth contracts shared by both platforms:
+  `app-icon/`, `theme/`, `splash/`, `onboarding/` (each has its own `README.md`),
+  plus `sync/` — the not-yet-implemented sync contract.
+- `scripts/` — icon generator, the theme/icon/flow parity verifiers, and the
+  tracked git hooks.
 - `README.md` — project overview; `THEME_COLORS.md` — color palette.
 
 ## Commit convention
