@@ -16,10 +16,10 @@ per-platform guides below.
 - `ios/` — SwiftUI app + local Swift packages `Design`, `Onboarding`, `Splash`,
   `Profile`.
 - `assets/` — single-source-of-truth flow contracts shared by both platforms:
-  `app-icon/`, `splash/`, `onboarding/` (each has its own `README.md`).
+  `app-icon/`, `splash/`, `onboarding/` (each has its own `README.md`), plus
+  `sync/` — the not-yet-implemented sync contract.
 - `scripts/` — icon generator, parity verifiers, and the tracked git hooks.
-- `README.md` — project overview; `THEME_COLORS.md` — color palette;
-  `SYNC_API.md` — not-yet-implemented sync contract.
+- `README.md` — project overview; `THEME_COLORS.md` — color palette.
 
 ## Commit convention
 Enforce platform-scoped subject in commit messages
