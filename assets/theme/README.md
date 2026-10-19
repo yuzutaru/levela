@@ -35,7 +35,7 @@ platform takes from its own framework instead of declaring. There is one today:
 
 1. Edit a hex or a role mapping in `theme-contract.json`.
 2. Update both platforms (`Color.kt` / `Theme.kt` and `Color.swift` / `Theme.swift`),
-   and the matching rows in [`../../THEME_COLORS.md`](../../THEME_COLORS.md).
+   and the matching rows in [`THEME_COLORS.md`](THEME_COLORS.md).
 3. Check every layer still matches:
 
    ```sh

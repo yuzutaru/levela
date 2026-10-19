@@ -5,8 +5,8 @@
 # Contract enforcement for the Levela colour palette. Reads
 # assets/theme/theme-contract.json and checks that each platform's design system
 # declares exactly the contracted primitives with the contracted hexes, maps the
-# same semantic roles onto them in light and dark, and that THEME_COLORS.md
-# renders the same primitives and roles.
+# same semantic roles onto them in light and dark, and that
+# assets/theme/THEME_COLORS.md renders the same primitives and roles.
 #
 # The flow contracts (splash, onboarding) point at this contract instead of
 # repeating palette hexes; this verifier owns palette truth, the flow verifiers

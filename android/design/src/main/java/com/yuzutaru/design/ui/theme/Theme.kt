@@ -10,7 +10,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-// Icon-derived schemes (see ../THEME_COLORS.md): white light background,
+// Icon-derived schemes (see ../assets/theme/THEME_COLORS.md): white light background,
 // blue/green/orange accents, deep-navy dark theme.
 private val LightColorScheme = lightColorScheme(
     primary = Blue500,
