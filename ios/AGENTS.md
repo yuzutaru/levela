@@ -128,7 +128,7 @@ requirements. See [`../assets/app-icon/README.md`](../assets/app-icon/README.md)
 ## Theme colors
 
 `Color.swift` holds the icon-derived primitive scale from
-[`../THEME_COLORS.md`](../THEME_COLORS.md) (`blue500`, `green500`, `orange500`,
+[`../assets/theme/THEME_COLORS.md`](../assets/theme/THEME_COLORS.md) (`blue500`, `green500`, `orange500`,
 `lightBlue*`, `pink*`, `gray*`, `navy*`, `ink100`). `LevelaColors` in `Theme.swift` maps
 these to semantic roles for light (white background, blue/green/orange accents)
 and dark (deep navy) appearances; `levelaTheme()` picks by system appearance.
