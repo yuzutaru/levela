@@ -28,8 +28,11 @@ Or open `ios/Levela.xcodeproj` in Xcode and run.
 ## Git hooks
 
 Commits are kept platform-separated: the tracked `pre-commit` hook rejects any
-commit that stages changes under both `android/` and `ios/`. Enable it once per
-clone:
+commit that stages changes under both `android/` and `ios/`, and the
+`commit-msg` hook requires the commit subject to carry the matching platform
+scope — `feat(android): …` for `android/` changes, `feat(ios): …` for `ios/`
+changes. Any Conventional Commit type works (`fix(ios): …`, `chore(android): …`,
+…); only the scope is enforced. Enable the hooks once per clone:
 
 ```sh
 ./scripts/install-hooks.sh

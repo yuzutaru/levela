@@ -10,6 +10,6 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-chmod +x scripts/hooks/pre-commit
+chmod +x scripts/hooks/pre-commit scripts/hooks/commit-msg
 git config core.hooksPath scripts/hooks
-echo "core.hooksPath -> scripts/hooks (android/ios commit guard active)"
+echo "core.hooksPath -> scripts/hooks (android/ios separation + scope guards active)"
