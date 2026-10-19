@@ -59,5 +59,5 @@ pull requests pass independently. Use `--strict` (e.g. on `main`) to require
 **both**.
 
 The flow contracts (`assets/splash/`, `assets/onboarding/`) no longer repeat palette
-hexes: they point at this contract through `paletteReference`, and their verifiers
+hexes: they point at this contract through `themeReference`, and their verifiers
 assert that every colour they name is a contracted primitive.
