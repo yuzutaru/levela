@@ -186,7 +186,9 @@ cannot use it. Each test seeds a step via the internal
 `OnboardingTokens`, never hardcoded copy. The view model is injected (a plain
 `let`, owned by the app), not held in `@State`, so ViewInspector's headless
 `inspect()` reads it without SwiftUI's "Accessing State ... without being
-installed" runtime warning. They mirror the Android `OnboardingViewTest`. Run
+installed" runtime warning. They mirror the Android `OnboardingViewTest`,
+including tapping an age-wheel row to select it (the row carries the tap
+gesture; the test walks up from its label because it is not a `Button`). Run
 them from `Packages/Onboarding`:
 
 ```sh
@@ -201,7 +203,10 @@ copy — keep both in sync.
 The flow is also covered end-to-end by `LevelaUITests/OnboardingUITests.swift`, a
 real XCUITest **UI-testing** bundle: it launches the app, enters through the splash
 guest button, walks all seven steps and asserts the gating, the unit conversions
-(`70 kg → 154 lb`, `170 cm → 5'7"`) and the final Next. It drives the app by
+(`70 kg → 154 lb`, `170 cm → 5'7"`) and the final Next. It also covers the
+gesture paths: swiping the age wheel selects the centred age and clamps at the
+contract bounds (`13`…`100`), while swiping the gender carousel only scroll-snaps
+without selecting — a tap is still required. It drives the app by
 accessibility identifier — `splash.guest` and the `onboarding.*` handles from
 `OnboardingAccessibility` / `SplashAccessibility` — not by visible copy. A UI-test
 bundle runs out of process and cannot import the feature modules, so those

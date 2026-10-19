@@ -137,6 +137,29 @@ final class OnboardingViewTests: XCTestCase {
         _ = try inspectedAgain.find(text: OnboardingTokens.weightTitle)
     }
 
+    func testAgeWheelTapSelectsAnAge() throws {
+        let viewModel = OnboardingViewModel(step: .age)
+        let view = OnboardingView(viewModel: viewModel)
+
+        ViewHosting.host(view: view)
+        defer { ViewHosting.expel() }
+
+        let inspected = try view.inspect()
+        _ = try inspected.find(text: OnboardingTokens.ageTitle)
+        XCTAssertEqual(viewModel.age, OnboardingTokens.ageDefault)
+
+        // The neighbouring age is a plain tappable row (not a `Button`), so walk
+        // up from its label to the view carrying the row's tap gesture.
+        let nextAge = OnboardingTokens.ageDefault + 1
+        var row = try inspected.find(text: "\(nextAge)").parent()
+        for _ in 0..<6 {
+            if (try? row.callOnTapGesture()) != nil { break }
+            row = try row.parent()
+        }
+
+        XCTAssertEqual(viewModel.age, nextAge)
+    }
+
     // MARK: - Weight & height
 
     func testWeightUnitTogglePreservesTheMeasurement() throws {

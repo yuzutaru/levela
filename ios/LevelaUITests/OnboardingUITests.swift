@@ -108,6 +108,75 @@ final class OnboardingUITests: XCTestCase {
         )
     }
 
+    // MARK: - Drag / swipe
+
+    /// Dragging the age wheel selects the age that snaps to the centre, not just
+    /// a scrolled-away row: the committed value changes and Next stays enabled.
+    @MainActor
+    func testAgeWheelSwipeSelectsAnAge() throws {
+        let app = launch()
+        goToAgeStep(in: app)
+
+        let initial = valueLabel(in: app)
+        var swipes = 0
+        while valueLabel(in: app) == initial && swipes < 6 {
+            app.staticTexts[Identifier.value].swipeUp()
+            swipes += 1
+        }
+
+        XCTAssertNotEqual(
+            valueLabel(in: app),
+            initial,
+            "Swiping the wheel should select a new centred age"
+        )
+        XCTAssertTrue(nextButton(in: app).isEnabled)
+    }
+
+    /// Flinging the wheel past the youngest age clamps at the contract minimum
+    /// (13) instead of selecting an out-of-range value.
+    @MainActor
+    func testAgeWheelSwipeStaysWithinBounds() throws {
+        let app = launch()
+        goToAgeStep(in: app)
+
+        // Fling down repeatedly until the wheel reaches the minimum.
+        var swipes = 0
+        while valueLabel(in: app) != "13" && swipes < 15 {
+            app.staticTexts[Identifier.value].swipeDown()
+            swipes += 1
+        }
+        XCTAssertEqual(valueLabel(in: app), "13")
+
+        // Further swipes cannot push the selection below the minimum.
+        for _ in 0..<3 {
+            app.staticTexts[Identifier.value].swipeDown()
+        }
+        XCTAssertEqual(valueLabel(in: app), "13")
+        XCTAssertTrue(nextButton(in: app).isEnabled)
+    }
+
+    /// Swiping the gender carousel only snaps it; it must not count as picking a
+    /// gender. Tapping the newly centred card then selects it.
+    @MainActor
+    func testGenderCarouselSwipeSnapsWithoutSelecting() throws {
+        let app = launch()
+        goToGenderStep(in: app)
+
+        XCTAssertFalse(nextButton(in: app).isEnabled)
+
+        // CAROUSEL SWIPE: card 1 (the centre initially) -> card 2.
+        app.buttons[Identifier.genderCard(1)].swipeLeft()
+
+        XCTAssertFalse(
+            nextButton(in: app).isEnabled,
+            "Swiping the carousel must not select a gender"
+        )
+
+        // Tapping the card that snapped to the centre selects it.
+        tap(button(Identifier.genderCard(2), in: app))
+        XCTAssertTrue(nextButton(in: app).isEnabled)
+    }
+
     // MARK: - Back navigation
 
     /// The back button (which has no text) returns to the previous step.
@@ -128,6 +197,34 @@ final class OnboardingUITests: XCTestCase {
     }
 
     // MARK: - Helpers
+
+    /// Enters through the splash guest button and moves to the gender step.
+    @MainActor
+    private func goToGenderStep(in app: XCUIApplication) {
+        tap(button(Identifier.guest, in: app))
+
+        // Welcome -> goal -> gender.
+        tapNext(in: app)
+        tap(button(Identifier.goalCard(0), in: app))
+        tapNext(in: app)
+    }
+
+    /// Moves from the gender step to the age step with a gender selected.
+    @MainActor
+    private func goToAgeStep(in app: XCUIApplication) {
+        goToGenderStep(in: app)
+        tap(button(Identifier.genderCard(1), in: app))
+        tapNext(in: app)
+        _ = valueLabel(in: app)
+    }
+
+    /// Reads the committed value shown by the age wheel / weight / height card.
+    @MainActor
+    private func valueLabel(in app: XCUIApplication, timeout: TimeInterval = 20) -> String {
+        let query = app.staticTexts.matching(identifier: Identifier.value)
+        wait(for: NSPredicate(format: "count == 1"), on: query, timeout: timeout)
+        return query.firstMatch.label
+    }
 
     @MainActor
     private func launch() -> XCUIApplication {
