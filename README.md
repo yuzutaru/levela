@@ -1,6 +1,20 @@
 # Levela
 
-Native mobile app: Android (Kotlin + Jetpack Compose) and iOS (SwiftUI).
+Native mobile app: Android (Kotlin + Jetpack Compose) and iOS (SwiftUI). Both
+platforms mirror each other module for module, and each shared flow is defined
+once by a contract under `assets/`. The app is **offline-first**: a guest's
+profile is persisted locally before any account exists.
+
+## App flow
+
+1. **Splash** — the launch welcome screen. The login/register buttons are
+   defined but hidden while accounts are deferred; the guest entry is a primary
+   **Continue as a guest** button.
+2. **Onboarding** — seven guest steps (welcome, goal, gender, age, weight,
+   height, activity). The final Next persists a guest-owned profile locally.
+3. **Main menu** — a placeholder home screen, reached after onboarding. A
+   returning user (one whose profile was already saved) skips onboarding and
+   lands here straight after the splash.
 
 ## Requirements
 
@@ -44,9 +58,16 @@ changes. Any Conventional Commit type works (`fix(ios): …`, `chore(android): �
 - `ios/` — iOS application (SwiftUI). Modules: `Levela` app + local packages `Design`, `Onboarding`, `Splash`, `Profile`.
 - `assets/app-icon/` — master app icon + the contract that drives both platforms' icons.
 - `assets/splash/`, `assets/onboarding/` — shared flow contracts mirrored by both platforms.
-- `scripts/` — repo tooling, including `generate_icons.sh` and the parity verifiers.
-- `THEME_COLORS.md` — the icon-derived app color palette (light + dark).
+- `scripts/` — repo tooling, including `generate_icons.sh`, the parity verifiers, and the git hooks (`scripts/hooks/`).
+- `AGENTS.md` — root agent guide: commit convention, platform separation, hooks.
 - `android/AGENTS.md`, `ios/AGENTS.md` — per-platform agent guides.
+- `THEME_COLORS.md` — the icon-derived app color palette (light + dark).
+- `SYNC_API.md` — the offline-first sync API contract (not implemented yet).
+
+Tests live beside the code: `android/app/src/test/`, `android/app/src/androidTest/`
+and `ios/LevelaTests/`, `ios/LevelaUITests/` at app level, plus each feature
+module's own `src/test` / `Tests` directory. See the two AGENTS guides for the
+full inventory.
 
 ## App icon
 
@@ -70,8 +91,11 @@ so both platforms match exactly.
 | Document | Purpose |
 | --- | --- |
 | [`README.md`](README.md) | Project overview, build, and layout. |
+| [`AGENTS.md`](AGENTS.md) | Root agent guide: commit convention, platform split, hooks. |
 | [`android/AGENTS.md`](android/AGENTS.md) | Android module layout, design system, conventions. |
 | [`ios/AGENTS.md`](ios/AGENTS.md) | iOS module layout, design system, conventions. |
 | [`THEME_COLORS.md`](THEME_COLORS.md) | Icon-derived app color palette (light + dark). |
 | [`SYNC_API.md`](SYNC_API.md) | Offline-first sync API contract (login later → sync on register). |
 | [`assets/app-icon/README.md`](assets/app-icon/README.md) | App-icon contract, generator, and outputs. |
+| [`assets/splash/README.md`](assets/splash/README.md) | Shared splash flow contract and parity verifier. |
+| [`assets/onboarding/README.md`](assets/onboarding/README.md) | Shared onboarding flow contract and parity verifier. |

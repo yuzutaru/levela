@@ -15,21 +15,31 @@ Five Swift modules. The app and its feature packages are separate **local Swift
 packages**, so module boundaries are real compile boundaries — the iOS analogue
 of the Android Gradle modules.
 
-- **`Levela`** (app target) — the application shell.
-  - `Levela/LevelaApp.swift` — `@main` entry; registers fonts, opens the store
-    and builds the `AppContainer`, then shows `LevelaRootView`.
-  - `Levela/LevelaRootView.swift` — owns the `NavigationStack`, applies `.levelaTheme()`,
-    and resolves the launch-time "has profile?" state through `RootViewModel`.
-  - `Levela/AppContainer.swift` — the app's dependency graph (composition root;
+- **`Levela`** (app target) — the application shell, organized into `Di/`,
+  `Domain/` and `Presentation/` folders.
+  - `Levela/LevelaApp.swift` — `@main` entry; registers fonts and bootstraps the
+    store asynchronously (`AppBootstrapView`: loading → ready → failed), building
+    the `AppContainer` from `ProfileData.open()` before showing `LevelaRootView`.
+  - `Levela/Presentation/Screen/LevelaRootView.swift` — owns the `NavigationStack`
+    and the `LevelaFlow` (`splash` → `onboarding` → `mainMenu`), applies
+    `.levelaTheme()`, and resolves the launch-time "has profile?" state through
+    `RootViewModel` (returning users skip onboarding).
+  - `Levela/Presentation/Screen/MainMenuView.swift` — the placeholder home screen
+    (the mirror of Android's `MainMenuScreen`) with the `MainMenuAccessibility.title`
+    handle.
+  - `Levela/Presentation/Viewmodel/RootViewModel.swift` — owns the launch-time
+    profile check (the iOS counterpart of Android's `RootViewModel`).
+  - `Levela/Presentation/Widget/ErrorView.swift` — the store-open failure screen
+    (message + Retry).
+  - `Levela/Di/AppContainer.swift` — the app's dependency graph (composition root;
     holds `ProfileData`, the use cases and the view models).
-  - `Levela/AppModule.swift` — the app-level graph bindings (the iOS counterpart
+  - `Levela/Di/AppModule.swift` — the app-level graph bindings (the iOS counterpart
     of Android's `AppModule.kt`).
-  - `Levela/RootViewModel.swift` — owns the launch-time profile check (the iOS
-    counterpart of Android's `RootViewModel`).
-  - `Levela/HasActiveProfileUseCase.swift` — the app-side use case behind that
-    check (the counterpart of Android's `HasActiveProfileUseCase`).
-  - `Levela/CompleteOnboardingUseCase.swift` + `Levela/ProfileMapping.swift` — the
-    app-side use case that maps `OnboardingProfile` → `UserProfile` and saves it.
+  - `Levela/Domain/Usecase/HasActiveProfileUseCase.swift` — the app-side use case
+    behind the launch check (the counterpart of Android's `HasActiveProfileUseCase`).
+  - `Levela/Domain/Usecase/CompleteOnboardingUseCase.swift` +
+    `Levela/Domain/Model/ProfileMapping.swift` — the app-side use case that maps
+    `OnboardingProfile` → `UserProfile` and saves it.
   - Links the local packages.
 - **`Design`** — local Swift package at `Packages/Design`; the shared design system.
 - **`Onboarding`** — local Swift package at `Packages/Onboarding`; the onboarding
@@ -157,9 +167,10 @@ once, for both platforms, by the shared contract in `../assets/onboarding/`:
 `OnboardingView` shows the welcome step (title, subtitle, hero illustration), the
 goal step (single-select goal cards — a status dot plus title and subtitle — where
 Next stays disabled until a goal is chosen), the gender step (a single-screen
-snapping carousel of colour-coded icon-only gender cards — pink female, blue
-male, orange neutral — where Continue stays disabled until a gender is chosen,
-plus a **Prefer to skip this** pill), the age step (a vertical snapping wheel
+snapping carousel of colour-coded gender cards — each a large gender symbol, a
+label and a selection check, pink female / blue male / orange neutral — where
+Continue stays disabled until a gender is chosen, plus a **Prefer to skip this**
+pill), the age step (a vertical snapping wheel
 picker — the centred age in a solid blue card, neighbours scaled and faded —
 Next always enabled), the weight and height steps (progress segments, unit
 toggle, a draggable snapping ruler picker on a tinted value card, back + Next
@@ -217,6 +228,13 @@ xcodebuild test -scheme Levela -only-testing:LevelaUITests/OnboardingUITests \
   -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
 ```
 
+`LevelaUITests/ReturningUserUITests.swift` covers the returning-user routing: it
+walks onboarding once to persist a profile, terminates, relaunches and asserts the
+app lands directly on `mainmenu.title` without ever showing the splash guest
+button. (A UI-test bundle runs out of process and cannot seed SwiftData, hence the
+full walk first.) Run it the same way with
+`-only-testing:LevelaUITests/ReturningUserUITests`.
+
 ## Profile (`Profile` package)
 
 The offline-first store, layered like Android's `:profile` so SwiftData types
@@ -224,13 +242,16 @@ never leave the module. `Profile` holds a `UserProfileEntity` `@Model` (carrying
 the sync envelope), a `UserProfileDao` that owns the raw `ModelContext`
 operations, a `UserProfileRepository` (protocol) + `UserProfileRepositoryImpl`
 that map between the entity and the public domain `UserProfile` struct, and
-`ProfileData` — which builds the `ModelContainer` and hands out repositories. The
-app builds a `ProfileData` inside its `AppContainer` (`Levela/AppContainer.swift`)
-and binds the save function in `Levela/AppModule.swift`; the onboarding view
-model persists through that injected save function on completion, which calls
+`ProfileData` — which builds the `ModelContainer` and hands out repositories
+(`open()` is the async, off-main-thread variant the app uses at launch; `inMemory()`
+is for previews/tests). The app builds a `ProfileData` inside its `AppContainer`
+(`Levela/Di/AppContainer.swift`) and binds the save function in
+`Levela/Di/AppModule.swift`; the onboarding view model persists through that
+injected save function on completion, which calls
 `CompleteOnboardingUseCase.invoke(_:)` — it maps the flow's values
-(`OnboardingProfile.toUserProfile()`, defined in `Levela/ProfileMapping.swift`)
-onto a `UserProfile` and saves it as a guest-owned, pending row.
+(`OnboardingProfile.toUserProfile()`, defined in
+`Levela/Domain/Model/ProfileMapping.swift`) onto a `UserProfile` and saves it as a
+guest-owned, pending row.
 
 The schema is **sync-ready now, synced later**: every row carries a
 client-generated `id` (UUID), a nullable `accountUserId`, a `syncState` (a
@@ -307,15 +328,16 @@ trivial read. Use cases are the only consumers of repositories.
 - **Feature-package view models** (e.g. `OnboardingViewModel`) inject a plain
   closure (`@MainActor (OnboardingProfile) -> Void`), which the app backs with a
   use case, so the feature never sees `Profile`.
-- Bind every new use case in `Levela/AppModule.swift`, build it in
+- Bind every new use case in `Levela/Di/AppModule.swift`, build it in
   `AppContainer`, and mirror the change on Android (see
   [`../android/AGENTS.md`](../android/AGENTS.md), Layering section).
 
-Both app-level use cases and `RootViewModel` are unit-tested in
-`LevelaTests/CompleteOnboardingUseCaseTests`, `HasActiveProfileUseCaseTests` and
-`RootViewModelTests`, using a shared in-memory `FakeUserProfileRepository`
-(`LevelaTests/FakeUserProfileRepository.swift`). They mirror the Android tests in
-`android/app/src/test/.../domain/usecase/` and `.../presentation/`.
+The mapping and both app-level use cases plus `RootViewModel` are unit-tested in
+`LevelaTests/ProfileMappingTests`, `CompleteOnboardingUseCaseTests`,
+`HasActiveProfileUseCaseTests` and `RootViewModelTests`, using a shared in-memory
+`FakeUserProfileRepository` (`LevelaTests/FakeUserProfileRepository.swift`). They
+mirror the Android tests in `android/app/src/test/.../` (`ProfileMappingTest`,
+`domain/usecase/`, `presentation/`).
 
 ## Knowledge graph (graphify)
 

@@ -14,9 +14,14 @@ Five Gradle modules, declared in `settings.gradle.kts`:
 
 - **`:app`** — the application. Entry point is
   `app/src/main/java/com/yuzutaru/levela/MainActivity.kt`
-  (`ComponentActivity` → `setContent` → `LevelaTheme` → `SplashView`, then
-  `OnboardingView` after the guest entry). Hosts the app-level use cases; view
-  models follow ViewModel → UseCase → Repository (see the Layering section).
+  (`ComponentActivity` → `setContent` → `LevelaTheme`), which drives a small
+  `LevelaFlow` (`Splash` → `Onboarding` → `MainMenu`) crossfade. `RootViewModel`
+  resolves the launch-time "has profile?" state: a new guest walks
+  `SplashView` → `OnboardingView` → `MainMenuScreen` (`presentation/MainMenuScreen.kt`,
+  a placeholder home), while a returning user (profile already saved) skips
+  onboarding and lands on `MainMenuScreen` straight after the splash. Hosts the
+  app-level use cases; view models follow ViewModel → UseCase → Repository (see
+  the Layering section).
 - **`:design`** — a library module holding the shared design system under
   `design/src/main/java/com/yuzutaru/design/ui/theme/`. `:app` depends on
   `project(":design")`, so all theme primitives live here, not in `:app`.
@@ -144,9 +149,10 @@ both platforms, by the shared contract in `../assets/onboarding/`:
 `OnboardingView` shows the welcome step (title, subtitle, hero illustration), the
 goal step (single-select goal cards — a status dot plus title and subtitle — where
 Next stays disabled until a goal is chosen), the gender step (a single-screen
-snapping carousel of colour-coded icon-only gender cards — pink female, blue
-male, orange neutral — where Continue stays disabled until a gender is chosen,
-plus a **Prefer to skip this** pill), the age step (a vertical snapping wheel
+snapping carousel of colour-coded gender cards — each a large gender symbol,
+a label and a selection check, pink female / blue male / orange neutral — where
+Continue stays disabled until a gender is chosen, plus a **Prefer to skip this**
+pill), the age step (a vertical snapping wheel
 picker — the centred age in a solid blue card, neighbours scaled and faded —
 Next always enabled), the weight and height steps (progress segments, unit
 toggle, a draggable snapping ruler picker on a tinted value card, back + Next
@@ -163,13 +169,17 @@ splash guest entry. See
 [`../assets/onboarding/README.md`](../assets/onboarding/README.md).
 
 Tests: `onboarding/src/test/.../OnboardingViewModelTest.kt` covers the state and
-unit conversions; `onboarding/src/androidTest/.../OnboardingViewTest.kt` drives
+unit conversions (with `MainDispatcherRule.kt` swapping `Dispatchers.Main`);
+`onboarding/src/androidTest/.../OnboardingViewTest.kt` drives
 the real composables (step gating, unit toggles, the age wheel and gender
 carousel tap/**drag** paths, completion wiring). The guest path through the whole
 app is covered end-to-end by `app/src/androidTest/.../MainActivityOnboardingE2ETest.kt`
 (splash guest entry → seven steps → main menu, asserting the persisted profile);
 it enters through the splash guest button's `SplashGuestButtonTag`
-(`splash:guest`). Run the instrumented suites with
+(`splash:guest`). The returning-user path is covered by
+`app/src/androidTest/.../MainActivityRoutingTest.kt` (seeds a profile, launches
+the activity and asserts it lands on the main menu). Run the instrumented suites
+with
 `./gradlew :onboarding:connectedDebugAndroidTest :app:connectedDebugAndroidTest`.
 
 Related docs: [`../ios/AGENTS.md`](../ios/AGENTS.md) (iOS counterpart),
@@ -197,8 +207,8 @@ type and the injection site with `@JvmSuppressWildcards` so the generic
 signatures match.
 
 The iOS counterpart is a hand-rolled composition root that mirrors this graph
-(no third-party container): `ios/Levela/AppModule.swift` is the `@Module`,
-`ios/Levela/AppContainer.swift` is the composition root, and view models
+(no third-party container): `ios/Levela/Di/AppModule.swift` is the `@Module`,
+`ios/Levela/Di/AppContainer.swift` is the composition root, and view models
 (`RootViewModel`, `OnboardingViewModel`) are built there instead of by
 `hiltViewModel()`. Keep the two graphs in step when either changes — see
 [`../ios/AGENTS.md`](../ios/AGENTS.md#dependency-injection).
@@ -253,11 +263,13 @@ UUID upserts on the backend.
   the `commit-msg` hook validates this and the `pre-commit` hook enforces
   the platform split.
 - Unit tests live beside the code under `src/test`; the app module covers the
-    mapping, both app-level use cases and `RootViewModel`
-(`ProfileMappingTest`, `domain/usecase/CompleteOnboardingUseCaseTest`,
-`domain/usecase/HasActiveProfileUseCaseTest`, `presentation/RootViewModelTest`).
-The generated `ExampleUnitTest` / `ExampleInstrumentedTest` stubs remain only
-as placeholders.
+  mapping, both app-level use cases and `RootViewModel`
+  (`ProfileMappingTest`, `domain/usecase/CompleteOnboardingUseCaseTest`,
+  `domain/usecase/HasActiveProfileUseCaseTest`, `presentation/RootViewModelTest`),
+  sharing an in-memory `FakeUserProfileRepository`. Instrumented tests
+  (`src/androidTest`) cover the routing (`MainActivityRoutingTest`) and the guest
+  end-to-end path (`MainActivityOnboardingE2ETest`). The generated
+  `ExampleUnitTest` / `ExampleInstrumentedTest` stubs remain only as placeholders.
 - `android/gradlew` is the Gradle wrapper shell script; do not hand-edit it.
 
 ## Knowledge graph (graphify)
