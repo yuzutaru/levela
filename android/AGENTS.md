@@ -248,8 +248,16 @@ UUID upserts on the backend.
 - Commits are platform-separated: the tracked `pre-commit` hook
   (`scripts/install-hooks.sh`) rejects a commit that stages changes under both
   `android/` and `ios/`. Keep Android and iOS changes in separate commits.
-- Tests are the generated Compose/AndroidX stubs (`ExampleUnitTest`,
-  `ExampleInstrumentedTest`) — replace them with real tests as features land.
+- **Commit convention**: enforce platform-scoped subject in commit messages
+  (`feat(android)` / `fix(android)` / `feat(ios)` / `fix(ios)` etc.);
+  the `commit-msg` hook validates this and the `pre-commit` hook enforces
+  the platform split.
+- Unit tests live beside the code under `src/test`; the app module covers the
+  mapping, both app-level use cases and `RootViewModel`
+  (`ProfileMappingTest`, `domain/usecase/CompleteOnboardingUseCaseTest`,
+  `domain/usecase/HasActiveProfileUseCaseTest`, `presentation/RootViewModelTest`).
+  The generated `ExampleUnitTest` / `ExampleInstrumentedTest` stubs remain only
+  as placeholders.
 - `android/gradlew` is the Gradle wrapper shell script; do not hand-edit it.
 
 ## Knowledge graph (graphify)
