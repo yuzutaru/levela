@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -38,6 +39,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LevelaTheme
 import kotlinx.coroutines.delay
+
+/**
+ * Test tag for the guest entry button, mirroring iOS `SplashAccessibility.guest`
+ * (`splash.guest`). Used by the app-level onboarding end-to-end test.
+ */
+const val SplashGuestButtonTag: String = "splash:guest"
 
 /**
  * The Levela splash (launch welcome) screen.
@@ -192,6 +199,7 @@ private fun SplashActions(
                 background = SplashTokens.RegisterBackground,
                 textColor = SplashTokens.RegisterText,
                 onClick = onGuest,
+                modifier = Modifier.testTag(SplashGuestButtonTag),
             )
         }
         if (SplashTokens.ShowGuestLink) {
@@ -214,9 +222,10 @@ private fun SplashButton(
     background: Color,
     textColor: Color,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
             .clip(RoundedCornerShape(percent = 50))

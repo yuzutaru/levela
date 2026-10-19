@@ -25,7 +25,7 @@ Seven steps, shown after the user taps **Continue as a guest** on the splash:
 | `welcome` | progress segments + hero illustration + **Start your Fitness Journey** + subtitle + **Let's start** |
 | `goal` | progress segments + **What is your goal?** + seven single-select goal cards (dot + title + subtitle) + back / Next |
 | `gender` | progress segments + **What is your Gender?** + subtitle + a single-screen carousel of three gender cards (symbol + label + check) + **Prefer to skip this** + back / Continue |
-| `age` | progress segments + **Age** (ruler picker, `years`) + back / Next |
+| `age` | progress segments + **Age** (vertical snapping wheel picker, `years`) + back / Next |
 | `weight` | progress segments + **What is your weight?** + `lb` / `kg` toggle + value card (ruler picker) |
 | `height` | progress segments + **What is your height?** + `ft/in` / `cm` toggle + value card (ruler picker) |
 | `activity` | progress segments + **What is your activity level?** + five single-select activity cards (dot + title + subtitle) + back / Next |
@@ -82,12 +82,18 @@ done
 `verify_onboarding_parity.sh` fails if any rendition is missing or the wrong
 size.
 
-The ruler picker is draggable and snaps to the nearest step; the big value
-updates live. Switching unit converts the canonical value (kg ⇄ lb, cm ⇄ ft/in)
-and re-scales the ruler. The canonical value lives in `kg` / `cm`; the UI always
-shows the selected unit's value — imperial height is stored as total inches
-underneath and displayed as feet'inches" (e.g. 67 → `5'7"`), with a label on each
-foot boundary.
+The age step uses a vertical snapping wheel: the selected age sits in the
+vertical centre in a solid `Blue500` card with white text, while the
+neighbouring ages shrink and fade (`Navy900` then `Gray300`). Scrolling (or
+tapping a row) commits the centred age; the range is the contract's
+`ageMin…ageMax`, default `ageDefault`.
+
+The weight and height steps use a horizontal ruler picker: it is draggable and
+snaps to the nearest step; the big value updates live. Switching unit converts
+the canonical value (kg ⇄ lb, cm ⇄ ft/in) and re-scales the ruler. The canonical
+value lives in `kg` / `cm`; the UI always shows the selected unit's value —
+imperial height is stored as total inches underneath and displayed as
+feet'inches" (e.g. 67 → `5'7"`), with a label on each foot boundary.
 
 ## Change the onboarding
 

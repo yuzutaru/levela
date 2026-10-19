@@ -5,7 +5,7 @@ import SwiftUI
 /// height, activity).
 ///
 /// Shown after the user taps **Continue as a guest** on the splash. Seven steps:
-/// a welcome intro, a single-select goal step, a gender carousel, an age ruler
+/// a welcome intro, a single-select goal step, a gender carousel, an age wheel
 /// step, then weight and height — the latter pair each using a draggable ruler
 /// picker and a unit toggle — and finally a single-select activity-level step.
 /// Tapping Next on the last step asks the view model to `complete()`, which
@@ -225,8 +225,8 @@ public struct OnboardingView: View {
         }
     }
 
-    /// The age step: title + the age ruler card + back / Next. The age always has
-    /// a default, so Next is always enabled.
+    /// The age step: title + the age wheel + back / Next. The age always has a
+    /// default, so Next is always enabled.
     private var ageStep: some View {
         VStack(spacing: 0) {
             Text(OnboardingTokens.ageTitle)
@@ -235,8 +235,8 @@ public struct OnboardingView: View {
                 .multilineTextAlignment(.center)
                 .padding(.top, 28)
 
-            AgeCard(age: viewModel.age, onAgeChange: viewModel.setAge)
-                .padding(.top, 32)
+            AgeWheelPicker(age: viewModel.age, onAgeChange: viewModel.setAge)
+                .padding(.top, 24)
 
             Spacer(minLength: 16)
 
@@ -731,39 +731,6 @@ private struct ValueCard: View {
     }
 }
 
-/// The age ruler card: the value + a single `years` scale + a unit label.
-private struct AgeCard: View {
-    let age: Int
-    let onAgeChange: (Int) -> Void
-
-    var body: some View {
-        VStack(spacing: 0) {
-            Text("\(age)")
-                .font(LevelaTypography.displayMedium.bold())
-                .foregroundStyle(OnboardingTokens.value)
-                .accessibilityIdentifier(OnboardingAccessibility.value)
-
-            RulerPicker(
-                value: age,
-                rangeStart: OnboardingTokens.ageMin,
-                rangeEnd: OnboardingTokens.ageMax,
-                step: OnboardingTokens.ageStep,
-                accentColor: OnboardingTokens.cardWeightAccent,
-                onValueChange: onAgeChange
-            )
-            .padding(.top, 6)
-
-            Text(OnboardingTokens.ageUnit)
-                .font(LevelaTypography.labelMedium)
-                .foregroundStyle(OnboardingTokens.rulerLabel)
-                .padding(.top, 2)
-        }
-        .padding(.vertical, 20)
-        .frame(maxWidth: .infinity)
-        .background(OnboardingTokens.cardWeight, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
-    }
-}
-
 /// Accessibility identifiers for the flow's controls. The back button carries no
 /// text, so it needs a stable handle (for VoiceOver and for the UI tests);
 /// mirrors the Android `BackButtonTag` / `NextButtonTag`. Internal: the app and
@@ -783,6 +750,8 @@ enum OnboardingAccessibility {
     static func goalCard(_ index: Int) -> String { "onboarding.goal.\(index)" }
     static func genderCard(_ index: Int) -> String { "onboarding.gender.\(index)" }
     static func activityCard(_ index: Int) -> String { "onboarding.activity.\(index)" }
+    /// An age row in the wheel; the centred row uses ``value`` instead.
+    static func age(_ value: Int) -> String { "onboarding.age.\(value)" }
     /// A unit-toggle option, keyed by its label (e.g. `lb`, `ft/in`).
     static func unit(_ unit: String) -> String { "onboarding.unit.\(unit)" }
 }

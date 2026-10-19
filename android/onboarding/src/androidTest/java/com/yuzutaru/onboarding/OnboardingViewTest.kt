@@ -1,21 +1,31 @@
 package com.yuzutaru.onboarding
 
+import android.os.SystemClock
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeDown
+import androidx.compose.ui.test.swipeLeft
+import androidx.compose.ui.test.swipeUp
 import com.yuzutaru.design.ui.theme.LevelaTheme
 import com.yuzutaru.onboarding.data.OnboardingProfile
+import com.yuzutaru.onboarding.presentation.GenderCarouselTag
 import com.yuzutaru.onboarding.presentation.OnboardingView
 import com.yuzutaru.onboarding.presentation.OnboardingViewModel
 import com.yuzutaru.onboarding.presentation.model.OnboardingStep
 import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
+import com.yuzutaru.onboarding.presentation.widget.AgeWheelTag
+import com.yuzutaru.onboarding.presentation.widget.AgeWheelValueTag
 import com.yuzutaru.onboarding.presentation.widget.BackButtonTag
 import com.yuzutaru.onboarding.presentation.widget.NextButtonTag
 import com.yuzutaru.onboarding.presentation.widget.SkipButtonTag
+import com.yuzutaru.onboarding.presentation.widget.ageWheelRowTag
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -120,6 +130,73 @@ class OnboardingViewTest {
     }
 
     @Test
+    fun ageStepWheelSelectsATappedAge() {
+        setContent(step = OnboardingStep.Age)
+
+        composeTestRule.onNodeWithTag(AgeWheelValueTag)
+            .assertTextEquals(OnboardingTokens.ageDefault.toString())
+
+        val nextAge = OnboardingTokens.ageDefault + 1
+        composeTestRule.onNodeWithTag(ageWheelRowTag(nextAge)).performClick()
+        composeTestRule.waitForIdle()
+
+        // The tapped age is now the centred, selected row.
+        composeTestRule.onNodeWithTag(AgeWheelValueTag)
+            .assertTextEquals(nextAge.toString())
+    }
+
+    @Test
+    fun ageWheelSwipeSelectsTheCentredAge() {
+        lateinit var viewModel: OnboardingViewModel
+        setContent(step = OnboardingStep.Age, configure = { viewModel = it })
+
+        // Fling the wheel upwards: the ages under the centre change as it snaps.
+        composeTestRule.onNodeWithTag(AgeWheelTag).performTouchInput { swipeUp() }
+
+        // Wait out the snap fling so the wheel and the view model agree.
+        val settledAge = waitForSettledAge(viewModel)
+        assertTrue(settledAge > OnboardingTokens.ageDefault)
+
+        // Dragging selects: the value the view model now holds is the one the
+        // wheel centres, not just a scrolled-away row.
+        composeTestRule.onNodeWithTag(AgeWheelValueTag)
+            .assertTextEquals(settledAge.toString())
+    }
+
+    @Test
+    fun ageWheelFlingStaysWithinBounds() {
+        lateinit var viewModel: OnboardingViewModel
+        setContent(step = OnboardingStep.Age, configure = {
+            it.setAge(OnboardingTokens.ageMin)
+            viewModel = it
+        })
+
+        // Fling past the oldest end of the range; the wheel must clamp.
+        repeat(3) {
+            composeTestRule.onNodeWithTag(AgeWheelTag).performTouchInput { swipeDown() }
+            composeTestRule.waitForIdle()
+        }
+
+        assertEquals(OnboardingTokens.ageMin, viewModel.age)
+        composeTestRule.onNodeWithTag(AgeWheelValueTag)
+            .assertTextEquals(OnboardingTokens.ageMin.toString())
+    }
+
+    @Test
+    fun genderCarouselSwipeSnapsWithoutSelecting() {
+        setContent(step = OnboardingStep.Gender)
+
+        // Swiping only moves the carousel; it does not pick a gender.
+        composeTestRule.onNodeWithTag(GenderCarouselTag).performTouchInput { swipeLeft() }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag(NextButtonTag).assertIsNotEnabled()
+
+        // The card that snapped to the centre can now be tapped to select.
+        composeTestRule.onNodeWithText(OnboardingTokens.genderOptions[2].label).performClick()
+        composeTestRule.onNodeWithTag(NextButtonTag).assertIsEnabled()
+    }
+
+    @Test
     fun weightUnitTogglePreservesTheMeasurement() {
         setContent(step = OnboardingStep.Weight)
 
@@ -214,6 +291,27 @@ class OnboardingViewTest {
     }
 
     /**
+     * Waits for the age wheel's snap fling to stop (the value staying unchanged
+     * for a moment) and returns the settled age, so assertions do not race the
+     * scroll animation.
+     */
+    private fun waitForSettledAge(viewModel: OnboardingViewModel): Int {
+        var lastAge = viewModel.age
+        var stableSince = SystemClock.uptimeMillis()
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
+            val age = viewModel.age
+            if (age != lastAge) {
+                lastAge = age
+                stableSince = SystemClock.uptimeMillis()
+                false
+            } else {
+                SystemClock.uptimeMillis() - stableSince >= 300
+            }
+        }
+        return viewModel.age
+    }
+
+    /**
      * Sets [OnboardingView] content already sitting on [step], wired to [save]
      * (the host-app persistence hook) and [onFinished].
      */
@@ -221,8 +319,10 @@ class OnboardingViewTest {
         step: OnboardingStep = OnboardingStep.Welcome,
         save: suspend (OnboardingProfile) -> Unit = {},
         onFinished: () -> Unit = {},
+        configure: (OnboardingViewModel) -> Unit = {},
     ) {
         val viewModel = OnboardingViewModel(save)
+        configure(viewModel)
         while (viewModel.step != step) viewModel.next()
         composeTestRule.setContent {
             LevelaTheme {

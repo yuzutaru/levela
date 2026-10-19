@@ -123,6 +123,10 @@ public enum OnboardingTokens {
     public static let rulerTick = Color.gray300
     public static let rulerLabel = Color.gray500
     public static let rulerAccent = Color.blue500
+    public static let ageWheelSelectedBackground = Color.blue500
+    public static let ageWheelSelectedText = Color.white
+    public static let ageWheelText = Color.navy900
+    public static let ageWheelFadedText = Color.gray300
     public static let cardWeight = Color.lightBlue100
     public static let cardWeightAccent = Color.lightBlue300
     public static let cardHeight = Color.blue100
@@ -157,6 +161,10 @@ public enum OnboardingTokens {
     public static let genderCardWidthFraction = 0.72
     public static let genderCardAspectRatio = 0.72
     public static let genderCardSpacing = 12
+    // The age wheel: five rows tall, the middle one carrying the selected age.
+    public static let ageWheelVisibleRows = 5
+    public static let ageWheelRowHeight = 84
+    public static let ageWheelCorner = 26
 }
 
 /// A single-select goal option: a card title and its supporting subtitle.

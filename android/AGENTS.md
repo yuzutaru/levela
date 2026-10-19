@@ -146,7 +146,8 @@ goal step (single-select goal cards — a status dot plus title and subtitle —
 Next stays disabled until a goal is chosen), the gender step (a single-screen
 snapping carousel of colour-coded icon-only gender cards — pink female, blue
 male, orange neutral — where Continue stays disabled until a gender is chosen,
-plus a **Prefer to skip this** pill), the age step (the age ruler picker,
+plus a **Prefer to skip this** pill), the age step (a vertical snapping wheel
+picker — the centred age in a solid blue card, neighbours scaled and faded —
 Next always enabled), the weight and height steps (progress segments, unit
 toggle, a draggable snapping ruler picker on a tinted value card, back + Next
 buttons) and the activity step (single-select activity-level cards, Next disabled
@@ -160,6 +161,16 @@ completion through `onFinished`. The welcome illustration lives in
 in kg / cm; switching units converts them. It is shown from `:app` after the
 splash guest entry. See
 [`../assets/onboarding/README.md`](../assets/onboarding/README.md).
+
+Tests: `onboarding/src/test/.../OnboardingViewModelTest.kt` covers the state and
+unit conversions; `onboarding/src/androidTest/.../OnboardingViewTest.kt` drives
+the real composables (step gating, unit toggles, the age wheel and gender
+carousel tap/**drag** paths, completion wiring). The guest path through the whole
+app is covered end-to-end by `app/src/androidTest/.../MainActivityOnboardingE2ETest.kt`
+(splash guest entry → seven steps → main menu, asserting the persisted profile);
+it enters through the splash guest button's `SplashGuestButtonTag`
+(`splash:guest`). Run the instrumented suites with
+`./gradlew :onboarding:connectedDebugAndroidTest :app:connectedDebugAndroidTest`.
 
 Related docs: [`../ios/AGENTS.md`](../ios/AGENTS.md) (iOS counterpart),
 [`../README.md`](../README.md) (project overview).
