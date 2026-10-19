@@ -15,10 +15,11 @@ canvas with a soft light-blue glow and icon-blue actions.
 
 The splash **icon is the app's own launcher icon foreground**, not a generated
 asset: Android uses `@drawable/ic_launcher_foreground` (the adaptive-icon
-foreground) and iOS uses the `AppIcon` artwork. Both come from the app-icon
-pipeline, so there is nothing extra to generate or keep in sync. Its size is
-**per platform** in the contract (`icon.sizeDp`: `android` 204, `ios` 96); the
-verifier checks each platform against its own value.
+foreground) and iOS uses the `SplashIcon` imageset in `Levela/Assets.xcassets`
+(app icons are not loadable at runtime via `UIImage(named: "AppIcon")`), kept in
+step with the app-icon pipeline. Its size is **per platform** in the contract
+(`icon.sizeDp`: `android` 204, `ios` 96); the verifier checks each platform
+against its own value.
 
 ## The flow
 
@@ -31,8 +32,10 @@ Three stages, auto-advancing (timings in the contract):
 | `actions` | app icon + heading + **Continue as a guest** button (+ hidden **Login** / **Register** buttons, hidden guest link) |
 
 Buttons are visual only in this iteration; the feature exposes a single
-`onFinished` callback that the app wires up later. The splash shows on every
-launch (there is no persistence yet).
+`onFinished` callback that the app wires to the next screen (onboarding for a new
+guest). The splash shows on every launch, but accepts an `autoFinish` flag: for a
+returning user (a profile is already saved) it auto-advances past the actions and
+reports completion so the app jumps straight to the main menu.
 
 The Login / Register buttons are **hidden, not removed**: their copy and colours
 stay in the contract and both platforms' `SplashTokens`, gated by

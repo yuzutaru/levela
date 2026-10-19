@@ -40,8 +40,9 @@ or an activity level (the age always has a default). The gender step also has a
 secondary **Prefer to skip this** pill that advances with the gender left unset. The
 progress indicator has one segment per step (seven).
 
-The gender cards are icon-only: a large gender symbol (female / male / neutral)
-drawn from strokes, on a tinted disc, with a small check indicator. Each card is
+The gender cards each show a large gender symbol (female / male / neutral)
+drawn from strokes, on a tinted disc, alongside the option's label and a small
+check indicator. Each card is
 colour-coded: female uses the `Pink` scale, male uses `Blue`, and
 **Prefer not to say** uses `Orange`. Unselected cards use a pastel surface
 (`Pink100` / `Blue100` / `Orange100`) with the matching accent; the selected card
