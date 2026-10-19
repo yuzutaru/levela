@@ -24,7 +24,7 @@ final class OnboardingUITests: XCTestCase {
         static let back = "onboarding.back"
         static let skip = "onboarding.skip"
         static let value = "onboarding.value"
-        static let mainMenu = "mainmenu.title"
+        static let mainMenu = "mainmenu.today"
 
         static func goalCard(_ index: Int) -> String { "onboarding.goal.\(index)" }
         static func genderCard(_ index: Int) -> String { "onboarding.gender.\(index)" }

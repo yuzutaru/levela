@@ -24,9 +24,9 @@ of the Android Gradle modules.
     and the `LevelaFlow` (`splash` → `onboarding` → `mainMenu`), applies
     `.levelaTheme()`, and resolves the launch-time "has profile?" state through
     `RootViewModel` (returning users skip onboarding).
-  - `Levela/Presentation/Screen/MainMenuView.swift` — the placeholder home screen
-    (the mirror of Android's `MainMenuScreen`) with the `MainMenuAccessibility.title`
-    handle.
+  - `Levela/Presentation/Screen/MainMenuView.swift` — the bottom-navigation main
+    menu (Today · Nutrition · Train · Profile), the mirror of Android's
+    `MainMenuScreen`, with per-destination `MainMenuAccessibility` handles.
   - `Levela/Presentation/Viewmodel/RootViewModel.swift` — owns the launch-time
     profile check (the iOS counterpart of Android's `RootViewModel`).
   - `Levela/Presentation/Widget/ErrorView.swift` — the store-open failure screen
@@ -234,7 +234,7 @@ xcodebuild test -scheme Levela -only-testing:LevelaUITests/OnboardingUITests \
 
 `LevelaUITests/ReturningUserUITests.swift` covers the returning-user routing: it
 walks onboarding once to persist a profile, terminates, relaunches and asserts the
-app lands directly on `mainmenu.title` without ever showing the splash guest
+app lands directly on `mainmenu.today` without ever showing the splash guest
 button. (A UI-test bundle runs out of process and cannot seed SwiftData, hence the
 full walk first.) Run it the same way with
 `-only-testing:LevelaUITests/ReturningUserUITests`.
