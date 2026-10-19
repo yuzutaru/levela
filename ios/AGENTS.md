@@ -132,6 +132,10 @@ requirements. See [`../assets/app-icon/README.md`](../assets/app-icon/README.md)
 `lightBlue*`, `pink*`, `gray*`, `navy*`, `ink100`). `LevelaColors` in `Theme.swift` maps
 these to semantic roles for light (white background, blue/green/orange accents)
 and dark (deep navy) appearances; `levelaTheme()` picks by system appearance.
+The role set is flat and identical to Android's `ColorScheme` — `primary`,
+`secondary`, `tertiary`, `background`, `surface`, `surfaceVariant`, `onPrimary`,
+`onSecondary`, `onTertiary`, `onBackground`, `onSurface`, `onSurfaceVariant` and
+`outline`; see [`../assets/theme/theme-contract.json`](../assets/theme/theme-contract.json).
 
 ## Splash
 

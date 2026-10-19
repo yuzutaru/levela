@@ -1,8 +1,8 @@
 {
-  "version": 4,
-  "description": "Single source of truth for the Levela post-guest onboarding flow (welcome, goal, gender, age, weight, height, activity). scripts/verify_onboarding_parity.sh checks that the Android and iOS Onboarding features expose the same steps, copy, units, defaults, value ranges, goals, gender options, activity levels, colours and welcome illustration. Colour names refer to the primitive labels in THEME_COLORS.md.",
+  "version": 5,
+  "description": "Single source of truth for the Levela post-guest onboarding flow (welcome, goal, gender, age, weight, height, activity). scripts/verify_onboarding_parity.sh checks that the Android and iOS Onboarding features expose the same steps, copy, units, defaults, value ranges, goals, gender options, activity levels, colours and welcome illustration. Colour names are the primitives declared in assets/theme/theme-contract.json.",
   "verifier": "scripts/verify_onboarding_parity.sh",
-  "themeReference": "THEME_COLORS.md",
+  "themeReference": "assets/theme/theme-contract.json",
 
   "flow": {
     "steps": ["welcome", "goal", "gender", "age", "weight", "height", "activity"]
@@ -98,23 +98,6 @@
     }
   },
 
-  "palette": {
-    "Navy900": "#0B1220",
-    "Gray100": "#EEF2F7",
-    "Gray200": "#E2E8F0",
-    "Gray300": "#CBD5E1",
-    "Gray500": "#64748B",
-    "Blue100": "#D6E9FF",
-    "Blue300": "#7FB6FF",
-    "Blue500": "#0078F0",
-    "LightBlue100": "#E6F6FE",
-    "LightBlue300": "#A0E0F8",
-    "Pink100": "#FCE7F3",
-    "Pink300": "#F9A8D4",
-    "Pink500": "#EC4899",
-    "Pink700": "#BE185D"
-  },
-
   "colors": {
     "background": "White",
     "title": "Navy900",
@@ -175,13 +158,11 @@
     "android": {
       "module": ":onboarding",
       "namespace": "com.yuzutaru.onboarding",
-      "tokensFile": "android/onboarding/src/main/java/com/yuzutaru/onboarding/presentation/model/OnboardingTokens.kt",
-      "designColorFile": "android/design/src/main/java/com/yuzutaru/design/ui/theme/Color.kt"
+      "tokensFile": "android/onboarding/src/main/java/com/yuzutaru/onboarding/presentation/model/OnboardingTokens.kt"
     },
     "ios": {
       "package": "Onboarding",
-      "tokensFile": "ios/Packages/Onboarding/Sources/Onboarding/Presentation/Model/OnboardingTokens.swift",
-      "designColorFile": "ios/Packages/Design/Sources/Design/Color.swift"
+      "tokensFile": "ios/Packages/Onboarding/Sources/Onboarding/Presentation/Model/OnboardingTokens.swift"
     }
   }
 }

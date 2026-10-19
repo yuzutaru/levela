@@ -57,6 +57,7 @@ changes. Any Conventional Commit type works (`fix(ios): …`, `chore(android): �
 - `android/` — Android application (Kotlin, Jetpack Compose). Modules: `:app`, `:profile`, `:design`, `:onboarding`, `:splash`.
 - `ios/` — iOS application (SwiftUI). Modules: `Levela` app + local packages `Design`, `Onboarding`, `Splash`, `Profile`.
 - `assets/app-icon/` — master app icon + the contract that drives both platforms' icons.
+- `assets/theme/` — the palette contract both design systems are verified against.
 - `assets/splash/`, `assets/onboarding/` — shared flow contracts mirrored by both platforms.
 - `assets/sync/` — the shared offline-first sync API contract (not implemented yet).
 - `scripts/` — repo tooling, including `generate_icons.sh`, the parity verifiers, and the git hooks (`scripts/hooks/`).
@@ -82,9 +83,14 @@ two platforms can't mismatch. See [`assets/app-icon/README.md`](assets/app-icon/
 
 The Design system on both platforms uses the icon-derived palette: a **white
 light background** with blue/green/orange accents (sampled from the app icon),
-plus a prepared **deep-navy dark theme**. See
-[`THEME_COLORS.md`](THEME_COLORS.md). Android's dynamic color is off by default
-so both platforms match exactly.
+plus a prepared **deep-navy dark theme**. The palette is defined once in
+[`assets/theme/theme-contract.json`](assets/theme/theme-contract.json) and both
+platforms are verified against it. See [`THEME_COLORS.md`](THEME_COLORS.md).
+Android's dynamic color is off by default so both platforms match exactly.
+
+```sh
+./scripts/verify_theme_parity.sh --strict
+```
 
 ## Documentation
 
@@ -96,6 +102,7 @@ so both platforms match exactly.
 | [`ios/AGENTS.md`](ios/AGENTS.md) | iOS module layout, design system, conventions. |
 | [`THEME_COLORS.md`](THEME_COLORS.md) | Icon-derived app color palette (light + dark). |
 | [`assets/app-icon/README.md`](assets/app-icon/README.md) | App-icon contract, generator, and outputs. |
+| [`assets/theme/README.md`](assets/theme/README.md) | Palette contract, parity verifier, and change procedure. |
 | [`assets/splash/README.md`](assets/splash/README.md) | Shared splash flow contract and parity verifier. |
 | [`assets/onboarding/README.md`](assets/onboarding/README.md) | Shared onboarding flow contract and parity verifier. |
 | [`assets/sync/README.md`](assets/sync/README.md) | Offline-first sync API contract (login later → sync on register). |

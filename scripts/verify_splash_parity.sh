@@ -4,8 +4,9 @@
 # -----------------------------------------------------------------------------
 # Contract enforcement for the Levela splash flow. Reads
 # assets/splash/splash-contract.json and checks that each platform's
-# SplashTokens file carries the same stages, timings, copy and colour tokens,
-# and that its design-system Color file defines the contracted palette.
+# SplashTokens file carries the same stages, timings, copy and colour tokens, and
+# that every colour it names is a primitive declared by the shared theme contract
+# (assets/theme/theme-contract.json), which scripts/verify_theme_parity.sh owns.
 #
 # The splash icon is the app's own launcher icon foreground, so there is no
 # generated asset to check.
@@ -43,7 +44,7 @@ def read(rel):
 
 def check_platform(key):
     t = c["targets"][key]
-    tokens_rel, design_rel = t["tokensFile"], t["designColorFile"]
+    tokens_rel = t["tokensFile"]
     tokens = read(tokens_rel)
     low = tokens.lower()
 
@@ -85,13 +86,7 @@ def check_platform(key):
     if str(size_dp) not in tokens:
         errors.append(f"{tokens_rel}: missing icon size '{size_dp}'")
 
-    # palette hexes must live in the platform design-system Color file
-    design_low = read(design_rel).lower().replace("0x", "").replace("#", "")
-    for name, hexv in c["palette"].items():
-        if hexv.lstrip("#").lower() not in design_low:
-            errors.append(f"{design_rel}: missing palette {name} = {hexv}")
-
-    checked.extend([tokens_rel, design_rel])
+    checked.append(tokens_rel)
 
 present = {k: os.path.isfile(f"{root}/{c['targets'][k]['tokensFile']}") for k in c["targets"]}
 
@@ -101,6 +96,24 @@ if strict and not all(present.values()):
             errors.append(f"strict: {c['targets'][k]['tokensFile']} not found")
 elif not any(present.values()):
     print("warn: no SplashTokens files present yet; nothing to verify.")
+
+# colour names must resolve to primitives in the shared theme contract
+theme_ref = c.get("themeReference")
+primitives = set()
+if not theme_ref:
+    errors.append(f"{os.path.basename(contract_path)}: missing themeReference")
+elif not os.path.isfile(f"{root}/{theme_ref}"):
+    errors.append(f"{theme_ref}: themeReference file not found")
+else:
+    theme = json.load(open(f"{root}/{theme_ref}"))
+    primitives = {n.lower() for n in theme.get("primitives", {})}
+    for field, value in c["colors"].items():
+        for name in (value if isinstance(value, list) else [value]):
+            if name.lower() not in primitives:
+                errors.append(
+                    f"{os.path.basename(contract_path)}: colour '{field}' = {name} "
+                    f"is not a declared theme primitive")
+    checked.append(theme_ref)
 
 for key, ok in present.items():
     if ok:

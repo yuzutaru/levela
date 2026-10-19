@@ -8,8 +8,10 @@ assets/splash/splash-contract.json      # THE CONTRACT: flow, copy, colours, ico
 scripts/verify_splash_parity.sh         # checks both platforms against the contract
 ```
 
-The colour tokens are the primitives from [`../../THEME_COLORS.md`](../../THEME_COLORS.md)
-(`Blue500/700`, `LightBlue100/300`, `Gray100/500`, `Navy900`, `White`); the splash
+The colour tokens are the primitives declared in
+[`../theme/theme-contract.json`](../theme/theme-contract.json) (rendered in
+[`../../THEME_COLORS.md`](../../THEME_COLORS.md)):
+`Blue500/700`, `LightBlue100/300`, `Gray100/500`, `Navy900`, `White`. The splash
 is the first feature to consume them. The splash is now light-themed: a white
 canvas with a soft light-blue glow and icon-blue actions.
 
@@ -59,14 +61,23 @@ copy and the existing `registerBackground` / `registerText` colours.
    ./scripts/verify_splash_parity.sh --strict # require both platforms
    ```
 
+3. If you touched a colour token, also check the palette itself:
+
+   ```sh
+   ./scripts/verify_theme_parity.sh --strict
+   ```
+
 ## What is verified
 
 `verify_splash_parity.sh` fails (non-zero) if either platform drifts from the
 contract:
 
 - a stage name, auto-advance timing, copy string or icon size (per platform) differs;
-- a colour token is renamed or missing;
-- the design-system `Color` file stops defining a contracted palette hex.
+- a colour token is renamed or missing, or names a primitive the theme contract
+  does not declare.
+
+Palette hexes are no longer repeated here: `assets/theme/theme-contract.json` owns
+them and `verify_theme_parity.sh` checks the platforms' `Color` files against it.
 
 A platform is only checked once its `SplashTokens` file exists, so the Android
 and iOS pull requests pass independently. Use `--strict` (e.g. on `main`) to

@@ -1,8 +1,8 @@
 {
-  "version": 4,
-  "description": "Single source of truth for the Levela splash (launch welcome) flow. scripts/verify_splash_parity.sh checks that the Android and iOS Splash features expose the same stages, timings, copy and colours. The splash icon is the app's own launcher icon foreground (no generated asset). Colour names refer to the primitive labels in THEME_COLORS.md.",
+  "version": 5,
+  "description": "Single source of truth for the Levela splash (launch welcome) flow. scripts/verify_splash_parity.sh checks that the Android and iOS Splash features expose the same stages, timings, copy and colours. The splash icon is the app's own launcher icon foreground (no generated asset). Colour names are the primitives declared in assets/theme/theme-contract.json.",
   "verifier": "scripts/verify_splash_parity.sh",
-  "themeReference": "THEME_COLORS.md",
+  "themeReference": "assets/theme/theme-contract.json",
 
   "flow": {
     "stages": ["brand", "welcome", "actions"],
@@ -19,16 +19,6 @@
     "login": "Login",
     "register": "Register",
     "guest": "Continue as a guest"
-  },
-
-  "palette": {
-    "Blue500": "#0078F0",
-    "Blue700": "#0058D0",
-    "LightBlue100": "#E6F6FE",
-    "LightBlue300": "#A0E0F8",
-    "Gray100": "#EEF2F7",
-    "Gray500": "#64748B",
-    "Navy900": "#0B1220"
   },
 
   "colors": {
@@ -51,13 +41,11 @@
     "android": {
       "module": ":splash",
       "namespace": "com.yuzutaru.splash",
-      "tokensFile": "android/splash/src/main/java/com/yuzutaru/splash/SplashTokens.kt",
-      "designColorFile": "android/design/src/main/java/com/yuzutaru/design/ui/theme/Color.kt"
+      "tokensFile": "android/splash/src/main/java/com/yuzutaru/splash/SplashTokens.kt"
     },
     "ios": {
       "package": "Splash",
-      "tokensFile": "ios/Packages/Splash/Sources/Splash/SplashTokens.swift",
-      "designColorFile": "ios/Packages/Design/Sources/Design/Color.swift"
+      "tokensFile": "ios/Packages/Splash/Sources/Splash/SplashTokens.swift"
     }
   }
 }

@@ -1,6 +1,11 @@
 # App Theme Color Specification
 
-> **Status: implemented.** The Design system on both platforms is wired to the
+> **Status: implemented and contract-backed.** The palette is defined once in
+> [`assets/theme/theme-contract.json`](assets/theme/theme-contract.json) and both
+> platforms are verified against it by `scripts/verify_theme_parity.sh`; the
+> tables below are this document's rendering of that contract and are checked by
+> the same verifier.
+> The Design system on both platforms is wired to the
 > icon-derived palette below: white light background, blue/green/orange accents,
 > and a prepared deep-navy dark theme.
 > Source of truth: [`assets/app-icon/source.png`](assets/app-icon/source.png)
@@ -75,7 +80,11 @@ food plate and leaves, **Orange** from the clock.
 | `secondary` | `Green500` | `Green300` |
 | `tertiary` | `Orange500` | `Orange300` |
 | `onPrimary` | `White` | `Navy900` |
-| `onBackground` / `onSurface` | `Navy900` | `Ink100` |
+| `onSecondary` | `White` | `Navy900` |
+| `onTertiary` | `Navy900` | `Navy900` |
+| `onBackground` | `Navy900` | `Ink100` |
+| `onSurface` | `Navy900` | `Ink100` |
+| `onSurfaceVariant` | `Gray700` | `Gray300` |
 | `outline` | `Gray200` | `Gray700` |
 
 ---
@@ -166,4 +175,5 @@ and consumed by `scripts/generate_icons.sh`.
 - [`android/AGENTS.md`](android/AGENTS.md) — Android module layout and conventions.
 - [`ios/AGENTS.md`](ios/AGENTS.md) — iOS module layout and conventions.
 - [`assets/app-icon/README.md`](assets/app-icon/README.md) — shared app-icon contract.
+- [`assets/theme/README.md`](assets/theme/README.md) — the palette contract this document renders.
 - [`assets/splash/README.md`](assets/splash/README.md) — shared splash contract.
