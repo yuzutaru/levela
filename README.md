@@ -58,11 +58,11 @@ changes. Any Conventional Commit type works (`fix(ios): …`, `chore(android): �
 - `ios/` — iOS application (SwiftUI). Modules: `Levela` app + local packages `Design`, `Onboarding`, `Splash`, `Profile`.
 - `assets/app-icon/` — master app icon + the contract that drives both platforms' icons.
 - `assets/splash/`, `assets/onboarding/` — shared flow contracts mirrored by both platforms.
+- `assets/sync/` — the shared offline-first sync API contract (not implemented yet).
 - `scripts/` — repo tooling, including `generate_icons.sh`, the parity verifiers, and the git hooks (`scripts/hooks/`).
 - `AGENTS.md` — root agent guide: commit convention, platform separation, hooks.
 - `android/AGENTS.md`, `ios/AGENTS.md` — per-platform agent guides.
 - `THEME_COLORS.md` — the icon-derived app color palette (light + dark).
-- `SYNC_API.md` — the offline-first sync API contract (not implemented yet).
 
 Tests live beside the code: `android/app/src/test/`, `android/app/src/androidTest/`
 and `ios/LevelaTests/`, `ios/LevelaUITests/` at app level, plus each feature
@@ -95,7 +95,7 @@ so both platforms match exactly.
 | [`android/AGENTS.md`](android/AGENTS.md) | Android module layout, design system, conventions. |
 | [`ios/AGENTS.md`](ios/AGENTS.md) | iOS module layout, design system, conventions. |
 | [`THEME_COLORS.md`](THEME_COLORS.md) | Icon-derived app color palette (light + dark). |
-| [`SYNC_API.md`](SYNC_API.md) | Offline-first sync API contract (login later → sync on register). |
 | [`assets/app-icon/README.md`](assets/app-icon/README.md) | App-icon contract, generator, and outputs. |
 | [`assets/splash/README.md`](assets/splash/README.md) | Shared splash flow contract and parity verifier. |
 | [`assets/onboarding/README.md`](assets/onboarding/README.md) | Shared onboarding flow contract and parity verifier. |
+| [`assets/sync/README.md`](assets/sync/README.md) | Offline-first sync API contract (login later → sync on register). |

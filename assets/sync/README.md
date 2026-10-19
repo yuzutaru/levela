@@ -1,4 +1,4 @@
-# Levela sync API contract
+# Sync API — single source of truth
 
 The contract the offline-first clients (`:profile` on Android, `Profile` on iOS)
 will use to push guest data to the backend once a user registers. The client
@@ -8,6 +8,10 @@ schema already carries every field this contract needs (`id`, `accountUserId`,
 Status: **not implemented yet**. This documents the target so both platforms can
 be built against one spec. Auth UI stays deferred while accounts are offline-first
 (see `SplashTokens.ShowAuthActions`).
+
+This is a prose contract: it has no `sync-contract.json` and no parity verifier,
+because no transport code exists yet to check. Add both once the first client
+sync path lands.
 
 ## Conventions
 
