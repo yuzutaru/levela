@@ -17,7 +17,7 @@ final class ReturningUserUITests: XCTestCase {
         static let guest = "splash.guest"
         static let next = "onboarding.next"
         static let value = "onboarding.value"
-        static let mainMenu = "mainmenu.title"
+        static let mainMenu = "mainmenu.today"
 
         static func goalCard(_ index: Int) -> String { "onboarding.goal.\(index)" }
         static func genderCard(_ index: Int) -> String { "onboarding.gender.\(index)" }
