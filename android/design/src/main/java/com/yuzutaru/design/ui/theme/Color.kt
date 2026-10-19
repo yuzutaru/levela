@@ -2,7 +2,7 @@ package com.yuzutaru.design.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Icon-derived palette (see ../THEME_COLORS.md).
+// Icon-derived palette (see ../assets/theme/THEME_COLORS.md).
 // Sampled from assets/app-icon/source.png. Mirrors iOS Color.swift.
 
 // Blue — primary (running figure / mountain).

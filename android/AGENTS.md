@@ -114,7 +114,7 @@ monochrome layer. See [`../assets/app-icon/README.md`](../assets/app-icon/README
 ## Theme colors
 
 `Color.kt` holds the icon-derived primitive scale from
-[`../THEME_COLORS.md`](../THEME_COLORS.md) (`Blue500`, `Green500`, `Orange500`,
+[`../assets/theme/THEME_COLORS.md`](../assets/theme/THEME_COLORS.md) (`Blue500`, `Green500`, `Orange500`,
 `LightBlue*`, `Pink*`, `Gray*`, `Navy*`, `Ink100`, `White`). `LevelaTheme` maps these onto
 the Material 3 light/dark `ColorScheme`s: a white light background with
 blue/green/orange accents, and a deep-navy dark theme.
