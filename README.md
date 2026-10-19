@@ -63,7 +63,7 @@ changes. Any Conventional Commit type works (`fix(ios): …`, `chore(android): �
 - `scripts/` — repo tooling, including `generate_icons.sh`, the parity verifiers, and the git hooks (`scripts/hooks/`).
 - `AGENTS.md` — root agent guide: commit convention, platform separation, hooks.
 - `android/AGENTS.md`, `ios/AGENTS.md` — per-platform agent guides.
-- `THEME_COLORS.md` — the icon-derived app color palette (light + dark).
+- `THEME_COLORS.md` — the icon-derived app color palette (light + dark) (moved to `assets/theme/THEME_COLORS.md`).
 
 Tests live beside the code: `android/app/src/test/`, `android/app/src/androidTest/`
 and `ios/LevelaTests/`, `ios/LevelaUITests/` at app level, plus each feature
@@ -85,7 +85,7 @@ The Design system on both platforms uses the icon-derived palette: a **white
 light background** with blue/green/orange accents (sampled from the app icon),
 plus a prepared **deep-navy dark theme**. The palette is defined once in
 [`assets/theme/theme-contract.json`](assets/theme/theme-contract.json) and both
-platforms are verified against it. See [`THEME_COLORS.md`](THEME_COLORS.md).
+platforms are verified against it. See [`assets/theme/THEME_COLORS.md`](assets/theme/THEME_COLORS.md).
 Android's dynamic color is off by default so both platforms match exactly.
 
 ```sh
@@ -100,7 +100,7 @@ Android's dynamic color is off by default so both platforms match exactly.
 | [`AGENTS.md`](AGENTS.md) | Root agent guide: commit convention, platform split, hooks. |
 | [`android/AGENTS.md`](android/AGENTS.md) | Android module layout, design system, conventions. |
 | [`ios/AGENTS.md`](ios/AGENTS.md) | iOS module layout, design system, conventions. |
-| [`THEME_COLORS.md`](THEME_COLORS.md) | Icon-derived app color palette (light + dark). |
+| [`assets/theme/THEME_COLORS.md`](assets/theme/THEME_COLORS.md) | Icon-derived app color palette (light + dark). |
 | [`assets/app-icon/README.md`](assets/app-icon/README.md) | App-icon contract, generator, and outputs. |
 | [`assets/theme/README.md`](assets/theme/README.md) | Palette contract, parity verifier, and change procedure. |
 | [`assets/splash/README.md`](assets/splash/README.md) | Shared splash flow contract and parity verifier. |

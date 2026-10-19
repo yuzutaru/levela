@@ -3,7 +3,7 @@
   "description": "Single source of truth for the Levela colour palette. scripts/verify_theme_parity.sh checks that the Android and iOS design systems declare exactly these primitives with these hexes, map the same semantic roles onto the same primitives in light and dark, and that THEME_COLORS.md renders the same tables. To change a colour: edit it here, update both platforms, then run the verifier.",
   "verifier": "scripts/verify_theme_parity.sh",
   "source": "assets/app-icon/source.png",
-  "humanDoc": "THEME_COLORS.md",
+  "humanDoc": "assets/theme/THEME_COLORS.md",
 
   "primitives": {
     "Blue100": "#D6E9FF",

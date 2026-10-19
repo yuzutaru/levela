@@ -10,7 +10,7 @@ scripts/verify_splash_parity.sh         # checks both platforms against the cont
 
 The colour tokens are the primitives declared in
 [`../theme/theme-contract.json`](../theme/theme-contract.json) (rendered in
-[`../../THEME_COLORS.md`](../../THEME_COLORS.md)):
+[`../theme/THEME_COLORS.md`](../theme/THEME_COLORS.md)):
 `Blue500/700`, `LightBlue100/300`, `Gray100/500`, `Navy900`, `White`. The splash
 is the first feature to consume them. The splash is now light-themed: a white
 canvas with a soft light-blue glow and icon-blue actions.

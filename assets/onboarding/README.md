@@ -11,7 +11,7 @@ scripts/verify_onboarding_parity.sh          # checks both platforms against the
 
 The colour tokens are the primitives declared in
 [`../theme/theme-contract.json`](../theme/theme-contract.json) (rendered in
-[`../../THEME_COLORS.md`](../../THEME_COLORS.md)):
+[`../theme/THEME_COLORS.md`](../theme/THEME_COLORS.md)):
 `Blue100/300/500/700`, `LightBlue100/300`, `Orange100/500/700`,
 `Pink100/300/500/700`, `Navy900`, `White`, `Gray100/200/300/500`.
 The mockup's dark accents are toned to the app palette: a white canvas with
