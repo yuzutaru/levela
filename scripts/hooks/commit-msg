@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+#
+# Enforce a platform scope in the commit subject, alongside the platform
+# separation guard in `pre-commit`:
+#
+#   android/ changes -> feat(android): ...
+#   ios/ changes     -> feat(ios): ...
+#
+# Any Conventional Commit type is accepted (feat, fix, chore, ...); the scope
+# must match the platform staged in the commit. Merges and commits that stage
+# neither platform are left alone.
+#
+# Enabled by `scripts/install-hooks.sh` (git config core.hooksPath scripts/hooks).
+#
+set -euo pipefail
+
+msg_file="${1:?commit message file required}"
+subject="$(head -n 1 "$msg_file")"
+
+# Merge commits legitimately combine both platforms and have no scope.
+case "$subject" in
+    Merge\ *) exit 0 ;;
+esac
+
+android=0
+ios=0
+while IFS= read -r file; do
+    case "$file" in
+        android/*) android=1 ;;
+        ios/*)     ios=1 ;;
+    esac
+done < <(git diff --cached --name-only)
+
+expected=""
+if (( android )); then expected="android"; fi
+if (( ios )); then expected="ios"; fi
+
+if [[ -n "$expected" ]]; then
+    if [[ ! "$subject" =~ ^[a-z]+\($expected\)!?:[[:space:]] ]]; then
+        echo "error: a commit touching $expected/ needs a '$expected' scope." >&2
+        echo "       e.g. feat($expected): add ..." >&2
+        echo "       got: $subject" >&2
+        exit 1
+    fi
+fi
+
+exit 0
