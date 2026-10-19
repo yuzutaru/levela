@@ -39,6 +39,9 @@ import com.yuzutaru.onboarding.presentation.model.OnboardingTokens
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
+/** Test tag for the scrollable wheel itself (drag / fling gestures). */
+const val AgeWheelTag: String = "onboarding:age:wheel"
+
 /** Test tag for the row currently under the wheel's centre marker. */
 const val AgeWheelValueTag: String = "onboarding:age:value"
 
@@ -97,7 +100,8 @@ internal fun AgeWheelPicker(
         state = listState,
         modifier = modifier
             .fillMaxWidth()
-            .height(itemHeight * OnboardingTokens.ageWheelVisibleRows),
+            .height(itemHeight * OnboardingTokens.ageWheelVisibleRows)
+            .testTag(AgeWheelTag),
         contentPadding = PaddingValues(
             vertical = itemHeight * ((OnboardingTokens.ageWheelVisibleRows - 1) / 2),
         ),

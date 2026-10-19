@@ -162,6 +162,16 @@ in kg / cm; switching units converts them. It is shown from `:app` after the
 splash guest entry. See
 [`../assets/onboarding/README.md`](../assets/onboarding/README.md).
 
+Tests: `onboarding/src/test/.../OnboardingViewModelTest.kt` covers the state and
+unit conversions; `onboarding/src/androidTest/.../OnboardingViewTest.kt` drives
+the real composables (step gating, unit toggles, the age wheel and gender
+carousel tap/**drag** paths, completion wiring). The guest path through the whole
+app is covered end-to-end by `app/src/androidTest/.../MainActivityOnboardingE2ETest.kt`
+(splash guest entry → seven steps → main menu, asserting the persisted profile);
+it enters through the splash guest button's `SplashGuestButtonTag`
+(`splash:guest`). Run the instrumented suites with
+`./gradlew :onboarding:connectedDebugAndroidTest :app:connectedDebugAndroidTest`.
+
 Related docs: [`../ios/AGENTS.md`](../ios/AGENTS.md) (iOS counterpart),
 [`../README.md`](../README.md) (project overview).
 

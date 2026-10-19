@@ -52,6 +52,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
@@ -500,6 +501,9 @@ private fun ColumnScope.AgeStep(
     Spacer(Modifier.height(24.dp))
 }
 
+/** Test tag for the swipeable gender carousel. */
+const val GenderCarouselTag: String = "onboarding:gender:carousel"
+
 /**
  * The gender carousel: a swipeable, snapping row with the selected card centred
  * and the neighbouring cards peeking at the edges. Tapping a card toggles it and
@@ -534,7 +538,9 @@ private fun GenderCarousel(
             state = pagerState,
             pageSpacing = OnboardingTokens.GenderCardSpacing.dp,
             contentPadding = PaddingValues(horizontal = horizontalPadding),
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .testTag(GenderCarouselTag),
         ) { page ->
             val option = options[page]
             Box(
