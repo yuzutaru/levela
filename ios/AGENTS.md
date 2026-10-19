@@ -254,6 +254,10 @@ Related docs: [`../android/AGENTS.md`](../android/AGENTS.md) (Android counterpar
 - Commits are platform-separated: the tracked `pre-commit` hook
   (`scripts/install-hooks.sh`) rejects a commit that stages changes under both
   `android/` and `ios/`. Keep iOS and Android changes in separate commits.
+- **Commit convention**: enforce platform-scoped subject in commit messages
+  (`feat(android)` / `fix(android)` / `feat(ios)` / `fix(ios)` etc.);
+  the `commit-msg` hook validates this and the `pre-commit` hook enforces
+  the platform split.
 - Cross-module symbols must be `public` (Swift packages do not expose internals).
 - Feature view models are `@Observable @MainActor` — the iOS counterpart to
   Android's `@HiltViewModel` + `ViewModel`. They are built by the app's
