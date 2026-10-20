@@ -36,7 +36,7 @@ import com.yuzutaru.design.ui.theme.White
 private val PreviewCardCorner = 28.dp
 private val PreviewCardElevation = 12.dp
 private val RingDiameter = 92.dp
-private val RingStroke = 9.dp
+private val RingStroke = 12.dp
 
 /**
  * The progress ring: one arc per macro, sized by that macro's share of the
@@ -127,7 +127,7 @@ private fun NutritionRingPreview() {
             NutritionRing(
                 summary = NutritionSummary(),
                 modifier = Modifier
-                    .size(124.dp)
+                    .size(160.dp)
                     .shadow(
                         elevation = PreviewCardElevation,
                         shape = RoundedCornerShape(PreviewCardCorner),
