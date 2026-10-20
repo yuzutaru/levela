@@ -23,6 +23,7 @@ import com.yuzutaru.design.ui.theme.LevelaTheme
 import com.yuzutaru.splash.SplashTokens
 
 private const val Title = "Overview"
+private const val CardWidthFraction = 0.50f
 private const val CardHeightFraction = 0.30f
 private val HorizontalPadding = 24.dp
 private val TopPadding = 8.dp
@@ -56,7 +57,7 @@ internal fun TodayScreen(modifier: Modifier = Modifier) {
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(CardWidthFraction)
                 .fillMaxHeight(CardHeightFraction)
                 .shadow(elevation = CardShadow, shape = CardShape, clip = false)
                 .clip(CardShape)
