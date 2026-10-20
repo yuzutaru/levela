@@ -1,10 +1,9 @@
 //
 //  TodayView.swift
-//  Levela
+//  Today
 //
 
 import Design
-import Splash
 import SwiftUI
 
 /// Mock nutrition summary for the Today card. Shaped like the future model so
@@ -33,10 +32,12 @@ private struct MacroSummary {
 /// summary card. The card grows with its content but never drops below 30% of
 /// the available height, and the right half of the screen stays empty.
 ///
-/// The splash-style background lives in `MainMenuView`, so this view only
-/// paints content.
-struct TodayView: View {
-    private static let title = "Overview"
+/// The splash-style background is drawn by the app shell behind the content,
+/// so this view only paints content.
+///
+/// Mirrors the Android `TodayScreen`.
+@MainActor
+public struct TodayView: View {
     private static let horizontalPadding: CGFloat = 24
     private static let topPadding: CGFloat = 8
     private static let cardSpacing: CGFloat = 24
@@ -46,13 +47,15 @@ struct TodayView: View {
 
     private let summary = NutritionSummary()
 
-    var body: some View {
+    public init() {}
+
+    public var body: some View {
         GeometryReader { proxy in
             VStack(alignment: .leading, spacing: Self.cardSpacing) {
-                Text(Self.title)
+                Text(TodayTokens.title)
                     .font(LevelaTypography.displaySmall)
-                    .foregroundStyle(SplashTokens.title)
-                    .accessibilityIdentifier(MainMenuAccessibility.today)
+                    .foregroundStyle(Color.navy900)
+                    .accessibilityIdentifier(TodayTokens.screenTag)
 
                 NutritionSummaryCard(summary: summary)
                     .frame(width: proxy.size.width * Self.cardWidthFraction)
@@ -191,7 +194,21 @@ private struct MacroRow: View {
 
 #Preview {
     ZStack {
-        MainMenuBackground()
+        LinearGradient(
+            colors: [.white, .lightBlue100],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        .ignoresSafeArea()
+
+        RadialGradient(
+            colors: [.lightBlue300.opacity(0.55), .clear],
+            center: UnitPoint(x: 0.5, y: -0.08),
+            startRadius: 0,
+            endRadius: 460
+        )
+        .ignoresSafeArea()
+
         TodayView()
     }
     .levelaTheme()

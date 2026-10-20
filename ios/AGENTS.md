@@ -11,7 +11,7 @@ guide is at `../android/AGENTS.md`.
 
 ## Module layout
 
-Five Swift modules. The app and its feature packages are separate **local Swift
+Six Swift modules. The app and its feature packages are separate **local Swift
 packages**, so module boundaries are real compile boundaries — the iOS analogue
 of the Android Gradle modules.
 
@@ -26,7 +26,9 @@ of the Android Gradle modules.
     `RootViewModel` (returning users skip onboarding).
   - `Levela/Presentation/Screen/MainMenuView.swift` — the bottom-navigation main
     menu (Today · Nutrition · Train · Profile), the mirror of Android's
-    `MainMenuScreen`, with per-destination `MainMenuAccessibility` handles.
+    `MainMenuScreen`, with per-destination `MainMenuAccessibility` handles. The
+    Today destination renders `TodayView` from the `Today` package; the rest are
+    placeholders.
   - `Levela/Presentation/Viewmodel/RootViewModel.swift` — owns the launch-time
     profile check (the iOS counterpart of Android's `RootViewModel`).
   - `Levela/Presentation/Widget/ErrorView.swift` — the store-open failure screen
@@ -51,10 +53,14 @@ of the Android Gradle modules.
   `UserProfileRepository` and `ProfileData`). No dependencies. The Android
   counterpart is the `:profile` module. It is consumed only through use cases
   (see the Layering section).
+- **`Today`** — local Swift package at `Packages/Today`; the Today dashboard (the
+  main menu's landing destination). Depends on `Design`. The current nutrition
+  summary is mock data — no view model yet. The Android counterpart is the
+  `:today` module.
 
 Dependency direction: `Levela → Design`, `Levela → Onboarding`, `Levela → Splash`,
-`Levela → Profile`, `Onboarding → Design`, `Splash → Design`. Features never
-depend on each other or on the app.
+`Levela → Profile`, `Levela → Today`, `Onboarding → Design`, `Splash → Design`,
+`Today → Design`. Features never depend on each other or on the app.
 
 ## Build & run
 
@@ -69,7 +75,7 @@ Or open `Levela.xcodeproj` in Xcode and run.
   in each `Package.swift`, matching the app's `SWIFT_VERSION = 5.0`).
 - The packages are referenced from the project via `XCLocalSwiftPackageReference`
   (`Packages/Design`, `Packages/Onboarding`, `Packages/Splash`,
-  `Packages/Profile`) and linked to the `Levela` target.
+  `Packages/Profile`, `Packages/Today`) and linked to the `Levela` target.
 - The Xcode project uses file-system-synchronized groups: files under `Levela/`
   are picked up automatically — no need to edit `project.pbxproj` to add sources
   there. Adding a *new package* does require editing the project.
@@ -238,6 +244,22 @@ app lands directly on `mainmenu.today` without ever showing the splash guest
 button. (A UI-test bundle runs out of process and cannot seed SwiftData, hence the
 full walk first.) Run it the same way with
 `-only-testing:LevelaUITests/ReturningUserUITests`.
+
+## Today
+
+The Today dashboard (the main menu's landing destination) lives in the `Today`
+package at `Packages/Today/Sources/Today/`. It renders a mock nutrition summary
+card (consumed calories, a macro progress ring, per-macro rows) with no view
+model or persistence yet — the data types are shaped like the future model so
+only the data source has to change. `TodayTokens` holds the heading copy and the
+stable `mainmenu.today` accessibility identifier the app's UI tests assert
+against. The shared splash-style background is drawn by the app shell
+(`MainMenuBackground` in `MainMenuView`); the package paints content only and
+depends just on `Design`. The Android counterpart is the `:today` module.
+
+Tests: `xcodebuild test -scheme Today -destination 'platform=iOS Simulator,name=iPhone 18 Pro'`
+from `Packages/Today` (`TodayTokensTests` covers the copy and the stable
+`mainmenu.today` identifier).
 
 ## Profile (`Profile` package)
 

@@ -6,6 +6,7 @@
 import Design
 import Splash
 import SwiftUI
+import Today
 
 /// The app's bottom-navigation destinations, in left-to-right order.
 ///
