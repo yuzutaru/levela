@@ -29,28 +29,13 @@ struct MacroSummary {
 }
 
 struct NutritionSummaryCard: View {
-    private static let ringDiameter: CGFloat = 92
-    private static let ringStroke: CGFloat = 9
-
     let summary: NutritionSummary
-
-    private var arcs: [RingArc] {
-        let total = max(summary.macros.reduce(0) { $0 + $1.consumed }, 1)
-        var start: CGFloat = 0
-        var result: [RingArc] = []
-        for macro in summary.macros {
-            let end = start + CGFloat(macro.consumed) / CGFloat(total)
-            result.append(RingArc(start: start, end: end, color: macro.color))
-            start = end
-        }
-        return result
-    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             header
 
-            ring
+            NutritionRing(summary: summary)
                 .frame(maxWidth: .infinity, alignment: .center)
 
             VStack(alignment: .leading, spacing: 6) {
@@ -78,41 +63,6 @@ struct NutritionSummaryCard: View {
         .lineLimit(1)
         .minimumScaleFactor(0.8)
     }
-
-    /// One arc per macro, sized by that macro's share of the total grams
-    /// consumed, so the three arcs close the circle.
-    private var ring: some View {
-        ZStack {
-            Circle()
-                .stroke(Color.gray200, lineWidth: Self.ringStroke)
-
-            ForEach(Array(arcs.enumerated()), id: \.offset) { _, arc in
-                Circle()
-                    .trim(from: arc.start, to: arc.end)
-                    .stroke(arc.color, style: StrokeStyle(lineWidth: Self.ringStroke, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
-            }
-
-            VStack(spacing: 1) {
-                Text(summary.dayLabel)
-                    .font(.system(size: 10))
-                    .foregroundStyle(Color.gray500)
-                Text("\(summary.percentComplete)%")
-                    .font(.system(size: 24, weight: .bold))
-                    .foregroundStyle(Color.navy900)
-                Text("+\(summary.deltaPercent)%")
-                    .font(.system(size: 11))
-                    .foregroundStyle(Color.green500)
-            }
-        }
-        .frame(width: Self.ringDiameter, height: Self.ringDiameter)
-    }
-}
-
-private struct RingArc {
-    let start: CGFloat
-    let end: CGFloat
-    let color: Color
 }
 
 // MARK: - Macro row
