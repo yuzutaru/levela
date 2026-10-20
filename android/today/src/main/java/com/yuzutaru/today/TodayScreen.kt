@@ -1,4 +1,4 @@
-package com.yuzutaru.levela.presentation
+package com.yuzutaru.today
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -25,9 +25,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -40,15 +42,15 @@ import com.yuzutaru.design.ui.theme.Gray200
 import com.yuzutaru.design.ui.theme.Gray400
 import com.yuzutaru.design.ui.theme.Gray500
 import com.yuzutaru.design.ui.theme.Green500
+import com.yuzutaru.design.ui.theme.LightBlue100
+import com.yuzutaru.design.ui.theme.LightBlue300
 import com.yuzutaru.design.ui.theme.LevelaTheme
 import com.yuzutaru.design.ui.theme.Navy900
 import com.yuzutaru.design.ui.theme.Orange500
 import com.yuzutaru.design.ui.theme.Pink500
 import com.yuzutaru.design.ui.theme.Teal500
 import com.yuzutaru.design.ui.theme.White
-import com.yuzutaru.splash.SplashTokens
 
-private const val Title = "Overview"
 private const val CardWidthFraction = 0.50f
 private const val CardMinHeightFraction = 0.30f
 private val HorizontalPadding = 24.dp
@@ -83,11 +85,11 @@ private data class MacroSummary(
  * summary card. The card grows with its content but never drops below 30% of
  * the available height, and the right half of the screen stays empty.
  *
- * The splash-style background lives in [MenuBackground]; this view only paints
- * content.
+ * The splash-style background is drawn by the app shell behind the content;
+ * this view only paints content.
  */
 @Composable
-internal fun TodayScreen(modifier: Modifier = Modifier) {
+fun TodayScreen(modifier: Modifier = Modifier) {
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val cardWidth = maxWidth * CardWidthFraction
         val cardMinHeight = maxHeight * CardMinHeightFraction
@@ -99,10 +101,10 @@ internal fun TodayScreen(modifier: Modifier = Modifier) {
                 .padding(top = TopPadding),
         ) {
             Text(
-                text = Title,
+                text = TodayTokens.Title,
                 style = MaterialTheme.typography.displaySmall,
-                color = SplashTokens.Title,
-                modifier = Modifier.testTag(MainMenuTab.Today.screenTag),
+                color = Navy900,
+                modifier = Modifier.testTag(TodayTokens.ScreenTag),
             )
 
             Spacer(Modifier.height(CardSpacing))
@@ -274,8 +276,20 @@ private fun MacroRow(macro: MacroSummary) {
 @Composable
 private fun TodayScreenPreview() {
     LevelaTheme {
-        Box {
-            MenuBackground(Modifier.matchParentSize())
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .drawBehind {
+                    drawRect(Brush.verticalGradient(listOf(White, LightBlue100)))
+                    drawRect(
+                        Brush.radialGradient(
+                            colors = listOf(LightBlue300.copy(alpha = 0.55f), Color.Transparent),
+                            center = Offset(size.width / 2f, -size.height * 0.08f),
+                            radius = size.width * 1.1f,
+                        )
+                    )
+                },
+        ) {
             TodayScreen()
         }
     }

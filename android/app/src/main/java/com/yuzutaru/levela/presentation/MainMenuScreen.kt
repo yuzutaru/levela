@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LevelaTheme
 import com.yuzutaru.splash.SplashTokens
+import com.yuzutaru.today.TodayScreen
 
 /**
  * The app's bottom-navigation destinations, in left-to-right order.

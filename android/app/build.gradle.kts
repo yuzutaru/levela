@@ -43,6 +43,7 @@ dependencies {
     implementation(project(":design"))
     implementation(project(":onboarding"))
     implementation(project(":splash"))
+    implementation(project(":today"))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material.icons.extended)
