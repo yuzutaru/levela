@@ -5,16 +5,18 @@ Cross-platform conventions for the Levela Android+iOS repo.
 ## App flow (both platforms)
 1. **Splash** (launch) → guest taps **Continue as a guest**.
 2. **Onboarding** (seven steps) → final Next persists a guest-owned profile.
-3. **Main menu** (placeholder home). A returning user with a saved profile skips
-   onboarding and lands here straight after the splash.
+3. **Main menu** — the bottom-navigation home (Today · Nutrition · Train ·
+   Profile). Today is a real dashboard in its own module; the other destinations
+   are still placeholders. A returning user with a saved profile skips onboarding
+   and lands here straight after the splash.
 Each platform has its own module layout, design system, and DI wiring; see the
 per-platform guides below.
 
 ## Repository map
 - `android/` — Kotlin + Jetpack Compose app; modules `:app`, `:design`,
-  `:profile`, `:onboarding`, `:splash`.
+  `:profile`, `:onboarding`, `:splash`, `:today`.
 - `ios/` — SwiftUI app + local Swift packages `Design`, `Onboarding`, `Splash`,
-  `Profile`.
+  `Profile`, `Today`.
 - `assets/` — single-source-of-truth contracts shared by both platforms:
   `app-icon/`, `theme/` (`theme-contract.json` + `THEME_COLORS.md`),
   `splash/`, `onboarding/` (each has its own `README.md`),
