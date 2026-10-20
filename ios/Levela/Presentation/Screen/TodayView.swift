@@ -18,6 +18,7 @@ struct TodayView: View {
     private static let topPadding: CGFloat = 8
     private static let cardSpacing: CGFloat = 24
     private static let cardCorner: CGFloat = 28
+    private static let cardWidthFraction: CGFloat = 0.50
     private static let cardHeightFraction: CGFloat = 0.30
 
     var body: some View {
@@ -30,7 +31,11 @@ struct TodayView: View {
 
                 RoundedRectangle(cornerRadius: Self.cardCorner, style: .continuous)
                     .fill(.white)
-                    .frame(height: proxy.size.height * Self.cardHeightFraction)
+                    .frame(
+                        width: proxy.size.width * Self.cardWidthFraction,
+                        height: proxy.size.height * Self.cardHeightFraction
+                    )
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .shadow(color: .black.opacity(0.08), radius: 16, x: 0, y: 8)
 
                 Spacer(minLength: 0)
