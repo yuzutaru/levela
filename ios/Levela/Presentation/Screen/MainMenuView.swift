@@ -4,6 +4,7 @@
 //
 
 import Design
+import Splash
 import SwiftUI
 
 /// The app's bottom-navigation destinations, in left-to-right order.
@@ -59,9 +60,9 @@ extension MainMenuTab {
     }
 }
 
-/// The post-onboarding main menu: a native bottom tab bar over four placeholder
-/// destinations. Today is the landing destination. Mirrors the Android
-/// `MainMenuScreen`.
+/// The post-onboarding main menu: a native bottom tab bar over four
+/// destinations, sharing the splash-style background. Today is the landing
+/// destination. Mirrors the Android `MainMenuScreen`.
 struct MainMenuView: View {
     @Environment(\.levelaColors) private var colors
     @State private var selection: MainMenuTab = .today
@@ -80,21 +81,56 @@ struct MainMenuView: View {
     }
 }
 
-/// The blank placeholder for a destination, differentiated by its big title.
-private struct MainMenuDestination: View {
-    @Environment(\.levelaColors) private var colors
+/// The splash-style background shared by every main-menu destination: a white →
+/// light-blue vertical gradient with a radial glow at the top.
+struct MainMenuBackground: View {
+    var body: some View {
+        ZStack {
+            LinearGradient(
+                colors: SplashTokens.backgroundGradient,
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            RadialGradient(
+                colors: [SplashTokens.backgroundGlow.opacity(0.55), .clear],
+                center: UnitPoint(x: 0.5, y: -0.08),
+                startRadius: 0,
+                endRadius: 460
+            )
+        }
+        .ignoresSafeArea()
+    }
+}
 
+/// The destination content: the Today screen, or a placeholder for the tabs
+/// whose real screens have not landed yet. The splash-style background is
+/// applied per destination because `TabView` hosts each page opaquely.
+private struct MainMenuDestination: View {
     let tab: MainMenuTab
 
     var body: some View {
         ZStack {
-            colors.background.ignoresSafeArea()
+            MainMenuBackground()
 
-            Text(tab.title)
-                .font(LevelaTypography.displaySmall)
-                .foregroundStyle(colors.onBackground)
-                .accessibilityIdentifier(tab.accessibilityIdentifier)
+            switch tab {
+            case .today:
+                TodayView()
+            default:
+                PlaceholderDestination(tab: tab)
+            }
         }
+    }
+}
+
+/// The blank placeholder for a destination, differentiated by its big title.
+private struct PlaceholderDestination: View {
+    let tab: MainMenuTab
+
+    var body: some View {
+        Text(tab.title)
+            .font(LevelaTypography.displaySmall)
+            .foregroundStyle(SplashTokens.title)
+            .accessibilityIdentifier(tab.accessibilityIdentifier)
     }
 }
 
