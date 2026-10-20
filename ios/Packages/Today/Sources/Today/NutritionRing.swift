@@ -10,7 +10,7 @@ import SwiftUI
 /// total grams consumed, so the three arcs close the circle.
 struct NutritionRing: View {
     private static let ringDiameter: CGFloat = 92
-    private static let ringStroke: CGFloat = 9
+    private static let ringStroke: CGFloat = 12
 
     let summary: NutritionSummary
 
