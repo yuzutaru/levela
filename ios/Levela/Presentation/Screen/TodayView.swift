@@ -7,22 +7,60 @@ import Design
 import Splash
 import SwiftUI
 
+/// Mock nutrition summary for the Today card. Shaped like the future model so
+/// only the data source has to change when real tracking lands.
+private struct NutritionSummary {
+    let dayLabel = "Day 8"
+    let consumedCalories = "1,320"
+    let dailyCalories = "2,300"
+    let percentComplete = 64
+    let deltaPercent = 3
+    let macros: [MacroSummary] = [
+        MacroSummary(label: "Carbs", consumed: 112, daily: 240, color: .orange500),
+        MacroSummary(label: "Proteins", consumed: 48, daily: 140, color: .pink500),
+        MacroSummary(label: "Fats", consumed: 32, daily: 110, color: .teal500),
+    ]
+}
+
+private struct MacroSummary {
+    let label: String
+    let consumed: Int
+    let daily: Int
+    let color: Color
+}
+
 /// The Today destination: a large top-left heading over a half-width nutrition
-/// summary card that is content-driven (min 30% height, grows with content).
+/// summary card. The card grows with its content but never drops below 30% of
+/// the available height, and the right half of the screen stays empty.
+///
+/// The splash-style background lives in `MainMenuView`, so this view only
+/// paints content.
 struct TodayView: View {
     private static let title = "Overview"
     private static let horizontalPadding: CGFloat = 24
     private static let topPadding: CGFloat = 8
+    private static let cardSpacing: CGFloat = 24
+    private static let cardCorner: CGFloat = 28
+    private static let cardWidthFraction: CGFloat = 0.50
+    private static let cardMinHeightFraction: CGFloat = 0.30
+
+    private let summary = NutritionSummary()
 
     var body: some View {
         GeometryReader { proxy in
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: Self.cardSpacing) {
                 Text(Self.title)
                     .font(LevelaTypography.displaySmall)
                     .foregroundStyle(SplashTokens.title)
                     .accessibilityIdentifier(MainMenuAccessibility.today)
 
-                NutritionSummaryCard(proxySize: proxy.size)
+                NutritionSummaryCard(summary: summary)
+                    .frame(width: proxy.size.width * Self.cardWidthFraction)
+                    .frame(minHeight: proxy.size.height * Self.cardMinHeightFraction, alignment: .topLeading)
+                    .background(Color.white)
+                    .clipShape(RoundedRectangle(cornerRadius: Self.cardCorner, style: .continuous))
+                    .shadow(color: Color.black.opacity(0.08), radius: 14, y: 6)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
                 Spacer(minLength: 0)
             }
@@ -36,168 +74,118 @@ struct TodayView: View {
 // MARK: - Nutrition summary card
 
 private struct NutritionSummaryCard: View {
-    private static let cardCorner: CGFloat = 28
-    private static let horizontalPadding: CGFloat = 16
-    private static let rowHeight: CGFloat = 22
-    private static let rowSpacing: CGFloat = 6
     private static let ringDiameter: CGFloat = 92
     private static let ringStroke: CGFloat = 9
-    private static let centerFontSize: CGFloat = 24
-    private static let deltaFontSize: CGFloat = 10
-    private static let labelFontSize: CGFloat = 10
-    private static let valueFontSize: CGFloat = 11
 
-    // Mock data for Day 8
-    private static let consumedCalories = 1_320
-    private static let dailyCalories = 2_300
-    private static let percentComplete = 64
-    private static let delta = 3
-    private static let carbsConsumed = 112
-    private static let carbsDaily = 240
-    private static let proteinsConsumed = 48
-    private static let proteinsDaily = 140
-    private static let fatsConsumed = 32
-    private static let fatsDaily = 110
+    let summary: NutritionSummary
 
-    private var proxySize: CGSize
-
-    init(proxySize: CGSize) {
-        self.proxySize = proxySize
+    private var arcs: [RingArc] {
+        let total = max(summary.macros.reduce(0) { $0 + $1.consumed }, 1)
+        var start: CGFloat = 0
+        var result: [RingArc] = []
+        for macro in summary.macros {
+            let end = start + CGFloat(macro.consumed) / CGFloat(total)
+            result.append(RingArc(start: start, end: end, color: macro.color))
+            start = end
+        }
+        return result
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: NutritionSummaryCard.rowSpacing) {
-            // Header: flame + calories
-            HStack(spacing: 6) {
-                Image(systemName: "flame.fill")
-                    .font(.system(size: 12, weight: .regular))
-                    .foregroundStyle(.navy900)
-                Text("\(NutritionSummaryCard.consumedCalories.formatted()) / \(NutritionSummaryCard.dailyCalories.formatted())")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(.navy900)
-                Text("kcal")
-                    .font(.system(size: 10))
-                    .foregroundStyle(.gray500)
-            }
+        VStack(alignment: .leading, spacing: 12) {
+            header
 
-            // Ring
-            ZStack {
-                // Track
-                Circle()
-                    .stroke(Color.gray200, lineWidth: NutritionSummaryCard.ringStroke)
-                    .frame(width: NutritionSummaryCard.ringDiameter, height: NutritionSummaryCard.ringDiameter)
+            ring
+                .frame(maxWidth: .infinity, alignment: .center)
 
-                // Arcs — normalized by grams consumed
-                // Carbs: 112/240 ≈ 58%; Proteins: 48/140 ≈ 25%; Fats: 32/110 ≈ 17%
-                // We draw three arcs that sum to 360°: start from -90° (12 o'clock)
-                Circle()
-                    .trim(from: 0, to: 0.58)
-                    .stroke(Color.orange500, style: StrokeStyle(lineWidth: NutritionSummaryCard.ringStroke, lineCap: .round))
-                    .frame(width: NutritionSummaryCard.ringDiameter, height: NutritionSummaryCard.ringDiameter)
-                    .rotationEffect(.degrees(-90))
-
-                Circle()
-                    .trim(from: 0.58, to: 0.58 + 0.25)
-                    .stroke(Color.pink500, style: StrokeStyle(lineWidth: NutritionSummaryCard.ringStroke, lineCap: .round))
-                    .frame(width: NutritionSummaryCard.ringDiameter, height: NutritionSummaryCard.ringDiameter)
-                    .rotationEffect(.degrees(-90))
-
-                Circle()
-                    .trim(from: 0.58 + 0.25, to: 1.0)
-                    .stroke(Color.teal500, style: StrokeStyle(lineWidth: NutritionSummaryCard.ringStroke, lineCap: .round))
-                    .frame(width: NutritionSummaryCard.ringDiameter, height: NutritionSummaryCard.ringDiameter)
-                    .rotationEffect(.degrees(-90))
-
-                // Center: day + percent + delta
-                VStack(alignment: .center, spacing: 2) {
-                    Text("Day 8")
-                        .font(.system(size: 9, weight: .regular))
-                        .foregroundStyle(.gray100)
-                    Text("\(NutritionSummaryCard.percentComplete)%")
-                        .font(.system(size: NutritionSummaryCard.centerFontSize, weight: .bold))
-                        .foregroundStyle(.navy900)
-                    HStack(spacing: 2) {
-                        Text("+\(NutritionSummaryCard.delta)%")
-                            .font(.system(size: NutritionSummaryCard.deltaFontSize, weight: .regular))
-                            .foregroundStyle(.green500)
-                        Text("vs yesterday")
-                            .font(.system(size: 9))
-                            .foregroundStyle(.gray400)
-                    }
+            VStack(alignment: .leading, spacing: 6) {
+                ForEach(summary.macros, id: \.label) { macro in
+                    MacroRow(macro: macro)
                 }
             }
-
-            // Macro rows
-            HStack(spacing: 16) {
-                MacroRow(
-                    title: "Carbs",
-                    consumed: NutritionSummaryCard.carbsConsumed,
-                    daily: NutritionSummaryCard.carbsDaily,
-                    barColor: .orange500,
-                    valueColor: .navy900,
-                    unit: "g"
-                )
-                MacroRow(
-                    title: "Proteins",
-                    consumed: NutritionSummaryCard.proteinsConsumed,
-                    daily: NutritionSummaryCard.proteinsDaily,
-                    barColor: .pink500,
-                    valueColor: .navy900,
-                    unit: "g"
-                )
-                MacroRow(
-                    title: "Fats",
-                    consumed: NutritionSummaryCard.fatsConsumed,
-                    daily: NutritionSummaryCard.fatsDaily,
-                    barColor: .teal500,
-                    valueColor: .navy900,
-                    unit: "g"
-                )
-            }
-            .padding(.horizontal, 4)
         }
+        .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, NutritionSummaryCard.horizontalPadding)
     }
+
+    private var header: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "flame.fill")
+                .font(.system(size: 12))
+                .foregroundStyle(Color.orange500)
+            Text(summary.consumedCalories)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(Color.navy900)
+            Text("/ \(summary.dailyCalories) kcal")
+                .font(.system(size: 11))
+                .foregroundStyle(Color.gray500)
+        }
+        .lineLimit(1)
+        .minimumScaleFactor(0.8)
+    }
+
+    /// One arc per macro, sized by that macro's share of the total grams
+    /// consumed, so the three arcs close the circle.
+    private var ring: some View {
+        ZStack {
+            Circle()
+                .stroke(Color.gray200, lineWidth: Self.ringStroke)
+
+            ForEach(Array(arcs.enumerated()), id: \.offset) { _, arc in
+                Circle()
+                    .trim(from: arc.start, to: arc.end)
+                    .stroke(arc.color, style: StrokeStyle(lineWidth: Self.ringStroke, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+            }
+
+            VStack(spacing: 1) {
+                Text(summary.dayLabel)
+                    .font(.system(size: 10))
+                    .foregroundStyle(Color.gray500)
+                Text("\(summary.percentComplete)%")
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundStyle(Color.navy900)
+                Text("+\(summary.deltaPercent)%")
+                    .font(.system(size: 11))
+                    .foregroundStyle(Color.green500)
+            }
+        }
+        .frame(width: Self.ringDiameter, height: Self.ringDiameter)
+    }
+}
+
+private struct RingArc {
+    let start: CGFloat
+    let end: CGFloat
+    let color: Color
 }
 
 // MARK: - Macro row
 
 private struct MacroRow: View {
-    let title: String
-    let consumed: Int
-    let daily: Int
-    let barColor: Color
-    let valueColor: Color
-    let unit: String
-
-    private var consumedPercent: Double {
-        guard daily > 0 else { return 0 }
-        return Double(consumed) / Double(daily)
-    }
-
-    private var consumedValue: Int { consumed }
-    private var dailyValue: Int { daily }
+    let macro: MacroSummary
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            HStack(spacing: 4) {
-                RoundedRectangle(cornerRadius: 3)
-                    .fill(barColor)
-                    .frame(width: 16, height: 3)
-                Text(title)
-                    .font(.system(size: NutritionSummaryCard.labelFontSize))
-                    .foregroundStyle(.gray500)
-            }
-            HStack(spacing: 2) {
-                Text("\(consumedValue.formatted()) / \(dailyValue.formatted())")
-                    .font(.system(size: NutritionSummaryCard.valueFontSize, weight: .semibold))
-                    .foregroundStyle(valueColor)
-                Text(unit)
-                    .font(.system(size: 9))
-                    .foregroundStyle(.gray400)
-            }
+        HStack(spacing: 0) {
+            RoundedRectangle(cornerRadius: 1.5, style: .continuous)
+                .fill(macro.color)
+                .frame(width: 16, height: 3)
+
+            Text(macro.label)
+                .font(.system(size: 11))
+                .foregroundStyle(Color.gray500)
+                .padding(.leading, 6)
+
+            Spacer(minLength: 8)
+
+            Text("\(macro.consumed) / \(macro.daily)")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(Color.navy900)
+            Text(" g")
+                .font(.system(size: 10))
+                .foregroundStyle(Color.gray400)
         }
+        .lineLimit(1)
     }
 }
 
