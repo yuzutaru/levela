@@ -11,7 +11,7 @@ guide is at `../android/AGENTS.md`.
 
 ## Module layout
 
-Eight Swift modules. The app and its feature packages are separate **local Swift
+Seven Swift modules. The app and its feature packages are separate **local Swift
 packages**, so module boundaries are real compile boundaries — the iOS analogue
 of the Android Gradle modules.
 
@@ -26,10 +26,9 @@ of the Android Gradle modules.
     `RootViewModel` (returning users skip onboarding).
   - `Levela/Presentation/Screen/MainMenuView.swift` — the bottom-navigation main
     menu (Today · Nutrition · Train · Profile), the mirror of Android's
-    `MainMenuScreen`, with per-destination `MainMenuAccessibility` handles. Today
-    renders `TodayView` from the `MainMenu` package and Nutrition renders
-    `NutritionView` from the `Nutrition` package; Train and Profile are
-    placeholders.
+    `MainMenuScreen`, with per-destination `MainMenuAccessibility` handles. The
+    Today destination renders `TodayView` from the `MainMenu` package; the rest
+    are placeholders.
   - `Levela/Presentation/Viewmodel/RootViewModel.swift` — owns the launch-time
     profile check (the iOS counterpart of Android's `RootViewModel`).
   - `Levela/Presentation/Widget/ErrorView.swift` — the store-open failure screen
@@ -54,25 +53,20 @@ of the Android Gradle modules.
   `UserProfileRepository` and `ProfileData`). No dependencies. The Android
   counterpart is the `:profile` module. It is consumed only through use cases
   (see the Layering section).
-- **`MainMenu`** — local Swift package at `Packages/MainMenu`; the Today dashboard
-  (the main menu's landing destination). Depends on `Design` and `Summary`. The
-  dashboard is mock data — no view model yet. The Android counterpart is the
-  `:mainmenu` module.
+- **`MainMenu`** — local Swift package at `Packages/MainMenu`; the Today
+  destination (the main menu's landing destination): the summary cards plus the
+  fasting view. Depends on `Design` and `Summary`. All mock data — no view model
+  yet. The Android counterpart is the `:mainmenu` module.
 - **`Summary`** — local Swift package at `Packages/Summary`; the shared dashboard
   summary cards (`SummaryCards`, `NutritionSummaryCard`, `NutritionRing`,
   `StepsCard`, `ActiveMinutesCard`) and the `summaryCard()` chrome. Depends on
-  `Design`. Consumed by `MainMenu` (Today) and `Nutrition` (Nutrition). The
-  Android counterpart is the `:summary` module.
-- **`Nutrition`** — local Swift package at `Packages/Nutrition`; the Nutrition
-  destination (a scrollable screen: the shared summary cards on top, the fasting
-  view below). Depends on `Design` and `Summary`. Mock fasting data — no view
-  model yet. The Android counterpart is the `:nutrition` module.
+  `Design`. Consumed by `MainMenu` (Today). The Android counterpart is the
+  `:summary` module.
 
 Dependency direction: `Levela → Design`, `Levela → Onboarding`, `Levela → Splash`,
 `Levela → Profile`, `Levela → Summary`, `Levela → MainMenu`,
-`Levela → Nutrition`, `Onboarding → Design`, `Splash → Design`,
-`MainMenu → Design`, `MainMenu → Summary`, `Nutrition → Design`,
-`Nutrition → Summary`. Features never depend on each other or on the app.
+`Onboarding → Design`, `Splash → Design`, `MainMenu → Design`,
+`MainMenu → Summary`. Features never depend on each other or on the app.
 
 ## Build & run
 
@@ -87,8 +81,8 @@ Or open `Levela.xcodeproj` in Xcode and run.
   in each `Package.swift`, matching the app's `SWIFT_VERSION = 5.0`).
 - The packages are referenced from the project via `XCLocalSwiftPackageReference`
   (`Packages/Design`, `Packages/Onboarding`, `Packages/Splash`,
-  `Packages/Profile`, `Packages/Summary`, `Packages/MainMenu`,
-  `Packages/Nutrition`) and linked to the `Levela` target.
+  `Packages/Profile`, `Packages/Summary`, `Packages/MainMenu`) and linked to the
+  `Levela` target.
 - The Xcode project uses file-system-synchronized groups: files under `Levela/`
   are picked up automatically — no need to edit `project.pbxproj` to add sources
   there. Adding a *new package* does require editing the project.
@@ -260,46 +254,35 @@ full walk first.) Run it the same way with
 
 ## Today
 
-The Today dashboard (the main menu's landing destination) lives in the `MainMenu`
-package at `Packages/MainMenu/Sources/MainMenu/`. It renders the shared summary
-row from `Summary`: a mock nutrition summary card (consumed calories, a macro
-progress ring, per-macro rows), a mock step summary card (the day's step count
-and the distance it corresponds to) and a mock active minutes card (the day's
-active minutes and the daily average) — all mock data, shaped like the future
-model, with no view model or persistence yet. The row (`SummaryCards`) is the
-nutrition card on the left half and, on the right half, the step summary card
-(`StepsCard`) on top of the active minutes card (`ActiveMinutesCard`), each
-filling half of the nutrition card's height and sharing the card chrome through
-the `summaryCard()` modifier in `SummaryCard.swift`. `TodayTokens` holds the
-heading copy and the stable `mainmenu.today` accessibility identifier the app's
-UI tests assert against. The shared splash-style background is drawn by the app
-shell (`MainMenuBackground` in `MainMenuView`); the package paints content only
-and depends on `Design` and `Summary`. The Android counterpart is the `:mainmenu`
-module.
+The Today destination (the main menu's landing destination) lives in the `MainMenu`
+package at `Packages/MainMenu/Sources/MainMenu/`. It is a scrollable screen: a
+large top-left heading, then the shared summary row from `Summary` — a mock
+nutrition summary card (consumed calories, a macro progress ring, per-macro
+rows), a mock step summary card (the day's step count and the distance it
+corresponds to) and a mock active minutes card (the day's active minutes and the
+daily average) — and, below it, the fasting view.
+
+The summary row (`SummaryCards`) is the nutrition card on the left half and, on
+the right half, the step summary card (`StepsCard`) on top of the active minutes
+card (`ActiveMinutesCard`), each filling half of the nutrition card's height and
+sharing the card chrome through the `summaryCard()` modifier in
+`SummaryCard.swift`.
+
+The fasting view is a `PhaseBanner` ("New Phase!"), a `FastingRing` (the elapsed
+arc, the flame badge at its leading edge, stage markers, a static timer and a
+skip control), `FastingTimes` (the start/end times) and the `EndFastingButton` —
+mock data shaped for the future model (`FastingSummary`), with the timer, the
+banner's ✕, the skip control and End Fasting visual-only.
+
+`TodayTokens` holds the heading copy and the stable `mainmenu.today` accessibility
+identifier the app's UI tests assert against. The shared splash-style background
+is drawn by the app shell (`MainMenuBackground` in `MainMenuView`); the package
+paints content only and depends on `Design` and `Summary`. The Android counterpart
+is the `:mainmenu` module.
 
 Tests: `xcodebuild test -scheme MainMenu -destination 'platform=iOS Simulator,name=iPhone 18 Pro'`
 from `Packages/MainMenu` (`TodayTokensTests` covers the copy and the stable
 `mainmenu.today` identifier).
-
-## Nutrition
-
-The Nutrition destination lives in the `Nutrition` package at
-`Packages/Nutrition/Sources/Nutrition/`. It is a scrollable screen: a `Nutrition`
-heading, the shared `SummaryCards` row (the same nutrition, steps and
-active-minutes cards as Today, from `Summary`) and, below it, the fasting view —
-a `PhaseBanner` ("New Phase!"), a `FastingRing` (the elapsed arc, the flame badge
-at its leading edge, stage markers, a static timer and a skip control),
-`FastingTimes` (the start/end times) and the `EndFastingButton`. Everything is
-mock data shaped for the future model (`FastingSummary`); there is no view model,
-and the timer, the banner's ✕, the skip control and End Fasting are visual-only.
-`NutritionTokens` holds the heading copy and the stable `mainmenu.nutrition`
-accessibility identifier. The shell draws the splash-style background; the
-package paints content only and depends on `Design` and `Summary`. The Android
-counterpart is the `:nutrition` module.
-
-Tests: `xcodebuild test -scheme Nutrition -destination 'platform=iOS Simulator,name=iPhone 18 Pro'`
-from `Packages/Nutrition` (`NutritionTokensTests` covers the copy and the stable
-`mainmenu.nutrition` identifier).
 
 ## Profile (`Profile` package)
 

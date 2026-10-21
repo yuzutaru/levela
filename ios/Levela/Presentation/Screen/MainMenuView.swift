@@ -5,7 +5,6 @@
 
 import Design
 import MainMenu
-import Nutrition
 import Splash
 import SwiftUI
 
@@ -119,9 +118,7 @@ private struct MainMenuDestination: View {
             switch tab {
             case .today:
                 TodayView()
-            case .nutrition:
-                NutritionView()
-            case .train, .profile:
+            case .nutrition, .train, .profile:
                 PlaceholderDestination(tab: tab)
             }
         }

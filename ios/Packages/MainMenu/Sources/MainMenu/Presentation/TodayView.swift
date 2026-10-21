@@ -8,10 +8,13 @@ import Summary
 import SwiftUI
 
 /// The Today destination: a large top-left heading over the shared summary card
-/// row (nutrition summary, steps and active minutes).
+/// row (nutrition summary, steps and active minutes) and, below it, the fasting
+/// view — the phase banner, the fasting ring, the start/end times and the
+/// end-fasting action.
 ///
-/// The splash-style background is drawn by the app shell behind the content,
-/// so this view only paints content.
+/// The screen scrolls: the fasting view sits below the fold of the summary
+/// cards. The splash-style background is drawn by the app shell behind the
+/// content, so this view only paints content.
 ///
 /// Mirrors the Android `TodayScreen`.
 @MainActor
@@ -19,25 +22,40 @@ public struct TodayView: View {
     private static let horizontalPadding: CGFloat = 24
     private static let topPadding: CGFloat = 8
     private static let cardSpacing: CGFloat = 24
+    private static let bottomPadding: CGFloat = 24
     private static let cardMinHeightFraction: CGFloat = 0.30
 
     public init() {}
 
     public var body: some View {
         GeometryReader { proxy in
-            VStack(alignment: .leading, spacing: Self.cardSpacing) {
-                Text(TodayTokens.title)
-                    .font(LevelaTypography.displaySmall)
-                    .foregroundStyle(Color.navy900)
-                    .accessibilityIdentifier(TodayTokens.screenTag)
+            ScrollView {
+                VStack(alignment: .leading, spacing: Self.cardSpacing) {
+                    Text(TodayTokens.title)
+                        .font(LevelaTypography.displaySmall)
+                        .foregroundStyle(Color.navy900)
+                        .accessibilityIdentifier(TodayTokens.screenTag)
 
-                SummaryCards(minHeight: proxy.size.height * Self.cardMinHeightFraction)
+                    SummaryCards(minHeight: proxy.size.height * Self.cardMinHeightFraction)
 
-                Spacer(minLength: 0)
+                    FastingSection()
+                }
+                .padding(.horizontal, Self.horizontalPadding)
+                .padding(.top, Self.topPadding)
+                .padding(.bottom, Self.bottomPadding)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(.horizontal, Self.horizontalPadding)
-            .padding(.top, Self.topPadding)
-            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+}
+
+private struct FastingSection: View {
+    var body: some View {
+        VStack(spacing: 16) {
+            PhaseBanner()
+            FastingRing()
+            FastingTimes()
+            EndFastingButton()
         }
     }
 }
