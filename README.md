@@ -55,8 +55,8 @@ changes. Any Conventional Commit type works (`fix(ios): …`, `chore(android): �
 
 ## Project layout
 
-- `android/` — Android application (Kotlin, Jetpack Compose). Modules: `:app`, `:profile`, `:design`, `:onboarding`, `:splash`, `:today`.
-- `ios/` — iOS application (SwiftUI). Modules: `Levela` app + local packages `Design`, `Onboarding`, `Splash`, `Profile`, `Today`.
+- `android/` — Android application (Kotlin, Jetpack Compose). Modules: `:app`, `:profile`, `:design`, `:onboarding`, `:splash`, `:mainmenu`.
+- `ios/` — iOS application (SwiftUI). Modules: `Levela` app + local packages `Design`, `Onboarding`, `Splash`, `Profile`, `MainMenu`.
 - `assets/app-icon/` — master app icon + the contract that drives both platforms' icons.
 - `assets/theme/` — the palette contract both design systems are verified against.
 - `assets/splash/`, `assets/onboarding/` — shared flow contracts mirrored by both platforms.
