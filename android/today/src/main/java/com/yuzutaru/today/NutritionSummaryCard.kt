@@ -79,7 +79,8 @@ internal fun NutritionSummaryCard(
 
         NutritionRing(
             summary = summary,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+                .padding(start = 16.dp, end = 16.dp),
         )
 
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
