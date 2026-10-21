@@ -1,6 +1,6 @@
 //
 //  NutritionSummaryCard.swift
-//  Today
+//  MainMenu
 //
 
 import Design

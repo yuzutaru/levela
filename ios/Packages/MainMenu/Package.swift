@@ -2,26 +2,26 @@
 import PackageDescription
 
 let package = Package(
-    name: "Today",
+    name: "MainMenu",
     platforms: [
         .iOS(.v18)
     ],
     products: [
-        .library(name: "Today", targets: ["Today"])
+        .library(name: "MainMenu", targets: ["MainMenu"])
     ],
     dependencies: [
         .package(path: "../Design")
     ],
     targets: [
         .target(
-            name: "Today",
+            name: "MainMenu",
             dependencies: [
                 .product(name: "Design", package: "Design")
             ]
         ),
         .testTarget(
-            name: "TodayTests",
-            dependencies: ["Today"]
+            name: "MainMenuTests",
+            dependencies: ["MainMenu"]
         )
     ],
     swiftLanguageModes: [.v5]

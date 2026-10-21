@@ -1,5 +1,5 @@
 import XCTest
-@testable import Today
+@testable import MainMenu
 
 final class TodayTokensTests: XCTestCase {
 

@@ -1,27 +1,26 @@
 //
-//  ActiveMinutesCard.swift
-//  Today
+//  StepsCard.swift
+//  MainMenu
 //
 
 import Design
 import SwiftUI
 
-/// Mock active minutes for the Today card.
+/// Mock step summary for the Today card.
 ///
 /// Shaped like the future model, so only the data source has to change when
-/// real activity tracking lands.
-struct ActiveMinutesSummary {
-    let label = "Active Minutes"
-    let total = "558"
-    let averagePerDay = 80
+/// real step tracking lands.
+struct StepsSummary {
+    let label = "Steps"
+    let total = "82,641"
+    let distanceKm = 23
 }
 
-/// The active minutes summary: the label, the day's active minutes and the
-/// daily average they are measured against. The card fills the space it is
-/// given, so the three lines spread out instead of crowding the top of the
-/// card.
-struct ActiveMinutesCard: View {
-    let summary: ActiveMinutesSummary
+/// The step summary: the label, the day's step count and the distance it
+/// corresponds to. The card fills the space it is given, so the three lines
+/// spread out instead of crowding the top of the card.
+struct StepsCard: View {
+    let summary: StepsSummary
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -39,7 +38,7 @@ struct ActiveMinutesCard: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
 
-                Text(" min")
+                Text(" steps")
                     .font(LevelaTypography.labelSmall)
                     .foregroundStyle(Color.gray400)
                     .lineLimit(1)
@@ -47,7 +46,7 @@ struct ActiveMinutesCard: View {
 
             Spacer(minLength: 4)
 
-            Text("Avg: \(summary.averagePerDay) min/day")
+            Text("≈ \(summary.distanceKm) km walked")
                 .font(LevelaTypography.labelSmall)
                 .foregroundStyle(Color.gray400)
                 .lineLimit(1)
@@ -74,7 +73,7 @@ struct ActiveMinutesCard: View {
         )
         .ignoresSafeArea()
 
-        ActiveMinutesCard(summary: ActiveMinutesSummary())
+        StepsCard(summary: StepsSummary())
             .frame(width: 166, height: 122)
             .todayCard()
     }

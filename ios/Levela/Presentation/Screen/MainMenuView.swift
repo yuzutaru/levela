@@ -6,7 +6,7 @@
 import Design
 import Splash
 import SwiftUI
-import Today
+import MainMenu
 
 /// The app's bottom-navigation destinations, in left-to-right order.
 ///

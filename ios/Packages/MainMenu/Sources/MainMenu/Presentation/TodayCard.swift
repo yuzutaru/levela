@@ -1,6 +1,6 @@
 //
 //  TodayCard.swift
-//  Today
+//  MainMenu
 //
 
 import SwiftUI
