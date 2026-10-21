@@ -4,9 +4,9 @@
 //
 
 import Design
+import MainMenu
 import Splash
 import SwiftUI
-import MainMenu
 
 /// The app's bottom-navigation destinations, in left-to-right order.
 ///
@@ -118,7 +118,7 @@ private struct MainMenuDestination: View {
             switch tab {
             case .today:
                 TodayView()
-            default:
+            case .nutrition, .train, .profile:
                 PlaceholderDestination(tab: tab)
             }
         }

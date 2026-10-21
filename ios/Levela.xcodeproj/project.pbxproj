@@ -12,6 +12,7 @@
 		AA00000000000000000000D9 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000D8 /* Splash */; };
 		AA00000000000000000000DC /* Profile in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000DB /* Profile */; };
 		AA00000000000000000000F2 /* MainMenu in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000F1 /* MainMenu */; };
+		AA00000000000000000000F5 /* Summary in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000F4 /* Summary */; };
 		AA00000000000000000000E1 /* ViewInspector in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000000E0 /* ViewInspector */; };
 /* End PBXBuildFile section */
 
@@ -148,6 +149,7 @@
 				AA00000000000000000000D9 /* Splash in Frameworks */,
 				AA00000000000000000000DC /* Profile in Frameworks */,
 				AA00000000000000000000F2 /* MainMenu in Frameworks */,
+				AA00000000000000000000F5 /* Summary in Frameworks */,
 			);
 		};
 		21F13901306DD1B000DCCF15 /* Frameworks */ = {
@@ -251,6 +253,7 @@
 				AA00000000000000000000D8 /* Splash */,
 				AA00000000000000000000DB /* Profile */,
 				AA00000000000000000000F1 /* MainMenu */,
+				AA00000000000000000000F4 /* Summary */,
 			);
 			productName = Levela;
 			productReference = 21F138F5306DD1AF00DCCF15 /* Levela.app */;
@@ -369,6 +372,7 @@
 				AA00000000000000000000D7 /* XCLocalSwiftPackageReference "Packages/Splash" */,
 				AA00000000000000000000DA /* XCLocalSwiftPackageReference "Packages/Profile" */,
 				AA00000000000000000000F0 /* XCLocalSwiftPackageReference "Packages/MainMenu" */,
+				AA00000000000000000000F3 /* XCLocalSwiftPackageReference "Packages/Summary" */,
 				AA00000000000000000000ED /* XCRemoteSwiftPackageReference "ViewInspector" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -964,6 +968,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/MainMenu;
 		};
+		AA00000000000000000000F3 /* XCLocalSwiftPackageReference "Packages/Summary" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Summary;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -997,6 +1005,10 @@
 		AA00000000000000000000F1 /* MainMenu */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MainMenu;
+		};
+		AA00000000000000000000F4 /* Summary */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Summary;
 		};
 		AA00000000000000000000E0 /* ViewInspector */ = {
 			isa = XCSwiftPackageProductDependency;

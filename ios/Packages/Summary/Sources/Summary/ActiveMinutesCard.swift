@@ -1,28 +1,38 @@
 //
-//  StepsCard.swift
-//  MainMenu
+//  ActiveMinutesCard.swift
+//  Summary
 //
 
 import Design
 import SwiftUI
 
-/// Mock step summary for the Today card.
+/// Mock active minutes for the dashboard card.
 ///
 /// Shaped like the future model, so only the data source has to change when
-/// real step tracking lands.
-struct StepsSummary {
-    let label = "Steps"
-    let total = "82,641"
-    let distanceKm = 23
+/// real activity tracking lands.
+public struct ActiveMinutesSummary {
+    public let label: String
+    public let total: String
+    public let averagePerDay: Int
+
+    public init(label: String = "Active Minutes", total: String = "558", averagePerDay: Int = 80) {
+        self.label = label
+        self.total = total
+        self.averagePerDay = averagePerDay
+    }
 }
 
-/// The step summary: the label, the day's step count and the distance it
-/// corresponds to. The card fills the space it is given, so the three lines
-/// spread out instead of crowding the top of the card.
-struct StepsCard: View {
-    let summary: StepsSummary
+/// The active minutes summary: the label, the day's active minutes and the
+/// daily average they are measured against. The card fills the space it is
+/// given, so the three lines spread out instead of crowding the top of the card.
+public struct ActiveMinutesCard: View {
+    public let summary: ActiveMinutesSummary
 
-    var body: some View {
+    public init(summary: ActiveMinutesSummary) {
+        self.summary = summary
+    }
+
+    public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(summary.label)
                 .font(LevelaTypography.labelMedium)
@@ -38,7 +48,7 @@ struct StepsCard: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
 
-                Text(" steps")
+                Text(" min")
                     .font(LevelaTypography.labelSmall)
                     .foregroundStyle(Color.gray400)
                     .lineLimit(1)
@@ -46,7 +56,7 @@ struct StepsCard: View {
 
             Spacer(minLength: 4)
 
-            Text("≈ \(summary.distanceKm) km walked")
+            Text("Avg: \(summary.averagePerDay) min/day")
                 .font(LevelaTypography.labelSmall)
                 .foregroundStyle(Color.gray400)
                 .lineLimit(1)
@@ -73,9 +83,9 @@ struct StepsCard: View {
         )
         .ignoresSafeArea()
 
-        StepsCard(summary: StepsSummary())
+        ActiveMinutesCard(summary: ActiveMinutesSummary())
             .frame(width: 166, height: 122)
-            .todayCard()
+            .summaryCard()
     }
     .levelaTheme()
 }

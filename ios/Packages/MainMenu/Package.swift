@@ -10,13 +10,15 @@ let package = Package(
         .library(name: "MainMenu", targets: ["MainMenu"])
     ],
     dependencies: [
-        .package(path: "../Design")
+        .package(path: "../Design"),
+        .package(path: "../Summary")
     ],
     targets: [
         .target(
             name: "MainMenu",
             dependencies: [
-                .product(name: "Design", package: "Design")
+                .product(name: "Design", package: "Design"),
+                .product(name: "Summary", package: "Summary")
             ]
         ),
         .testTarget(

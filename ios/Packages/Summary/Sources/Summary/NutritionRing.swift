@@ -1,6 +1,6 @@
 //
 //  NutritionRing.swift
-//  MainMenu
+//  Summary
 //
 
 import Design
@@ -8,11 +8,15 @@ import SwiftUI
 
 /// The progress ring: one arc per macro, sized by that macro's share of the
 /// total grams consumed, so the three arcs close the circle.
-struct NutritionRing: View {
+public struct NutritionRing: View {
     private static let ringDiameter: CGFloat = 92
     private static let ringStroke: CGFloat = 12
 
-    let summary: NutritionSummary
+    public let summary: NutritionSummary
+
+    public init(summary: NutritionSummary) {
+        self.summary = summary
+    }
 
     private var arcs: [RingArc] {
         let total = max(summary.macros.reduce(0) { $0 + $1.consumed }, 1)
@@ -26,7 +30,7 @@ struct NutritionRing: View {
         return result
     }
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             Circle()
                 .stroke(Color.gray200, lineWidth: Self.ringStroke)
@@ -79,9 +83,7 @@ struct RingArc {
 
         NutritionRing(summary: NutritionSummary())
             .frame(width: 124, height: 124)
-            .background(Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-            .shadow(color: Color.black.opacity(0.08), radius: 14, y: 6)
+            .summaryCard()
     }
     .levelaTheme()
 }

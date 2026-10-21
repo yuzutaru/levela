@@ -1,4 +1,4 @@
-package com.yuzutaru.mainmenu.presentation.widget
+package com.yuzutaru.summary.presentation.widget
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -48,7 +48,7 @@ private val RingStroke = 12.dp
  * follows the card's width.
  */
 @Composable
-internal fun NutritionRing(
+public fun NutritionRing(
     summary: NutritionSummary,
     modifier: Modifier = Modifier,
 ) {

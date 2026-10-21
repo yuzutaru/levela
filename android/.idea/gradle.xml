@@ -11,9 +11,11 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/design" />
+            <option value="$PROJECT_DIR$/mainmenu" />
             <option value="$PROJECT_DIR$/onboarding" />
             <option value="$PROJECT_DIR$/profile" />
             <option value="$PROJECT_DIR$/splash" />
+            <option value="$PROJECT_DIR$/summary" />
           </set>
         </option>
       </GradleProjectSettings>
