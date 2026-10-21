@@ -8,7 +8,7 @@ import SwiftUI
 
 /// The Today destination: a large top-left heading over a row of cards. The
 /// nutrition summary card takes the left half; the right half holds the step
-/// summary card on top and an empty placeholder card below, each taking half
+/// summary card on top and the active minutes card below, each taking half
 /// of the nutrition card's height. The row grows with the nutrition card's
 /// content but never drops below 30% of the available height.
 ///
@@ -27,6 +27,7 @@ public struct TodayView: View {
 
     private let summary = NutritionSummary()
     private let steps = StepsSummary()
+    private let activeMinutes = ActiveMinutesSummary()
 
     public init() {}
 
@@ -49,7 +50,7 @@ public struct TodayView: View {
     }
 
     /// The nutrition summary card on the left half and, on the right half, the
-    /// step summary card over an empty placeholder card.
+    /// step summary card over the active minutes card.
     ///
     /// The row takes the height of the nutrition card (`fixedSize` keeps the
     /// flexible right column from stretching the row to the whole screen), so
@@ -64,7 +65,9 @@ public struct TodayView: View {
                 StepsCard(summary: steps)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                     .todayCard(cornerRadius: Self.cardCorner)
-                TodayPlaceholderCard()
+                ActiveMinutesCard(summary: activeMinutes)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                    .todayCard(cornerRadius: Self.cardCorner)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
