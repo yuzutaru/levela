@@ -1,6 +1,6 @@
 //
 //  NutritionSummaryCard.swift
-//  MainMenu
+//  Summary
 //
 
 import Design
@@ -8,30 +8,57 @@ import SwiftUI
 
 /// Mock nutrition summary for the Today card. Shaped like the future model so
 /// only the data source has to change when real tracking lands.
-struct NutritionSummary {
-    let dayLabel = "Day 8"
-    let consumedCalories = "1,320"
-    let dailyCalories = "2,300"
-    let percentComplete = 64
-    let deltaPercent = 3
-    let macros: [MacroSummary] = [
-        MacroSummary(label: "Carbs", consumed: 112, daily: 240, color: .orange500),
-        MacroSummary(label: "Proteins", consumed: 48, daily: 140, color: .pink500),
-        MacroSummary(label: "Fats", consumed: 32, daily: 110, color: .teal500),
-    ]
+public struct NutritionSummary {
+    public let dayLabel: String
+    public let consumedCalories: String
+    public let dailyCalories: String
+    public let percentComplete: Int
+    public let deltaPercent: Int
+    public let macros: [MacroSummary]
+
+    public init(
+        dayLabel: String = "Day 8",
+        consumedCalories: String = "1,320",
+        dailyCalories: String = "2,300",
+        percentComplete: Int = 64,
+        deltaPercent: Int = 3,
+        macros: [MacroSummary] = [
+            MacroSummary(label: "Carbs", consumed: 112, daily: 240, color: .orange500),
+            MacroSummary(label: "Proteins", consumed: 48, daily: 140, color: .pink500),
+            MacroSummary(label: "Fats", consumed: 32, daily: 110, color: .teal500),
+        ]
+    ) {
+        self.dayLabel = dayLabel
+        self.consumedCalories = consumedCalories
+        self.dailyCalories = dailyCalories
+        self.percentComplete = percentComplete
+        self.deltaPercent = deltaPercent
+        self.macros = macros
+    }
 }
 
-struct MacroSummary {
-    let label: String
-    let consumed: Int
-    let daily: Int
-    let color: Color
+public struct MacroSummary {
+    public let label: String
+    public let consumed: Int
+    public let daily: Int
+    public let color: Color
+
+    public init(label: String, consumed: Int, daily: Int, color: Color) {
+        self.label = label
+        self.consumed = consumed
+        self.daily = daily
+        self.color = color
+    }
 }
 
-struct NutritionSummaryCard: View {
-    let summary: NutritionSummary
+public struct NutritionSummaryCard: View {
+    public let summary: NutritionSummary
 
-    var body: some View {
+    public init(summary: NutritionSummary) {
+        self.summary = summary
+    }
+
+    public var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             header
 
@@ -114,9 +141,7 @@ private struct MacroRow: View {
         NutritionSummaryCard(summary: NutritionSummary())
             .frame(width: 393 * 0.50)
             .frame(minHeight: 852 * 0.30, alignment: .topLeading)
-            .background(Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-            .shadow(color: Color.black.opacity(0.08), radius: 14, y: 6)
+            .summaryCard()
     }
     .levelaTheme()
 }
