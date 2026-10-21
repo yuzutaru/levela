@@ -12,9 +12,10 @@ profile is persisted locally before any account exists.
    **Continue as a guest** button.
 2. **Onboarding** — seven guest steps (welcome, goal, gender, age, weight,
    height, activity). The final Next persists a guest-owned profile locally.
-3. **Main menu** — a placeholder home screen, reached after onboarding. A
-   returning user (one whose profile was already saved) skips onboarding and
-   lands here straight after the splash.
+3. **Main menu** — the bottom-navigation home (Today · Nutrition · Train ·
+   Profile), reached after onboarding. Today is a real dashboard; the other
+   destinations are placeholders. A returning user (one whose profile was
+   already saved) skips onboarding and lands here straight after the splash.
 
 ## Requirements
 
@@ -54,8 +55,8 @@ changes. Any Conventional Commit type works (`fix(ios): …`, `chore(android): �
 
 ## Project layout
 
-- `android/` — Android application (Kotlin, Jetpack Compose). Modules: `:app`, `:profile`, `:design`, `:onboarding`, `:splash`.
-- `ios/` — iOS application (SwiftUI). Modules: `Levela` app + local packages `Design`, `Onboarding`, `Splash`, `Profile`.
+- `android/` — Android application (Kotlin, Jetpack Compose). Modules: `:app`, `:profile`, `:design`, `:onboarding`, `:splash`, `:today`.
+- `ios/` — iOS application (SwiftUI). Modules: `Levela` app + local packages `Design`, `Onboarding`, `Splash`, `Profile`, `Today`.
 - `assets/app-icon/` — master app icon + the contract that drives both platforms' icons.
 - `assets/theme/` — the palette contract both design systems are verified against.
 - `assets/splash/`, `assets/onboarding/` — shared flow contracts mirrored by both platforms.
