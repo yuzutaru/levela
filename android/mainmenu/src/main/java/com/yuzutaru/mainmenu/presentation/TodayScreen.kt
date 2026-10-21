@@ -1,27 +1,17 @@
 package com.yuzutaru.mainmenu.presentation
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -34,24 +24,16 @@ import com.yuzutaru.design.ui.theme.LevelaTheme
 import com.yuzutaru.design.ui.theme.Navy900
 import com.yuzutaru.design.ui.theme.White
 import com.yuzutaru.mainmenu.presentation.model.TodayTokens
-import com.yuzutaru.mainmenu.presentation.widget.ActiveMinutesCard
-import com.yuzutaru.mainmenu.presentation.widget.NutritionSummaryCard
-import com.yuzutaru.mainmenu.presentation.widget.StepsCard
+import com.yuzutaru.summary.presentation.widget.SummaryCards
 
 private const val CardMinHeightFraction = 0.30f
 private val HorizontalPadding = 24.dp
 private val TopPadding = 8.dp
 private val CardSpacing = 24.dp
-private val CardGap = 12.dp
-private val CardCorner = 28.dp
-private val CardElevation = 12.dp
 
 /**
- * The Today destination: a large top-left heading over a row of cards. The
- * nutrition summary card takes the left half; the right half holds the step
- * summary card on top and the active minutes card below, each taking half of
- * the nutrition card's height. The row grows with the nutrition card's content
- * but never drops below 30% of the available height.
+ * The Today destination: a large top-left heading over the shared summary card
+ * row (nutrition summary, steps and active minutes).
  *
  * The splash-style background is drawn by the app shell behind the content;
  * this view only paints content.
@@ -76,51 +58,10 @@ fun TodayScreen(modifier: Modifier = Modifier) {
 
             Spacer(Modifier.height(CardSpacing))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(IntrinsicSize.Max)
-                    .heightIn(min = cardMinHeight),
-                horizontalArrangement = Arrangement.spacedBy(CardGap),
-            ) {
-                NutritionSummaryCard(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .todayCard(),
-                )
-
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    verticalArrangement = Arrangement.spacedBy(CardGap),
-                ) {
-                    StepsCard(
-                        modifier = Modifier
-                            .weight(1f)
-                            .todayCard(),
-                    )
-                    ActiveMinutesCard(
-                        modifier = Modifier
-                            .weight(1f)
-                            .todayCard(),
-                    )
-                }
-            }
+            SummaryCards(minHeight = cardMinHeight)
         }
     }
 }
-
-/** The shared card chrome: the white surface, the rounded corner and the shadow. */
-internal fun Modifier.todayCard(): Modifier = this
-    .shadow(
-        elevation = CardElevation,
-        shape = RoundedCornerShape(CardCorner),
-        clip = false,
-    )
-    .clip(RoundedCornerShape(CardCorner))
-    .background(White)
 
 @Preview(showBackground = true, widthDp = 393, heightDp = 852)
 @Composable

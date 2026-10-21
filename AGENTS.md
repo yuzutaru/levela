@@ -14,9 +14,9 @@ per-platform guides below.
 
 ## Repository map
 - `android/` — Kotlin + Jetpack Compose app; modules `:app`, `:design`,
-  `:profile`, `:onboarding`, `:splash`, `:mainmenu`.
+  `:profile`, `:onboarding`, `:splash`, `:summary`, `:mainmenu`, `:nutrition`.
 - `ios/` — SwiftUI app + local Swift packages `Design`, `Onboarding`, `Splash`,
-  `Profile`, `MainMenu`.
+  `Profile`, `Summary`, `MainMenu`, `Nutrition`.
 - `assets/` — single-source-of-truth contracts shared by both platforms:
   `app-icon/`, `theme/` (`theme-contract.json` + `THEME_COLORS.md`),
   `splash/`, `onboarding/` (each has its own `README.md`),

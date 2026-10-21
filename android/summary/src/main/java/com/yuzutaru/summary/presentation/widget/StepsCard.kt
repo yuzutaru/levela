@@ -1,4 +1,4 @@
-package com.yuzutaru.mainmenu.presentation.widget
+package com.yuzutaru.summary.presentation.widget
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,18 +28,17 @@ import com.yuzutaru.design.ui.theme.LightBlue100
 import com.yuzutaru.design.ui.theme.LightBlue300
 import com.yuzutaru.design.ui.theme.Navy900
 import com.yuzutaru.design.ui.theme.White
-import com.yuzutaru.mainmenu.presentation.todayCard
 
 /**
- * The mock step summary shown on the Today dashboard.
+ * The mock step summary shown on the dashboard.
  *
  * Shaped like the future model, so only the data source has to change when
  * real step tracking lands.
  */
-internal data class StepsSummary(
-    val label: String = "Steps",
-    val total: String = "82,641",
-    val distanceKm: Int = 23,
+public data class StepsSummary(
+    public val label: String = "Steps",
+    public val total: String = "82,641",
+    public val distanceKm: Int = 23,
 )
 
 /**
@@ -48,7 +47,7 @@ internal data class StepsSummary(
  * spread out instead of crowding the top of the card.
  */
 @Composable
-internal fun StepsCard(
+public fun StepsCard(
     modifier: Modifier = Modifier,
     summary: StepsSummary = StepsSummary(),
 ) {
@@ -114,7 +113,7 @@ private fun StepsCardPreview() {
                 modifier = Modifier
                     .width(166.dp)
                     .height(122.dp)
-                    .todayCard(),
+                    .summaryCard(),
             )
         }
     }

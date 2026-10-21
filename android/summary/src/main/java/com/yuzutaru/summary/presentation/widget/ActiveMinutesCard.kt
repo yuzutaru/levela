@@ -1,4 +1,4 @@
-package com.yuzutaru.mainmenu.presentation.widget
+package com.yuzutaru.summary.presentation.widget
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,18 +28,17 @@ import com.yuzutaru.design.ui.theme.LightBlue100
 import com.yuzutaru.design.ui.theme.LightBlue300
 import com.yuzutaru.design.ui.theme.Navy900
 import com.yuzutaru.design.ui.theme.White
-import com.yuzutaru.mainmenu.presentation.todayCard
 
 /**
- * The mock active minutes shown on the Today dashboard.
+ * The mock active minutes shown on the dashboard.
  *
  * Shaped like the future model, so only the data source has to change when
  * real activity tracking lands.
  */
-internal data class ActiveMinutesSummary(
-    val label: String = "Active Minutes",
-    val total: String = "558",
-    val averagePerDay: Int = 80,
+public data class ActiveMinutesSummary(
+    public val label: String = "Active Minutes",
+    public val total: String = "558",
+    public val averagePerDay: Int = 80,
 )
 
 /**
@@ -48,7 +47,7 @@ internal data class ActiveMinutesSummary(
  * given, so the three lines spread out instead of crowding the top of the card.
  */
 @Composable
-internal fun ActiveMinutesCard(
+public fun ActiveMinutesCard(
     modifier: Modifier = Modifier,
     summary: ActiveMinutesSummary = ActiveMinutesSummary(),
 ) {
@@ -114,7 +113,7 @@ private fun ActiveMinutesCardPreview() {
                 modifier = Modifier
                     .width(166.dp)
                     .height(122.dp)
-                    .todayCard(),
+                    .summaryCard(),
             )
         }
     }

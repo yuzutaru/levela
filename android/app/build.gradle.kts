@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":onboarding"))
     implementation(project(":splash"))
     implementation(project(":mainmenu"))
+    implementation(project(":nutrition"))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material.icons.extended)

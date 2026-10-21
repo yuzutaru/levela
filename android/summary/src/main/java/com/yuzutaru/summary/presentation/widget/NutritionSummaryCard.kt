@@ -1,4 +1,4 @@
-package com.yuzutaru.mainmenu.presentation.widget
+package com.yuzutaru.summary.presentation.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,8 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,28 +45,28 @@ private val PreviewCardCorner = 28.dp
 private val PreviewCardElevation = 12.dp
 
 /** The mock nutrition summary shown for Day 8 (placeholder until data lands). */
-internal data class NutritionSummary(
-    val dayLabel: String = "Day 8",
-    val consumedCalories: String = "1,320",
-    val dailyCalories: String = "2,300",
-    val percentComplete: Int = 64,
-    val deltaPercent: Int = 3,
-    val macros: List<MacroSummary> = listOf(
+public data class NutritionSummary(
+    public val dayLabel: String = "Day 8",
+    public val consumedCalories: String = "1,320",
+    public val dailyCalories: String = "2,300",
+    public val percentComplete: Int = 64,
+    public val deltaPercent: Int = 3,
+    public val macros: List<MacroSummary> = listOf(
         MacroSummary("Carbs", 112, 240, Orange500),
         MacroSummary("Proteins", 48, 140, Pink500),
         MacroSummary("Fats", 32, 110, Teal500),
     ),
 )
 
-internal data class MacroSummary(
-    val label: String,
-    val consumed: Int,
-    val daily: Int,
-    val color: Color,
+public data class MacroSummary(
+    public val label: String,
+    public val consumed: Int,
+    public val daily: Int,
+    public val color: Color,
 )
 
 @Composable
-internal fun NutritionSummaryCard(
+public fun NutritionSummaryCard(
     modifier: Modifier = Modifier,
     summary: NutritionSummary = NutritionSummary(),
 ) {
