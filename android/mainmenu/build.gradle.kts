@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.yuzutaru.today"
+    namespace = "com.yuzutaru.mainmenu"
     compileSdk {
         version = release(37)
     }

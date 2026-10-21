@@ -19,7 +19,7 @@ Six Gradle modules, declared in `settings.gradle.kts`:
   resolves the launch-time "has profile?" state: a new guest walks
   `SplashView` → `OnboardingView` → `MainMenuScreen` (`presentation/MainMenuScreen.kt`,
   the bottom-navigation main menu: Today · Nutrition · Train · Profile — the
-  Today destination is the `:today` module; the rest are placeholders), while a
+  Today destination is the `:mainmenu` module; the rest are placeholders), while a
   returning user (profile already saved) skips
   onboarding and lands on `MainMenuScreen` straight after the splash. Hosts the
   app-level use cases; view models follow ViewModel → UseCase → Repository (see
@@ -46,15 +46,15 @@ Six Gradle modules, declared in `settings.gradle.kts`:
 - **`:splash`** — the launch welcome flow under
   `splash/src/main/java/com/yuzutaru/splash/`. Depends on `:design`; `:app`
   depends on it. The iOS counterpart is the `Splash` Swift package.
-- **`:today`** — the Today dashboard (the main menu's landing destination) under
-  `today/src/main/java/com/yuzutaru/today/`. Holds `TodayScreen` and
+- **`:mainmenu`** — the Today dashboard (the main menu's landing destination) under
+  `mainmenu/src/main/java/com/yuzutaru/mainmenu/`. Holds `TodayScreen` and
   `TodayTokens`; depends only on `:design` (the shell draws the shared
   splash-style background). The current nutrition summary is mock data — no view
-  model yet. The iOS counterpart is the `Today` Swift package.
+  model yet. The iOS counterpart is the `MainMenu` Swift package.
 
 Namespaces: `com.yuzutaru.levela` (`:app`), `com.yuzutaru.profile` (`:profile`),
 `com.yuzutaru.design` (`:design`), `com.yuzutaru.onboarding` (`:onboarding`),
-`com.yuzutaru.splash` (`:splash`), `com.yuzutaru.today` (`:today`).
+`com.yuzutaru.splash` (`:splash`), `com.yuzutaru.mainmenu` (`:mainmenu`).
 
 ## Build & run
 
@@ -64,7 +64,7 @@ cd android
 ./gradlew :app:test              # app unit tests
 ./gradlew :design:test           # design unit tests
 ./gradlew :profile:test          # profile unit tests
-./gradlew :today:test            # today unit tests
+./gradlew :mainmenu:test         # mainmenu unit tests
 ./gradlew connectedAndroidTest   # instrumented tests (needs a device/emulator)
 ```
 
@@ -195,8 +195,8 @@ Related docs: [`../ios/AGENTS.md`](../ios/AGENTS.md) (iOS counterpart),
 
 ## Today
 
-The Today dashboard (the main menu's landing destination) lives in `:today`
-under `today/src/main/java/com/yuzutaru/today/`. It currently renders a mock
+The Today dashboard (the main menu's landing destination) lives in `:mainmenu`
+under `mainmenu/src/main/java/com/yuzutaru/mainmenu/`. It currently renders a mock
 nutrition summary card (consumed calories, a macro progress ring, per-macro
 rows), a mock step summary card (the day's step count and the distance it
 corresponds to) and a mock active minutes card (the day's active minutes and
@@ -209,7 +209,7 @@ sharing the card chrome through the `todayCard()` modifier. `TodayTokens` holds
 the heading copy and the stable `mainmenu.today` test tag that the app-level routing
 and end-to-end tests assert against. The shared splash-style background is drawn
 by the app shell (`MenuBackground` in `MainMenuScreen`); the module paints
-content only and depends just on `:design`. The iOS counterpart is the `Today`
+content only and depends just on `:design`. The iOS counterpart is the `MainMenu`
 Swift package.
 
 ## Dependency injection (Hilt)
