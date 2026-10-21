@@ -39,7 +39,9 @@ public fun FastingSection(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(SectionSpacing),
     ) {
         PhaseBanner()
-        FastingRing()
+        Column(modifier = Modifier.padding(start = 8.dp, top = 16.dp, end = 8.dp)) {
+            FastingRing()
+        }
         FastingTimes()
         EndFastingButton()
     }
