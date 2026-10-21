@@ -40,7 +40,6 @@ import com.yuzutaru.design.ui.theme.Orange500
 import com.yuzutaru.design.ui.theme.Pink500
 import com.yuzutaru.design.ui.theme.Teal500
 import com.yuzutaru.design.ui.theme.White
-import com.yuzutaru.today.NutritionRing
 
 private val PreviewCardCorner = 28.dp
 private val PreviewCardElevation = 12.dp

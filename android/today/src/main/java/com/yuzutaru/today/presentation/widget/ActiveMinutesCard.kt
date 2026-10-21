@@ -28,7 +28,7 @@ import com.yuzutaru.design.ui.theme.LightBlue100
 import com.yuzutaru.design.ui.theme.LightBlue300
 import com.yuzutaru.design.ui.theme.Navy900
 import com.yuzutaru.design.ui.theme.White
-import com.yuzutaru.today.todayCard
+import com.yuzutaru.today.presentation.todayCard
 
 /**
  * The mock active minutes shown on the Today dashboard.

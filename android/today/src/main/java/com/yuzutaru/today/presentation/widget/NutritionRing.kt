@@ -1,4 +1,4 @@
-package com.yuzutaru.today
+package com.yuzutaru.today.presentation.widget
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -34,7 +34,6 @@ import com.yuzutaru.design.ui.theme.LevelaTheme
 import com.yuzutaru.design.ui.theme.LightBlue300
 import com.yuzutaru.design.ui.theme.Navy900
 import com.yuzutaru.design.ui.theme.White
-import com.yuzutaru.today.presentation.widget.NutritionSummary
 
 private val PreviewCardCorner = 28.dp
 private val PreviewCardElevation = 12.dp
