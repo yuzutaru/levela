@@ -18,13 +18,16 @@ import SwiftUI
 public struct FastingSection: View {
     private static let cardPadding: CGFloat = 20
     private static let sectionSpacing: CGFloat = 16
+    private static let ringInset: CGFloat = 8
+    private static let ringTopInset: CGFloat = 16
 
     public init() {}
 
     public var body: some View {
         VStack(spacing: Self.sectionSpacing) {
             PhaseBanner()
-            FastingRing()
+            FastingRing().padding(.horizontal, Self.ringInset)
+                .padding(.top, Self.ringTopInset)
             FastingTimes()
             EndFastingButton()
         }
