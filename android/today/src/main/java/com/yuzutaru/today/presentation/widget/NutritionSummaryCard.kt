@@ -1,4 +1,4 @@
-package com.yuzutaru.today
+package com.yuzutaru.today.presentation.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yuzutaru.design.ui.theme.Gray400
 import com.yuzutaru.design.ui.theme.Gray500
-import com.yuzutaru.design.ui.theme.Green500
 import com.yuzutaru.design.ui.theme.LevelaTheme
 import com.yuzutaru.design.ui.theme.LightBlue100
 import com.yuzutaru.design.ui.theme.LightBlue300

@@ -1,4 +1,4 @@
-package com.yuzutaru.today
+package com.yuzutaru.today.presentation.widget
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background

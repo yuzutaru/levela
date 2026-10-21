@@ -1,4 +1,4 @@
-package com.yuzutaru.today
+package com.yuzutaru.today.presentation.model
 
 /**
  * Contract values for the Today dashboard.

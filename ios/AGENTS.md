@@ -249,12 +249,13 @@ full walk first.) Run it the same way with
 
 The Today dashboard (the main menu's landing destination) lives in the `Today`
 package at `Packages/Today/Sources/Today/`. It renders a mock nutrition summary
-card (consumed calories, a macro progress ring, per-macro rows) and a mock step
-summary card (the day's step count and the distance it corresponds to) with no
-view model or persistence yet — the data types are shaped like the future model
-so only the data source has to change. The dashboard is a row: the nutrition card
+card (consumed calories, a macro progress ring, per-macro rows), a mock step
+summary card (the day's step count and the distance it corresponds to) and a
+mock active minutes card (the day's active minutes and the daily average) with
+no view model or persistence yet — the data types are shaped like the future
+model so only the data source has to change. The dashboard is a row: the nutrition card
 on the left half and, on the right half, the step summary card (`StepsCard`) on
-top of an empty placeholder card (`TodayPlaceholderCard`), each filling half of
+top of the active minutes card (`ActiveMinutesCard`), each filling half of
 the nutrition card's height and sharing the card chrome through the
 `todayCard()` modifier in `TodayCard.swift`. `TodayTokens` holds the heading copy and the
 stable `mainmenu.today` accessibility identifier the app's UI tests assert

@@ -1,4 +1,4 @@
-package com.yuzutaru.today
+package com.yuzutaru.today.presentation.widget
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,28 +28,29 @@ import com.yuzutaru.design.ui.theme.LightBlue100
 import com.yuzutaru.design.ui.theme.LightBlue300
 import com.yuzutaru.design.ui.theme.Navy900
 import com.yuzutaru.design.ui.theme.White
+import com.yuzutaru.today.presentation.todayCard
 
 /**
- * The mock step summary shown on the Today dashboard.
+ * The mock active minutes shown on the Today dashboard.
  *
  * Shaped like the future model, so only the data source has to change when
- * real step tracking lands.
+ * real activity tracking lands.
  */
-internal data class StepsSummary(
-    val label: String = "Steps",
-    val total: String = "82,641",
-    val distanceKm: Int = 23,
+internal data class ActiveMinutesSummary(
+    val label: String = "Active Minutes",
+    val total: String = "558",
+    val averagePerDay: Int = 80,
 )
 
 /**
- * The step summary: the label, the day's step count and the distance it
- * corresponds to. The card fills the space it is given, so the three lines
- * spread out instead of crowding the top of the card.
+ * The active minutes summary: the label, the day's active minutes and the
+ * daily average they are measured against. The card fills the space it is
+ * given, so the three lines spread out instead of crowding the top of the card.
  */
 @Composable
-internal fun StepsCard(
+internal fun ActiveMinutesCard(
     modifier: Modifier = Modifier,
-    summary: StepsSummary = StepsSummary(),
+    summary: ActiveMinutesSummary = ActiveMinutesSummary(),
 ) {
     Column(
         modifier = modifier.padding(16.dp),
@@ -73,7 +74,7 @@ internal fun StepsCard(
                 modifier = Modifier.alignByBaseline(),
             )
             Text(
-                text = " steps",
+                text = " min",
                 style = MaterialTheme.typography.labelSmall,
                 color = Gray400,
                 maxLines = 1,
@@ -82,7 +83,7 @@ internal fun StepsCard(
         }
 
         Text(
-            text = "≈ ${summary.distanceKm} km walked",
+            text = "Avg: ${summary.averagePerDay} min/day",
             style = MaterialTheme.typography.labelSmall,
             color = Gray400,
             maxLines = 1,
@@ -92,7 +93,7 @@ internal fun StepsCard(
 
 @Preview(showBackground = true, widthDp = 393, heightDp = 852)
 @Composable
-private fun StepsCardPreview() {
+private fun ActiveMinutesCardPreview() {
     LevelaTheme {
         Box(
             modifier = Modifier
@@ -109,7 +110,7 @@ private fun StepsCardPreview() {
                 }
                 .padding(24.dp),
         ) {
-            StepsCard(
+            ActiveMinutesCard(
                 modifier = Modifier
                     .width(166.dp)
                     .height(122.dp)
