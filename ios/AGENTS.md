@@ -55,7 +55,7 @@ of the Android Gradle modules.
   (see the Layering section).
 - **`MainMenu`** — local Swift package at `Packages/MainMenu`; the Today
   destination (the main menu's landing destination): the summary cards plus the
-  fasting view. Depends on `Design` and `Summary`. All mock data — no view model
+  fasting tracker card. Depends on `Design` and `Summary`. All mock data — no view model
   yet. The Android counterpart is the `:mainmenu` module.
 - **`Summary`** — local Swift package at `Packages/Summary`; the shared dashboard
   summary cards (`SummaryCards`, `NutritionSummaryCard`, `NutritionRing`,
@@ -260,7 +260,7 @@ large top-left heading, then the shared summary row from `Summary` — a mock
 nutrition summary card (consumed calories, a macro progress ring, per-macro
 rows), a mock step summary card (the day's step count and the distance it
 corresponds to) and a mock active minutes card (the day's active minutes and the
-daily average) — and, below it, the fasting view.
+daily average) — and, below it, the fasting tracker card.
 
 The summary row (`SummaryCards`) is the nutrition card on the left half and, on
 the right half, the step summary card (`StepsCard`) on top of the active minutes
@@ -268,13 +268,15 @@ card (`ActiveMinutesCard`), each filling half of the nutrition card's height and
 sharing the card chrome through the `summaryCard()` modifier in
 `SummaryCard.swift`.
 
-The fasting view lives in its own file, `Presentation/FastingSection.swift` (the
+The fasting tracker lives in its own file, `Presentation/FastingSection.swift` (the
 counterpart of Android's `FastingSection.kt`), and stacks a `PhaseBanner` ("New
 Phase!"), a `FastingRing` (the elapsed arc, the flame badge at its leading edge,
 stage markers, a static timer and a skip control), `FastingTimes` (the start/end
 times) and the `EndFastingButton` — mock data shaped for the future model
 (`FastingSummary`), with the timer, the banner's ✕, the skip control and End
-Fasting visual-only.
+Fasting visual-only. The whole section is wrapped in the shared `summaryCard()`
+chrome (white surface, 28pt corner, soft shadow, 20pt inner padding), so the
+fasting tracker reads as a card like the summary row above it.
 
 `TodayTokens` holds the heading copy and the stable `mainmenu.today` accessibility
 identifier the app's UI tests assert against. The shared splash-style background
