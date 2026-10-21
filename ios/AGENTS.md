@@ -268,11 +268,13 @@ card (`ActiveMinutesCard`), each filling half of the nutrition card's height and
 sharing the card chrome through the `summaryCard()` modifier in
 `SummaryCard.swift`.
 
-The fasting view is a `PhaseBanner` ("New Phase!"), a `FastingRing` (the elapsed
-arc, the flame badge at its leading edge, stage markers, a static timer and a
-skip control), `FastingTimes` (the start/end times) and the `EndFastingButton` —
-mock data shaped for the future model (`FastingSummary`), with the timer, the
-banner's ✕, the skip control and End Fasting visual-only.
+The fasting view lives in its own file, `Presentation/FastingSection.swift` (the
+counterpart of Android's `FastingSection.kt`), and stacks a `PhaseBanner` ("New
+Phase!"), a `FastingRing` (the elapsed arc, the flame badge at its leading edge,
+stage markers, a static timer and a skip control), `FastingTimes` (the start/end
+times) and the `EndFastingButton` — mock data shaped for the future model
+(`FastingSummary`), with the timer, the banner's ✕, the skip control and End
+Fasting visual-only.
 
 `TodayTokens` holds the heading copy and the stable `mainmenu.today` accessibility
 identifier the app's UI tests assert against. The shared splash-style background

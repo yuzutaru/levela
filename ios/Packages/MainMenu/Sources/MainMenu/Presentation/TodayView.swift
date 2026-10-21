@@ -49,17 +49,6 @@ public struct TodayView: View {
     }
 }
 
-private struct FastingSection: View {
-    var body: some View {
-        VStack(spacing: 16) {
-            PhaseBanner()
-            FastingRing()
-            FastingTimes()
-            EndFastingButton()
-        }
-    }
-}
-
 #Preview {
     ZStack {
         LinearGradient(
