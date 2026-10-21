@@ -7,10 +7,10 @@ import Design
 import SwiftUI
 
 /// The Today destination: a large top-left heading over a row of cards. The
-/// nutrition summary card takes the left half; the right half holds two
-/// placeholder cards stacked vertically, each taking half of the nutrition
-/// card's height. The row grows with the nutrition card's content but never
-/// drops below 30% of the available height.
+/// nutrition summary card takes the left half; the right half holds the step
+/// summary card on top and an empty placeholder card below, each taking half
+/// of the nutrition card's height. The row grows with the nutrition card's
+/// content but never drops below 30% of the available height.
 ///
 /// The splash-style background is drawn by the app shell behind the content,
 /// so this view only paints content.
@@ -26,6 +26,7 @@ public struct TodayView: View {
     private static let cardMinHeightFraction: CGFloat = 0.30
 
     private let summary = NutritionSummary()
+    private let steps = StepsSummary()
 
     public init() {}
 
@@ -47,12 +48,12 @@ public struct TodayView: View {
         }
     }
 
-    /// The nutrition summary card on the left half and the two stacked
-    /// placeholder cards on the right half.
+    /// The nutrition summary card on the left half and, on the right half, the
+    /// step summary card over an empty placeholder card.
     ///
     /// The row takes the height of the nutrition card (`fixedSize` keeps the
     /// flexible right column from stretching the row to the whole screen), so
-    /// each placeholder card fills half of the nutrition card's height.
+    /// each card fills half of the nutrition card's height.
     private func cardRow(minHeight: CGFloat) -> some View {
         HStack(alignment: .top, spacing: Self.cardGap) {
             NutritionSummaryCard(summary: summary)
@@ -60,7 +61,9 @@ public struct TodayView: View {
                 .todayCard(cornerRadius: Self.cardCorner)
 
             VStack(spacing: Self.cardGap) {
-                TodayPlaceholderCard()
+                StepsCard(summary: steps)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                    .todayCard(cornerRadius: Self.cardCorner)
                 TodayPlaceholderCard()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
