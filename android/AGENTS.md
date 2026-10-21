@@ -198,13 +198,14 @@ Related docs: [`../ios/AGENTS.md`](../ios/AGENTS.md) (iOS counterpart),
 The Today dashboard (the main menu's landing destination) lives in `:today`
 under `today/src/main/java/com/yuzutaru/today/`. It currently renders a mock
 nutrition summary card (consumed calories, a macro progress ring, per-macro
-rows) with no view model or persistence yet — the data classes are shaped like
-the future model so only the data source has to change. The dashboard is a row:
-the nutrition card on the left half and two empty placeholder cards stacked
-vertically on the right half, each filling half of the nutrition card's height
-(`TodayPlaceholderCard`, sharing the card chrome through the `todayCard()`
-modifier). `TodayTokens` holds the
-heading copy and the stable `mainmenu.today` test tag that the app-level routing
+rows) and a mock step summary card (the day's step count and the distance it
+corresponds to) with no view model or persistence yet — the data classes are
+shaped like the future model so only the data source has to change. The
+dashboard is a row: the nutrition card on the left half and, on the right half,
+the step summary card (`StepsCard`) on top of an empty placeholder card
+(`TodayPlaceholderCard`), each filling half of the nutrition card's height and
+sharing the card chrome through the `todayCard()` modifier. `TodayTokens` holds
+the heading copy and the stable `mainmenu.today` test tag that the app-level routing
 and end-to-end tests assert against. The shared splash-style background is drawn
 by the app shell (`MenuBackground` in `MainMenuScreen`); the module paints
 content only and depends just on `:design`. The iOS counterpart is the `Today`
