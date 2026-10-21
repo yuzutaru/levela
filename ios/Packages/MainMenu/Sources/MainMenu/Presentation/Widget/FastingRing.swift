@@ -14,9 +14,9 @@ import SwiftUI
 /// The arc starts at the bottom and sweeps clockwise through the left half to
 /// the top, matching the design. Mirrors the Android `FastingRing`.
 public struct FastingRing: View {
-    private static let stroke: CGFloat = 16
-    private static let badgeSize: CGFloat = 56
-    private static let markerSize: CGFloat = 26
+    private static let stroke: CGFloat = 28
+    private static let badgeSize: CGFloat = 72
+    private static let markerSize: CGFloat = 40
 
     public let summary: FastingSummary
 
@@ -53,19 +53,19 @@ public struct FastingRing: View {
 
                 RingMarker(angle: 150, radius: radius, size: Self.markerSize, center: center) {
                     Image(systemName: "drop.fill")
-                        .font(.system(size: 12))
+                        .font(.system(size: 18))
                         .foregroundStyle(Color.pink500)
                 }
 
                 RingMarker(angle: -55, radius: radius, size: Self.markerSize, center: center) {
                     Image(systemName: "flame.fill")
-                        .font(.system(size: 12))
+                        .font(.system(size: 18))
                         .foregroundStyle(Color.gray400)
                 }
 
                 RingMarker(angle: 45, radius: radius, size: Self.markerSize, center: center) {
                     Image(systemName: "flame.fill")
-                        .font(.system(size: 12))
+                        .font(.system(size: 18))
                         .foregroundStyle(Color.gray400)
                 }
 
@@ -75,10 +75,10 @@ public struct FastingRing: View {
                     size: Self.badgeSize,
                     center: center,
                     borderColor: .orange500,
-                    borderWidth: 3
+                    borderWidth: 4
                 ) {
                     Image(systemName: "flame.fill")
-                        .font(.system(size: 24))
+                        .font(.system(size: 32))
                         .foregroundStyle(Color.orange500)
                 }
 
