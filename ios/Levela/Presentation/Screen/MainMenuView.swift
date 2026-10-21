@@ -79,6 +79,8 @@ struct MainMenuView: View {
             }
         }
         .tint(colors.primary)
+        .toolbarBackground(Color.white, for: .tabBar)
+        .toolbarBackground(.visible, for: .tabBar)
     }
 }
 
