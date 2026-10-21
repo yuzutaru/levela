@@ -45,10 +45,10 @@ private val CardElevation = 12.dp
 
 /**
  * The Today destination: a large top-left heading over a row of cards. The
- * nutrition summary card takes the left half; the right half holds two
- * placeholder cards stacked vertically, each taking half of the nutrition
- * card's height. The row grows with the nutrition card's content but never
- * drops below 30% of the available height.
+ * nutrition summary card takes the left half; the right half holds the step
+ * summary card on top and an empty placeholder card below, each taking half of
+ * the nutrition card's height. The row grows with the nutrition card's content
+ * but never drops below 30% of the available height.
  *
  * The splash-style background is drawn by the app shell behind the content;
  * this view only paints content.
@@ -93,7 +93,11 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                         .fillMaxHeight(),
                     verticalArrangement = Arrangement.spacedBy(CardGap),
                 ) {
-                    TodayPlaceholderCard(Modifier.weight(1f))
+                    StepsCard(
+                        modifier = Modifier
+                            .weight(1f)
+                            .todayCard(),
+                    )
                     TodayPlaceholderCard(Modifier.weight(1f))
                 }
             }
@@ -102,7 +106,7 @@ fun TodayScreen(modifier: Modifier = Modifier) {
 }
 
 /** The shared card chrome: the white surface, the rounded corner and the shadow. */
-private fun Modifier.todayCard(): Modifier = this
+internal fun Modifier.todayCard(): Modifier = this
     .shadow(
         elevation = CardElevation,
         shape = RoundedCornerShape(CardCorner),
@@ -112,8 +116,9 @@ private fun Modifier.todayCard(): Modifier = this
     .background(White)
 
 /**
- * An empty card, used for the two stacked cards on the right of the Today
- * dashboard. It carries the shared card chrome and no content yet.
+ * An empty card, used for the placeholder card under the step summary on the
+ * right of the Today dashboard. It carries the shared card chrome and no
+ * content yet.
  */
 @Composable
 private fun TodayPlaceholderCard(modifier: Modifier = Modifier) {

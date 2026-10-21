@@ -27,8 +27,9 @@ extension View {
     }
 }
 
-/// An empty card, used for the two stacked cards on the right of the Today
-/// dashboard. It carries the shared card chrome and no content yet.
+/// An empty card, used for the placeholder card under the step summary on the
+/// right of the Today dashboard. It carries the shared card chrome and no
+/// content yet.
 struct TodayPlaceholderCard: View {
     var body: some View {
         Color.clear
