@@ -11,24 +11,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LevelaTheme
-import com.yuzutaru.design.ui.theme.White
+import com.yuzutaru.design.ui.theme.LightBlue100
 import com.yuzutaru.mainmenu.presentation.widget.EndFastingButton
 import com.yuzutaru.mainmenu.presentation.widget.FastingRing
 import com.yuzutaru.mainmenu.presentation.widget.FastingTimes
 import com.yuzutaru.mainmenu.presentation.widget.PhaseBanner
+import com.yuzutaru.summary.presentation.widget.summaryCard
+
+private val CardPadding = 20.dp
+private val SectionSpacing = 16.dp
 
 /**
  * The fasting view: the phase banner, the fasting ring, the start/end times and
  * the end-fasting action.
  *
- * Lives below the summary cards on the Today screen; the shared splash-style
+ * Lives below the summary cards on the Today screen, inside the same white card
+ * chrome the summary row uses ([summaryCard]); the shared splash-style
  * background is drawn by the app shell behind the content.
  */
 @Composable
 public fun FastingSection(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .summaryCard()
+            .padding(CardPadding),
+        verticalArrangement = Arrangement.spacedBy(SectionSpacing),
     ) {
         PhaseBanner()
         FastingRing()
@@ -44,7 +52,7 @@ private fun FastingSectionPreview() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(White)
+                .background(LightBlue100)
                 .padding(24.dp),
         ) {
             FastingSection()
