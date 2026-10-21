@@ -126,6 +126,29 @@ private fun TodayPlaceholderCard(modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true, widthDp = 393, heightDp = 852)
 @Composable
+private fun TodayScreenPreview() {
+    LevelaTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .drawBehind {
+                    drawRect(Brush.verticalGradient(listOf(White, LightBlue100)))
+                    drawRect(
+                        Brush.radialGradient(
+                            colors = listOf(LightBlue300.copy(alpha = 0.55f), Color.Transparent),
+                            center = Offset(size.width / 2f, -size.height * 0.08f),
+                            radius = size.width * 1.1f,
+                        )
+                    )
+                },
+        ) {
+            TodayScreen()
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 393, heightDp = 852)
+@Composable
 private fun TodayPlaceholderCardPreview() {
     LevelaTheme {
         Box(
@@ -148,29 +171,6 @@ private fun TodayPlaceholderCardPreview() {
                     .width(165.dp)
                     .height(256.dp),
             )
-        }
-    }
-}
-
-@Preview(showBackground = true, widthDp = 393, heightDp = 852)
-@Composable
-private fun TodayScreenPreview() {
-    LevelaTheme {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .drawBehind {
-                    drawRect(Brush.verticalGradient(listOf(White, LightBlue100)))
-                    drawRect(
-                        Brush.radialGradient(
-                            colors = listOf(LightBlue300.copy(alpha = 0.55f), Color.Transparent),
-                            center = Offset(size.width / 2f, -size.height * 0.08f),
-                            radius = size.width * 1.1f,
-                        )
-                    )
-                },
-        ) {
-            TodayScreen()
         }
     }
 }

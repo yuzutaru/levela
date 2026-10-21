@@ -4,7 +4,9 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,12 +37,15 @@ import com.yuzutaru.design.ui.theme.White
 
 private val PreviewCardCorner = 28.dp
 private val PreviewCardElevation = 12.dp
-private val RingDiameter = 92.dp
 private val RingStroke = 12.dp
 
 /**
  * The progress ring: one arc per macro, sized by that macro's share of the
  * total grams consumed so the three arcs close the circle.
+ *
+ * The ring fills the width available to it (the card supplies the 16.dp side
+ * margin through its own content padding) and stays square, so the diameter
+ * follows the card's width.
  */
 @Composable
 internal fun NutritionRing(
@@ -51,8 +56,8 @@ internal fun NutritionRing(
 
     Box(
         modifier = modifier
-            .size(RingDiameter)
-            .padding(16.dp),
+            .fillMaxWidth()
+            .aspectRatio(1f),
         contentAlignment = Alignment.Center,
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
