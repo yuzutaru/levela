@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/onboarding" />
             <option value="$PROJECT_DIR$/profile" />
             <option value="$PROJECT_DIR$/splash" />
+            <option value="$PROJECT_DIR$/summary" />
           </set>
         </option>
       </GradleProjectSettings>

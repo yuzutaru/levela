@@ -1,4 +1,4 @@
-package com.yuzutaru.nutrition.presentation.widget
+package com.yuzutaru.mainmenu.presentation.widget
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -51,7 +51,7 @@ import com.yuzutaru.design.ui.theme.Orange300
 import com.yuzutaru.design.ui.theme.Orange500
 import com.yuzutaru.design.ui.theme.Pink500
 import com.yuzutaru.design.ui.theme.White
-import com.yuzutaru.nutrition.presentation.model.FastingSummary
+import com.yuzutaru.mainmenu.presentation.model.FastingSummary
 import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin

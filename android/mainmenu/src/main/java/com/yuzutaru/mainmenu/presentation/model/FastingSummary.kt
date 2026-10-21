@@ -1,4 +1,4 @@
-package com.yuzutaru.nutrition.presentation.model
+package com.yuzutaru.mainmenu.presentation.model
 
 /**
  * The mock fasting summary shown on the Nutrition screen (placeholder until the

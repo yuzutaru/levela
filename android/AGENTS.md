@@ -10,7 +10,7 @@ The iOS app lives in `../ios/` (SwiftUI + SwiftData) and is out of scope here.
 
 ## Module layout
 
-Eight Gradle modules, declared in `settings.gradle.kts`:
+Seven Gradle modules, declared in `settings.gradle.kts`:
 
 - **`:app`** — the application. Entry point is
   `app/src/main/java/com/yuzutaru/levela/MainActivity.kt`
@@ -19,9 +19,8 @@ Eight Gradle modules, declared in `settings.gradle.kts`:
   resolves the launch-time "has profile?" state: a new guest walks
   `SplashView` → `OnboardingView` → `MainMenuScreen` (`presentation/MainMenuScreen.kt`,
   the bottom-navigation main menu: Today · Nutrition · Train · Profile — the
-  Today destination is `:mainmenu` and Nutrition is `:nutrition`; Train and
-  Profile are still placeholders), while a returning user (profile already
-  saved) skips
+  Today destination is the `:mainmenu` module; the rest are placeholders), while
+  a returning user (profile already saved) skips
   onboarding and lands on `MainMenuScreen` straight after the splash. Hosts the
   app-level use cases; view models follow ViewModel → UseCase → Repository (see
   the Layering section).
@@ -47,27 +46,23 @@ Eight Gradle modules, declared in `settings.gradle.kts`:
 - **`:splash`** — the launch welcome flow under
   `splash/src/main/java/com/yuzutaru/splash/`. Depends on `:design`; `:app`
   depends on it. The iOS counterpart is the `Splash` Swift package.
-- **`:mainmenu`** — the Today dashboard (the main menu's landing destination) under
-  `mainmenu/src/main/java/com/yuzutaru/mainmenu/`. Holds `TodayScreen` and
-  `TodayTokens`; depends on `:design` and `:summary` (the shell draws the shared
-  splash-style background). The iOS counterpart is the `MainMenu` Swift package.
+- **`:mainmenu`** — the Today destination (the main menu's landing destination)
+  under `mainmenu/src/main/java/com/yuzutaru/mainmenu/`. Holds `TodayScreen` (the
+  summary cards plus the fasting view), `TodayTokens`, the fasting widgets and the
+  mock `FastingSummary`; depends on `:design` and `:summary` (the shell draws the
+  shared splash-style background). The iOS counterpart is the `MainMenu` Swift
+  package.
 - **`:summary`** — the shared dashboard summary cards under
   `summary/src/main/java/com/yuzutaru/summary/`. Holds `SummaryCards` (the
   three-card row), the nutrition summary card, the macro ring, the step and
   active-minutes cards, and the `summaryCard()` chrome. Depends only on `:design`.
-  Consumed by `:mainmenu` (Today) and `:nutrition` (Nutrition). The iOS
-  counterpart is the `Summary` Swift package.
-- **`:nutrition`** — the Nutrition destination under
-  `nutrition/src/main/java/com/yuzutaru/nutrition/`. Holds `NutritionScreen` (a
-  scrollable screen: the shared summary cards on top, the fasting view below —
-  phase banner, fasting ring, start/end times and the End Fasting action) and
-  `NutritionTokens`. Mock fasting data — no view model yet. Depends on `:design`
-  and `:summary`. The iOS counterpart is the `Nutrition` Swift package.
+  Consumed by `:mainmenu` (Today). The iOS counterpart is the `Summary` Swift
+  package.
 
 Namespaces: `com.yuzutaru.levela` (`:app`), `com.yuzutaru.profile` (`:profile`),
 `com.yuzutaru.design` (`:design`), `com.yuzutaru.onboarding` (`:onboarding`),
 `com.yuzutaru.splash` (`:splash`), `com.yuzutaru.mainmenu` (`:mainmenu`),
-`com.yuzutaru.summary` (`:summary`), `com.yuzutaru.nutrition` (`:nutrition`).
+`com.yuzutaru.summary` (`:summary`).
 
 ## Build & run
 
@@ -79,7 +74,6 @@ cd android
 ./gradlew :profile:test          # profile unit tests
 ./gradlew :mainmenu:test         # mainmenu unit tests
 ./gradlew :summary:test          # summary unit tests
-./gradlew :nutrition:test        # nutrition unit tests
 ./gradlew connectedAndroidTest   # instrumented tests (needs a device/emulator)
 ```
 
@@ -210,37 +204,30 @@ Related docs: [`../ios/AGENTS.md`](../ios/AGENTS.md) (iOS counterpart),
 
 ## Today
 
-The Today dashboard (the main menu's landing destination) lives in `:mainmenu`
-under `mainmenu/src/main/java/com/yuzutaru/mainmenu/`. It renders the shared
-summary row from `:summary`: a mock nutrition summary card (consumed calories, a
-macro progress ring, per-macro rows), a mock step summary card (the day's step
-count and the distance it corresponds to) and a mock active minutes card (the
-day's active minutes and the daily average) — all mock data, shaped like the
-future model, with no view model or persistence yet. The row (`SummaryCards`) is
-the nutrition card on the left half and, on the right half, the step summary card
-(`StepsCard`) on top of the active minutes card (`ActiveMinutesCard`), each
-filling half of the nutrition card's height and sharing the card chrome through
-the `summaryCard()` modifier. `TodayTokens` holds the heading copy and the stable
-`mainmenu.today` test tag that the app-level routing and end-to-end tests assert
-against. The shared splash-style background is drawn by the app shell
-(`MenuBackground` in `MainMenuScreen`); the module paints content only and depends
-on `:design` and `:summary`. The iOS counterpart is the `MainMenu` Swift package.
+The Today destination (the main menu's landing destination) lives in `:mainmenu`
+under `mainmenu/src/main/java/com/yuzutaru/mainmenu/`. It is a scrollable screen:
+a large top-left heading, then the shared summary row from `:summary` — a mock
+nutrition summary card (consumed calories, a macro progress ring, per-macro
+rows), a mock step summary card (the day's step count and the distance it
+corresponds to) and a mock active minutes card (the day's active minutes and the
+daily average) — and, below it, the fasting view.
 
-## Nutrition
+The summary row (`SummaryCards`) is the nutrition card on the left half and, on
+the right half, the step summary card (`StepsCard`) on top of the active minutes
+card (`ActiveMinutesCard`), each filling half of the nutrition card's height and
+sharing the card chrome through the `summaryCard()` modifier.
 
-The Nutrition destination lives in `:nutrition` under
-`nutrition/src/main/java/com/yuzutaru/nutrition/`. It is a scrollable screen: a
-`Nutrition` heading, the shared `SummaryCards` row (the same nutrition, steps and
-active-minutes cards as Today, from `:summary`) and, below it, the fasting view —
-a `PhaseBanner` ("New Phase!"), a `FastingRing` (the elapsed arc, the flame badge
-at its leading edge, stage markers, a static timer and a skip control),
-`FastingTimes` (the start/end times) and the `EndFastingButton`. Everything is
-mock data shaped for the future model (`FastingSummary`); there is no view model,
-and the timer, the banner's ✕, the skip control and End Fasting are visual-only.
-`NutritionTokens` holds the heading copy and the stable `mainmenu.nutrition` test
-tag. The shell draws the splash-style background; the module paints content only
-and depends on `:design` and `:summary`. The iOS counterpart is the `Nutrition`
-Swift package.
+The fasting view is a `PhaseBanner` ("New Phase!"), a `FastingRing` (the elapsed
+arc, the flame badge at its leading edge, stage markers, a static timer and a
+skip control), `FastingTimes` (the start/end times) and the `EndFastingButton` —
+mock data shaped for the future model (`FastingSummary`), with the timer, the
+banner's ✕, the skip control and End Fasting visual-only.
+
+`TodayTokens` holds the heading copy and the stable `mainmenu.today` test tag that
+the app-level routing and end-to-end tests assert against. The shared splash-style
+background is drawn by the app shell (`MenuBackground` in `MainMenuScreen`); the
+module paints content only and depends on `:design` and `:summary`. The iOS
+counterpart is the `MainMenu` Swift package.
 
 ## Dependency injection (Hilt)
 

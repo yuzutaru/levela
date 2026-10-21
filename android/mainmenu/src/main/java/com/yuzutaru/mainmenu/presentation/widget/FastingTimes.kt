@@ -1,4 +1,4 @@
-package com.yuzutaru.nutrition.presentation.widget
+package com.yuzutaru.mainmenu.presentation.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +30,7 @@ import com.yuzutaru.design.ui.theme.Green100
 import com.yuzutaru.design.ui.theme.Green500
 import com.yuzutaru.design.ui.theme.LevelaTheme
 import com.yuzutaru.design.ui.theme.Navy900
-import com.yuzutaru.nutrition.presentation.model.FastingSummary
+import com.yuzutaru.mainmenu.presentation.model.FastingSummary
 
 /**
  * The fast's start and end times, each with a small edit affordance. The values

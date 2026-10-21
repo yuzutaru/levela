@@ -1,4 +1,4 @@
-package com.yuzutaru.nutrition.presentation.widget
+package com.yuzutaru.mainmenu.presentation.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

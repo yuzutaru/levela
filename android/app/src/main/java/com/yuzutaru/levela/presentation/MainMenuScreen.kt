@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LevelaTheme
 import com.yuzutaru.design.ui.theme.White
 import com.yuzutaru.mainmenu.presentation.TodayScreen
-import com.yuzutaru.nutrition.presentation.NutritionScreen
 import com.yuzutaru.splash.SplashTokens
 
 /**
@@ -147,7 +146,6 @@ internal fun MenuBackground(modifier: Modifier = Modifier) {
 private fun MainMenuDestination(tab: MainMenuTab, modifier: Modifier = Modifier) {
     when (tab) {
         MainMenuTab.Today -> TodayScreen(modifier)
-        MainMenuTab.Nutrition -> NutritionScreen(modifier)
         else -> PlaceholderDestination(tab = tab, modifier = modifier)
     }
 }

@@ -1,4 +1,4 @@
-package com.yuzutaru.nutrition.presentation.widget
+package com.yuzutaru.mainmenu.presentation.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,7 +30,7 @@ import com.yuzutaru.design.ui.theme.LevelaTheme
 import com.yuzutaru.design.ui.theme.LightBlue100
 import com.yuzutaru.design.ui.theme.LightBlue300
 import com.yuzutaru.design.ui.theme.Navy900
-import com.yuzutaru.nutrition.presentation.model.FastingSummary
+import com.yuzutaru.mainmenu.presentation.model.FastingSummary
 import androidx.compose.ui.tooling.preview.Preview
 
 /**
