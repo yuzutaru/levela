@@ -48,10 +48,10 @@ Seven Gradle modules, declared in `settings.gradle.kts`:
   depends on it. The iOS counterpart is the `Splash` Swift package.
 - **`:mainmenu`** — the Today destination (the main menu's landing destination)
   under `mainmenu/src/main/java/com/yuzutaru/mainmenu/`. Holds `TodayScreen` (the
-  summary cards plus the fasting view), `TodayTokens`, the fasting widgets and the
-  mock `FastingSummary`; depends on `:design` and `:summary` (the shell draws the
-  shared splash-style background). The iOS counterpart is the `MainMenu` Swift
-  package.
+  summary cards plus the fasting view), `FastingSection` (the fasting view, in its
+  own file), `TodayTokens`, the fasting widgets and the mock `FastingSummary`;
+  depends on `:design` and `:summary` (the shell draws the shared splash-style
+  background). The iOS counterpart is the `MainMenu` Swift package.
 - **`:summary`** — the shared dashboard summary cards under
   `summary/src/main/java/com/yuzutaru/summary/`. Holds `SummaryCards` (the
   three-card row), the nutrition summary card, the macro ring, the step and
@@ -217,11 +217,13 @@ the right half, the step summary card (`StepsCard`) on top of the active minutes
 card (`ActiveMinutesCard`), each filling half of the nutrition card's height and
 sharing the card chrome through the `summaryCard()` modifier.
 
-The fasting view is a `PhaseBanner` ("New Phase!"), a `FastingRing` (the elapsed
-arc, the flame badge at its leading edge, stage markers, a static timer and a
-skip control), `FastingTimes` (the start/end times) and the `EndFastingButton` —
-mock data shaped for the future model (`FastingSummary`), with the timer, the
-banner's ✕, the skip control and End Fasting visual-only.
+The fasting view lives in its own file, `FastingSection.kt` (the counterpart of
+iOS's `Presentation/FastingSection.swift`), and stacks a `PhaseBanner` ("New
+Phase!"), a `FastingRing` (the elapsed arc, the flame badge at its leading edge,
+stage markers, a static timer and a skip control), `FastingTimes` (the start/end
+times) and the `EndFastingButton` — mock data shaped for the future model
+(`FastingSummary`), with the timer, the banner's ✕, the skip control and End
+Fasting visual-only.
 
 `TodayTokens` holds the heading copy and the stable `mainmenu.today` test tag that
 the app-level routing and end-to-end tests assert against. The shared splash-style

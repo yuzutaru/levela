@@ -1,12 +1,10 @@
 package com.yuzutaru.mainmenu.presentation
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -28,10 +26,6 @@ import com.yuzutaru.design.ui.theme.LevelaTheme
 import com.yuzutaru.design.ui.theme.Navy900
 import com.yuzutaru.design.ui.theme.White
 import com.yuzutaru.mainmenu.presentation.model.TodayTokens
-import com.yuzutaru.mainmenu.presentation.widget.EndFastingButton
-import com.yuzutaru.mainmenu.presentation.widget.FastingRing
-import com.yuzutaru.mainmenu.presentation.widget.FastingTimes
-import com.yuzutaru.mainmenu.presentation.widget.PhaseBanner
 import com.yuzutaru.summary.presentation.widget.SummaryCards
 
 private const val CardMinHeightFraction = 0.30f
@@ -78,19 +72,6 @@ fun TodayScreen(modifier: Modifier = Modifier) {
 
             FastingSection()
         }
-    }
-}
-
-@Composable
-private fun FastingSection(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        PhaseBanner()
-        FastingRing()
-        FastingTimes()
-        EndFastingButton()
     }
 }
 
