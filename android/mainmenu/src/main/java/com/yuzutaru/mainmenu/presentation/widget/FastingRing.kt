@@ -56,9 +56,9 @@ import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
-private val RingStroke = 16.dp
-private val BadgeSize = 56.dp
-private val MarkerSize = 26.dp
+private val RingStroke = 28.dp
+private val BadgeSize = 72.dp
+private val MarkerSize = 40.dp
 
 /**
  * The fasting progress ring: an elapsed arc (green → orange) over a pale track,
@@ -115,7 +115,7 @@ public fun FastingRing(
                 imageVector = Icons.Filled.WaterDrop,
                 contentDescription = null,
                 tint = Pink500,
-                modifier = Modifier.size(14.dp),
+                modifier = Modifier.size(18.dp),
             )
         }
         RingMarker(angleDegrees = -55f, radius = radius, markerSize = MarkerSize) {
@@ -123,7 +123,7 @@ public fun FastingRing(
                 imageVector = Icons.Filled.LocalFireDepartment,
                 contentDescription = null,
                 tint = Gray400,
-                modifier = Modifier.size(14.dp),
+                modifier = Modifier.size(18.dp),
             )
         }
         RingMarker(angleDegrees = 45f, radius = radius, markerSize = MarkerSize) {
@@ -131,7 +131,7 @@ public fun FastingRing(
                 imageVector = Icons.Filled.LocalFireDepartment,
                 contentDescription = null,
                 tint = Gray400,
-                modifier = Modifier.size(14.dp),
+                modifier = Modifier.size(18.dp),
             )
         }
 
@@ -141,13 +141,13 @@ public fun FastingRing(
             radius = radius,
             markerSize = BadgeSize,
             borderColor = Orange500,
-            borderWidth = 3.dp,
+            borderWidth = 4.dp,
         ) {
             Icon(
                 imageVector = Icons.Filled.LocalFireDepartment,
                 contentDescription = null,
                 tint = Orange500,
-                modifier = Modifier.size(28.dp),
+                modifier = Modifier.size(32.dp),
             )
         }
 
