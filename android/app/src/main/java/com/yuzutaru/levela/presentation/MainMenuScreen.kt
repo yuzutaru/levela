@@ -1,8 +1,11 @@
 package com.yuzutaru.levela.presentation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Home
@@ -13,7 +16,6 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Restaurant
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -23,7 +25,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -35,15 +36,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LevelaTheme
 import com.yuzutaru.design.ui.theme.White
+import com.yuzutaru.mainmenu.presentation.MenuPageLayout
+import com.yuzutaru.mainmenu.presentation.MenuPageTitle
+import com.yuzutaru.mainmenu.presentation.NutritionScreen
 import com.yuzutaru.mainmenu.presentation.TodayScreen
 import com.yuzutaru.splash.SplashTokens
 
 /**
  * The app's bottom-navigation destinations, in left-to-right order.
  *
- * Each destination is still a placeholder — a blank, themed screen with a large
- * centered title — until the real feature screens land. The navigation shell
- * itself is final.
+ * Today and Nutrition have their own screens in the `:mainmenu` module; Train
+ * and Profile are still placeholders — a blank page with a large top-left
+ * title. The navigation shell itself is final.
  */
 internal enum class MainMenuTab(
     val label: String,
@@ -56,7 +60,7 @@ internal enum class MainMenuTab(
     Profile("Profile", Icons.Filled.Person, Icons.Outlined.Person),
     ;
 
-    /** Stable test tag for the destination's centered title. */
+    /** Stable test tag for the destination's page title. */
     val screenTag: String get() = "mainmenu.${name.lowercase()}"
 
     /** Stable test tag for this destination's navigation-bar item. */
@@ -139,29 +143,34 @@ internal fun MenuBackground(modifier: Modifier = Modifier) {
 }
 
 /**
- * The destination content: the Today screen, or a placeholder for the tabs
- * whose real screens have not landed yet.
+ * The destination content: the Today and Nutrition screens, or a placeholder
+ * for the tabs whose real screens have not landed yet.
  */
 @Composable
 private fun MainMenuDestination(tab: MainMenuTab, modifier: Modifier = Modifier) {
     when (tab) {
         MainMenuTab.Today -> TodayScreen(modifier)
+        MainMenuTab.Nutrition -> NutritionScreen(modifier)
         else -> PlaceholderDestination(tab = tab, modifier = modifier)
     }
 }
 
-/** The blank placeholder for a destination, differentiated by its big title. */
+/** The blank placeholder for a destination, titled like a page. */
 @Composable
 private fun PlaceholderDestination(tab: MainMenuTab, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center,
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = MenuPageLayout.HorizontalPadding)
+            .padding(
+                top = MenuPageLayout.TopPadding,
+                bottom = MenuPageLayout.BottomPadding,
+            ),
     ) {
-        Text(
+        MenuPageTitle(
             text = tab.label,
-            style = MaterialTheme.typography.displaySmall,
-            color = SplashTokens.Title,
-            modifier = Modifier.testTag(tab.screenTag),
+            testTag = tab.screenTag,
         )
     }
 }

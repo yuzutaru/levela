@@ -19,7 +19,8 @@ Seven Gradle modules, declared in `settings.gradle.kts`:
   resolves the launch-time "has profile?" state: a new guest walks
   `SplashView` → `OnboardingView` → `MainMenuScreen` (`presentation/MainMenuScreen.kt`,
   the bottom-navigation main menu: Today · Nutrition · Train · Profile — the
-  Today destination is the `:mainmenu` module; the rest are placeholders), while
+  Today and Nutrition destinations live in the `:mainmenu` module; Train and
+  Profile are placeholders), while
   a returning user (profile already saved) skips
   onboarding and lands on `MainMenuScreen` straight after the splash. Hosts the
   app-level use cases; view models follow ViewModel → UseCase → Repository (see
@@ -46,11 +47,13 @@ Seven Gradle modules, declared in `settings.gradle.kts`:
 - **`:splash`** — the launch welcome flow under
   `splash/src/main/java/com/yuzutaru/splash/`. Depends on `:design`; `:app`
   depends on it. The iOS counterpart is the `Splash` Swift package.
-- **`:mainmenu`** — the Today destination (the main menu's landing destination)
-  under `mainmenu/src/main/java/com/yuzutaru/mainmenu/`. Holds `TodayScreen` (the
-  summary cards plus the fasting tracker), `FastingSection` (the fasting tracker
-  card, in its own file), `TodayTokens`, the fasting widgets and the mock
-  `FastingSummary`;
+- **`:mainmenu`** — the Today and Nutrition destinations (the main menu's
+  landing destinations) under `mainmenu/src/main/java/com/yuzutaru/mainmenu/`.
+  Holds `TodayScreen` (the summary cards plus the fasting tracker),
+  `NutritionScreen` (the Nutrition page title), `FastingSection` (the fasting
+  tracker card, in its own file), `TodayTokens`, `NutritionTokens`, the shared
+  page chrome (`MenuPage.kt` — the page padding and the `MenuPageTitle` heading),
+  the fasting widgets and the mock `FastingSummary`;
   depends on `:design` and `:summary` (the shell draws the shared splash-style
   background). The iOS counterpart is the `MainMenu` Swift package.
 - **`:summary`** — the shared dashboard summary cards under
@@ -233,6 +236,21 @@ the app-level routing and end-to-end tests assert against. The shared splash-sty
 background is drawn by the app shell (`MenuBackground` in `MainMenuScreen`); the
 module paints content only and depends on `:design` and `:summary`. The iOS
 counterpart is the `MainMenu` Swift package.
+
+## Nutrition
+
+The Nutrition destination lives in `:mainmenu` next to Today, in
+`NutritionScreen.kt` (the counterpart of iOS's `Presentation/NutritionView.swift`).
+It is a scrollable screen carrying just the page title — the content is empty
+until the nutrition widgets land. `NutritionTokens` holds the title copy
+("Nutrition") and the stable `mainmenu.nutrition` test tag.
+
+Every destination titles itself the same way: a large top-left heading
+(`displaySmall`, `Navy900`) over the page's content, with the page padding
+(24dp horizontal, 8dp top, 24dp bottom) held in `MenuPageLayout` and the
+heading itself in `MenuPageTitle` (both in `MenuPage.kt`). Today, Nutrition and
+the app shell's Train/Profile placeholders all use them, so the titles cannot
+drift apart.
 
 ## Dependency injection (Hilt)
 
