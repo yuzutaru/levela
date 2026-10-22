@@ -9,31 +9,24 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuzutaru.design.ui.theme.LightBlue100
 import com.yuzutaru.design.ui.theme.LightBlue300
 import com.yuzutaru.design.ui.theme.LevelaTheme
-import com.yuzutaru.design.ui.theme.Navy900
 import com.yuzutaru.design.ui.theme.White
 import com.yuzutaru.mainmenu.presentation.model.TodayTokens
 import com.yuzutaru.summary.presentation.widget.SummaryCards
 
 private const val CardMinHeightFraction = 0.30f
-private val HorizontalPadding = 24.dp
-private val TopPadding = 8.dp
 private val CardSpacing = 24.dp
 private val FastingSpacing = 24.dp
-private val BottomPadding = 24.dp
 
 /**
  * The Today destination: a large top-left heading over the shared summary card
@@ -54,14 +47,15 @@ fun TodayScreen(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = HorizontalPadding)
-                .padding(top = TopPadding, bottom = BottomPadding),
+                .padding(horizontal = MenuPageLayout.HorizontalPadding)
+                .padding(
+                    top = MenuPageLayout.TopPadding,
+                    bottom = MenuPageLayout.BottomPadding,
+                ),
         ) {
-            Text(
+            MenuPageTitle(
                 text = TodayTokens.Title,
-                style = MaterialTheme.typography.displaySmall,
-                color = Navy900,
-                modifier = Modifier.testTag(TodayTokens.ScreenTag),
+                testTag = TodayTokens.ScreenTag,
             )
 
             Spacer(Modifier.height(CardSpacing))
