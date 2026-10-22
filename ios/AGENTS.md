@@ -27,8 +27,8 @@ of the Android Gradle modules.
   - `Levela/Presentation/Screen/MainMenuView.swift` — the bottom-navigation main
     menu (Today · Nutrition · Train · Profile), the mirror of Android's
     `MainMenuScreen`, with per-destination `MainMenuAccessibility` handles. The
-    Today destination renders `TodayView` from the `MainMenu` package; the rest
-    are placeholders.
+    Today and Nutrition destinations render `TodayView` and `NutritionView` from
+    the `MainMenu` package; Train and Profile are placeholders.
   - `Levela/Presentation/Viewmodel/RootViewModel.swift` — owns the launch-time
     profile check (the iOS counterpart of Android's `RootViewModel`).
   - `Levela/Presentation/Widget/ErrorView.swift` — the store-open failure screen
@@ -53,9 +53,10 @@ of the Android Gradle modules.
   `UserProfileRepository` and `ProfileData`). No dependencies. The Android
   counterpart is the `:profile` module. It is consumed only through use cases
   (see the Layering section).
-- **`MainMenu`** — local Swift package at `Packages/MainMenu`; the Today
-  destination (the main menu's landing destination): the summary cards plus the
-  fasting tracker card. Depends on `Design` and `Summary`. All mock data — no view model
+- **`MainMenu`** — local Swift package at `Packages/MainMenu`; the Today and
+  Nutrition destinations (the main menu's landing destinations): the summary
+  cards plus the fasting tracker card (Today) and the Nutrition page title
+  (Nutrition). Depends on `Design` and `Summary`. All mock data — no view model
   yet. The Android counterpart is the `:mainmenu` module.
 - **`Summary`** — local Swift package at `Packages/Summary`; the shared dashboard
   summary cards (`SummaryCards`, `NutritionSummaryCard`, `NutritionRing`,
@@ -287,6 +288,26 @@ is the `:mainmenu` module.
 Tests: `xcodebuild test -scheme MainMenu -destination 'platform=iOS Simulator,name=iPhone 18 Pro'`
 from `Packages/MainMenu` (`TodayTokensTests` covers the copy and the stable
 `mainmenu.today` identifier).
+
+## Nutrition
+
+The Nutrition destination lives in the `MainMenu` package next to Today, in
+`Presentation/NutritionView.swift` (the counterpart of Android's
+`NutritionScreen.kt`). It is a scrollable screen carrying just the page title —
+the content is empty until the nutrition widgets land. `NutritionTokens` holds
+the title copy ("Nutrition") and the stable `mainmenu.nutrition` accessibility
+identifier, matching the app's `MainMenuAccessibility.nutrition` handle.
+
+Every destination titles itself the same way: a large top-left heading
+(`LevelaTypography.displaySmall`, `Color.navy900`) over the page's content,
+with the page padding (24pt horizontal, 8pt top, 24pt bottom) held in
+`MenuPageLayout` and the heading itself in `MenuPageTitle` (both in
+`Presentation/MenuPage.swift`). Today, Nutrition and the app shell's
+Train/Profile placeholders all use them, so the titles cannot drift apart.
+
+Tests: the same `xcodebuild test -scheme MainMenu` run covers
+`NutritionTokensTests` (the copy and the stable `mainmenu.nutrition`
+identifier).
 
 ## Profile (`Profile` package)
 

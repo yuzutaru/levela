@@ -19,10 +19,6 @@ import SwiftUI
 /// Mirrors the Android `TodayScreen`.
 @MainActor
 public struct TodayView: View {
-    private static let horizontalPadding: CGFloat = 24
-    private static let topPadding: CGFloat = 8
-    private static let cardSpacing: CGFloat = 24
-    private static let bottomPadding: CGFloat = 24
     private static let cardMinHeightFraction: CGFloat = 0.30
 
     public init() {}
@@ -30,19 +26,19 @@ public struct TodayView: View {
     public var body: some View {
         GeometryReader { proxy in
             ScrollView {
-                VStack(alignment: .leading, spacing: Self.cardSpacing) {
-                    Text(TodayTokens.title)
-                        .font(LevelaTypography.displaySmall)
-                        .foregroundStyle(Color.navy900)
-                        .accessibilityIdentifier(TodayTokens.screenTag)
+                VStack(alignment: .leading, spacing: MenuPageLayout.contentSpacing) {
+                    MenuPageTitle(
+                        text: TodayTokens.title,
+                        screenTag: TodayTokens.screenTag
+                    )
 
                     SummaryCards(minHeight: proxy.size.height * Self.cardMinHeightFraction)
 
                     FastingSection()
                 }
-                .padding(.horizontal, Self.horizontalPadding)
-                .padding(.top, Self.topPadding)
-                .padding(.bottom, Self.bottomPadding)
+                .padding(.horizontal, MenuPageLayout.horizontalPadding)
+                .padding(.top, MenuPageLayout.topPadding)
+                .padding(.bottom, MenuPageLayout.bottomPadding)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         }

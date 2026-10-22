@@ -10,9 +10,10 @@ import SwiftUI
 
 /// The app's bottom-navigation destinations, in left-to-right order.
 ///
-/// Each destination is still a placeholder — a blank, themed screen with a large
-/// centered title — until the real feature screens land. The navigation shell
-/// itself is final. Mirrors the Android `MainMenuTab`.
+/// Today and Nutrition have their own views in the `MainMenu` package; Train
+/// and Profile are still placeholders — a blank page with a large top-left
+/// title. The navigation shell itself is final. Mirrors the Android
+/// `MainMenuTab`.
 enum MainMenuTab: String, CaseIterable, Identifiable {
     case today
     case nutrition
@@ -105,9 +106,10 @@ struct MainMenuBackground: View {
     }
 }
 
-/// The destination content: the Today screen, or a placeholder for the tabs
-/// whose real screens have not landed yet. The splash-style background is
-/// applied per destination because `TabView` hosts each page opaquely.
+/// The destination content: the Today and Nutrition screens, or a placeholder
+/// for the tabs whose real screens have not landed yet. The splash-style
+/// background is applied per destination because `TabView` hosts each page
+/// opaquely.
 private struct MainMenuDestination: View {
     let tab: MainMenuTab
 
@@ -118,22 +120,32 @@ private struct MainMenuDestination: View {
             switch tab {
             case .today:
                 TodayView()
-            case .nutrition, .train, .profile:
+            case .nutrition:
+                NutritionView()
+            case .train, .profile:
                 PlaceholderDestination(tab: tab)
             }
         }
     }
 }
 
-/// The blank placeholder for a destination, differentiated by its big title.
+/// The blank placeholder for a destination, titled like a page.
 private struct PlaceholderDestination: View {
     let tab: MainMenuTab
 
     var body: some View {
-        Text(tab.title)
-            .font(LevelaTypography.displaySmall)
-            .foregroundStyle(SplashTokens.title)
-            .accessibilityIdentifier(tab.accessibilityIdentifier)
+        ScrollView {
+            VStack(alignment: .leading, spacing: MenuPageLayout.contentSpacing) {
+                MenuPageTitle(
+                    text: tab.title,
+                    screenTag: tab.accessibilityIdentifier
+                )
+            }
+            .padding(.horizontal, MenuPageLayout.horizontalPadding)
+            .padding(.top, MenuPageLayout.topPadding)
+            .padding(.bottom, MenuPageLayout.bottomPadding)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 }
 
