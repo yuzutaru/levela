@@ -48,8 +48,9 @@ Seven Gradle modules, declared in `settings.gradle.kts`:
   depends on it. The iOS counterpart is the `Splash` Swift package.
 - **`:mainmenu`** — the Today destination (the main menu's landing destination)
   under `mainmenu/src/main/java/com/yuzutaru/mainmenu/`. Holds `TodayScreen` (the
-  summary cards plus the fasting view), `FastingSection` (the fasting view, in its
-  own file), `TodayTokens`, the fasting widgets and the mock `FastingSummary`;
+  summary cards plus the fasting tracker), `FastingSection` (the fasting tracker
+  card, in its own file), `TodayTokens`, the fasting widgets and the mock
+  `FastingSummary`;
   depends on `:design` and `:summary` (the shell draws the shared splash-style
   background). The iOS counterpart is the `MainMenu` Swift package.
 - **`:summary`** — the shared dashboard summary cards under
@@ -210,20 +211,22 @@ a large top-left heading, then the shared summary row from `:summary` — a mock
 nutrition summary card (consumed calories, a macro progress ring, per-macro
 rows), a mock step summary card (the day's step count and the distance it
 corresponds to) and a mock active minutes card (the day's active minutes and the
-daily average) — and, below it, the fasting view.
+daily average) — and, below it, the fasting tracker card.
 
 The summary row (`SummaryCards`) is the nutrition card on the left half and, on
 the right half, the step summary card (`StepsCard`) on top of the active minutes
 card (`ActiveMinutesCard`), each filling half of the nutrition card's height and
 sharing the card chrome through the `summaryCard()` modifier.
 
-The fasting view lives in its own file, `FastingSection.kt` (the counterpart of
+The fasting tracker lives in its own file, `FastingSection.kt` (the counterpart of
 iOS's `Presentation/FastingSection.swift`), and stacks a `PhaseBanner` ("New
 Phase!"), a `FastingRing` (the elapsed arc, the flame badge at its leading edge,
 stage markers, a static timer and a skip control), `FastingTimes` (the start/end
 times) and the `EndFastingButton` — mock data shaped for the future model
 (`FastingSummary`), with the timer, the banner's ✕, the skip control and End
-Fasting visual-only.
+Fasting visual-only. The whole section is wrapped in the shared `summaryCard()`
+chrome (white surface, 28dp corner, 12dp shadow, 20dp inner padding), so the
+fasting tracker reads as a card like the summary row above it.
 
 `TodayTokens` holds the heading copy and the stable `mainmenu.today` test tag that
 the app-level routing and end-to-end tests assert against. The shared splash-style

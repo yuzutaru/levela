@@ -38,8 +38,8 @@ private val BottomPadding = 24.dp
 /**
  * The Today destination: a large top-left heading over the shared summary card
  * row (nutrition summary, steps and active minutes) and, below it, the fasting
- * view — the phase banner, the fasting ring, the start/end times and the
- * end-fasting action.
+ * tracker card — the phase banner, the fasting ring, the start/end times and
+ * the end-fasting action, inside the same card chrome as the summary row.
  *
  * The screen scrolls: the fasting view sits below the fold of the summary cards.
  * The splash-style background is drawn by the app shell behind the content;

@@ -28,15 +28,20 @@ public struct FastingRing: View {
         GeometryReader { proxy in
             let size = min(proxy.size.width, proxy.size.height)
             let center = CGPoint(x: proxy.size.width / 2, y: proxy.size.height / 2)
+            // The ring is inset by half the stroke, so its centerline sits at
+            // `size / 2 - stroke / 2` — the same radius the markers use.
             let radius = size / 2 - Self.stroke / 2
             let fraction = CGFloat(summary.percentComplete) / 100
             let startAngle: Double = 90
-            let sweepDegrees = -Double(fraction) * 360
+            // The arc sweeps clockwise from the bottom, so the leading edge is
+            // at `startAngle + fraction * 360`.
+            let sweepDegrees = Double(fraction) * 360
             let endAngle = startAngle + sweepDegrees
 
             ZStack {
                 Circle()
                     .stroke(Color.gray200, lineWidth: Self.stroke)
+                    .padding(Self.stroke / 2)
 
                 Circle()
                     .trim(from: 0, to: fraction)
@@ -50,6 +55,7 @@ public struct FastingRing: View {
                         style: StrokeStyle(lineWidth: Self.stroke, lineCap: .round)
                     )
                     .rotationEffect(.degrees(90))
+                    .padding(Self.stroke / 2)
 
                 RingMarker(angle: 150, radius: radius, size: Self.markerSize, center: center) {
                     Image(systemName: "drop.fill")
