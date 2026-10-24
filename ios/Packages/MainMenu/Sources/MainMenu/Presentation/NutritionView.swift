@@ -28,9 +28,15 @@ public struct NutritionView: View {
                     screenTag: NutritionTokens.screenTag
                 )
 
-                NutritionSummaryCard(summary: NutritionSummary())
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .summaryCard()
+                NutritionSummaryCard(
+                    summary: NutritionSummary(
+                        consumedCalories: "1.320",
+                        dailyCalories: "2300"
+                    ),
+                    layout: .wide
+                )
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .summaryCard()
             }
             .padding(.horizontal, MenuPageLayout.horizontalPadding)
             .padding(.top, MenuPageLayout.topPadding)

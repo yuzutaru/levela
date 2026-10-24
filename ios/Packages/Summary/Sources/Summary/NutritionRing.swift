@@ -9,13 +9,14 @@ import SwiftUI
 /// The progress ring: one arc per macro, sized by that macro's share of the
 /// total grams consumed, so the three arcs close the circle.
 public struct NutritionRing: View {
-    private static let ringDiameter: CGFloat = 92
     private static let ringStroke: CGFloat = 12
 
     public let summary: NutritionSummary
+    public let diameter: CGFloat
 
-    public init(summary: NutritionSummary) {
+    public init(summary: NutritionSummary, diameter: CGFloat = 92) {
         self.summary = summary
+        self.diameter = diameter
     }
 
     private var arcs: [RingArc] {
@@ -46,6 +47,12 @@ public struct NutritionRing: View {
                 Text(summary.dayLabel)
                     .font(.system(size: 10))
                     .foregroundStyle(Color.gray500)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 2)
+                    .background(
+                        Color.gray100,
+                        in: RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    )
                 Text("\(summary.percentComplete)%")
                     .font(.system(size: 24, weight: .bold))
                     .foregroundStyle(Color.navy900)
@@ -54,7 +61,7 @@ public struct NutritionRing: View {
                     .foregroundStyle(Color.green500)
             }
         }
-        .frame(width: Self.ringDiameter, height: Self.ringDiameter)
+        .frame(width: diameter, height: diameter)
     }
 }
 
