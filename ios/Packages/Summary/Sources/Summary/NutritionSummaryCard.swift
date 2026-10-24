@@ -66,8 +66,8 @@ public enum NutritionSummaryLayout {
 /// short stack for the Today destination's half-width card; `.wide` is the
 /// reference design for the Nutrition destination's full-width card — a calorie
 /// header, then the ring on the left with the per-macro detail (vertical colour
-/// bar + consumed / daily weight) on the right. There is no header icon on the
-/// wide layout.
+/// bar + consumed / daily weight) on the right. Both layouts share the calorie
+/// header (flame icon + values).
 public struct NutritionSummaryCard: View {
     public let summary: NutritionSummary
     private let layout: NutritionSummaryLayout
@@ -107,11 +107,11 @@ public struct NutritionSummaryCard: View {
     }
 
     /// The wide row (Nutrition's full-width card, the reference design): a
-    /// calorie header with no icon, then the ring on the left and the per-macro
-    /// detail on the right.
+    /// calorie header, then the ring on the left and the per-macro detail on
+    /// the right.
     private var wide: some View {
         VStack(alignment: .leading, spacing: 12) {
-            calorieText
+            header
 
             HStack(spacing: 16) {
                 NutritionRing(summary: summary, diameter: 156)
