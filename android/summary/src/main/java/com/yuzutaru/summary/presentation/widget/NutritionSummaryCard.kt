@@ -84,7 +84,7 @@ public data class MacroSummary(
  * [NutritionSummaryLayout.Wide] is the reference design for the Nutrition
  * destination's full-width card — a calorie header, then the ring on the left
  * with the per-macro detail (vertical colour bar + consumed / daily weight) on
- * the right. There is no header icon on the wide layout.
+ * the right. Both layouts share the calorie header (flame icon + values).
  */
 @Composable
 public fun NutritionSummaryCard(
@@ -133,21 +133,7 @@ private fun WideNutritionSummaryCard(
         modifier = modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = summary.consumedCalories,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Navy900,
-                maxLines = 1,
-            )
-            Text(
-                text = " / ${summary.dailyCalories} kcal",
-                fontSize = 11.sp,
-                color = Gray500,
-                maxLines = 1,
-            )
-        }
+        CalorieHeader(summary)
 
         Row(
             modifier = Modifier.fillMaxWidth(),
