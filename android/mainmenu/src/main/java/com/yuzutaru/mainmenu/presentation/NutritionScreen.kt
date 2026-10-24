@@ -24,6 +24,7 @@ import com.yuzutaru.design.ui.theme.White
 import com.yuzutaru.mainmenu.presentation.model.NutritionTokens
 import com.yuzutaru.summary.presentation.widget.NutritionSummaryCard
 import com.yuzutaru.summary.presentation.widget.NutritionSummary
+import com.yuzutaru.summary.presentation.widget.NutritionSummaryLayout
 import com.yuzutaru.summary.presentation.widget.summaryCard
 
 private val CardSpacing = 24.dp
@@ -57,7 +58,11 @@ public fun NutritionScreen(modifier: Modifier = Modifier) {
         Spacer(Modifier.height(CardSpacing))
 
         NutritionSummaryCard(
-            summary = NutritionSummary(),
+            summary = NutritionSummary(
+                consumedCalories = "1.320",
+                dailyCalories = "2300",
+            ),
+            layout = NutritionSummaryLayout.Wide,
             modifier = Modifier
                 .fillMaxWidth()
                 .summaryCard(),

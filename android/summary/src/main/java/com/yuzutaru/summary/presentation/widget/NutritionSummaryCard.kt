@@ -43,6 +43,17 @@ import com.yuzutaru.design.ui.theme.White
 
 private val PreviewCardCorner = 28.dp
 private val PreviewCardElevation = 12.dp
+private val WideRingSpacing = 16.dp
+private val WideMacroSpacing = 12.dp
+
+/** How the card arranges its content. */
+public enum class NutritionSummaryLayout {
+    /** The original short stack, for the Today destination's half-width card. */
+    Stacked,
+
+    /** The wide row — ring on the left, per-macro detail on the right. */
+    Wide,
+}
 
 /** The mock nutrition summary shown for Day 8 (placeholder until data lands). */
 public data class NutritionSummary(
@@ -65,10 +76,33 @@ public data class MacroSummary(
     public val color: Color,
 )
 
+/**
+ * The nutrition summary card.
+ *
+ * [layout] picks the arrangement: [NutritionSummaryLayout.Stacked] (the default)
+ * keeps the original short stack for the Today destination's half-width card;
+ * [NutritionSummaryLayout.Wide] is the reference design for the Nutrition
+ * destination's full-width card — a calorie header, then the ring on the left
+ * with the per-macro detail (vertical colour bar + consumed / daily weight) on
+ * the right. There is no header icon on the wide layout.
+ */
 @Composable
 public fun NutritionSummaryCard(
     modifier: Modifier = Modifier,
     summary: NutritionSummary = NutritionSummary(),
+    layout: NutritionSummaryLayout = NutritionSummaryLayout.Stacked,
+) {
+    if (layout == NutritionSummaryLayout.Wide) {
+        WideNutritionSummaryCard(summary, modifier)
+    } else {
+        StackedNutritionSummaryCard(summary, modifier)
+    }
+}
+
+@Composable
+private fun StackedNutritionSummaryCard(
+    summary: NutritionSummary,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.padding(16.dp),
@@ -85,6 +119,91 @@ public fun NutritionSummaryCard(
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             summary.macros.forEach { macro ->
                 MacroRow(macro)
+            }
+        }
+    }
+}
+
+@Composable
+private fun WideNutritionSummaryCard(
+    summary: NutritionSummary,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = summary.consumedCalories,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Navy900,
+                maxLines = 1,
+            )
+            Text(
+                text = " / ${summary.dailyCalories} kcal",
+                fontSize = 11.sp,
+                color = Gray500,
+                maxLines = 1,
+            )
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(WideRingSpacing),
+        ) {
+            NutritionRing(
+                summary = summary,
+                modifier = Modifier.weight(1.1f),
+            )
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(WideMacroSpacing),
+            ) {
+                summary.macros.forEach { macro ->
+                    MacroDetail(macro)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MacroDetail(macro: MacroSummary) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(width = 3.dp, height = 40.dp)
+                .clip(RoundedCornerShape(2.dp))
+                .background(macro.color),
+        )
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(
+                text = macro.label,
+                fontSize = 11.sp,
+                color = Gray500,
+                maxLines = 1,
+            )
+            Row {
+                Text(
+                    text = "${macro.consumed}",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Navy900,
+                    maxLines = 1,
+                )
+                Text(
+                    text = " / ${macro.daily}g",
+                    fontSize = 11.sp,
+                    color = Gray500,
+                    maxLines = 1,
+                )
             }
         }
     }
@@ -149,6 +268,39 @@ private fun MacroRow(macro: MacroSummary) {
             color = Gray400,
             maxLines = 1,
         )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 393, heightDp = 500)
+@Composable
+private fun NutritionSummaryCardWidePreview() {
+    LevelaTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .drawBehind {
+                    drawRect(Brush.verticalGradient(listOf(White, LightBlue100)))
+                    drawRect(
+                        Brush.radialGradient(
+                            colors = listOf(LightBlue300.copy(alpha = 0.55f), Color.Transparent),
+                            center = Offset(size.width / 2f, -size.height * 0.08f),
+                            radius = size.width * 1.1f,
+                        )
+                    )
+                }
+                .padding(horizontal = 24.dp, vertical = 8.dp),
+        ) {
+            NutritionSummaryCard(
+                summary = NutritionSummary(
+                    consumedCalories = "1.320",
+                    dailyCalories = "2300",
+                ),
+                layout = NutritionSummaryLayout.Wide,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .summaryCard(),
+            )
+        }
     }
 }
 

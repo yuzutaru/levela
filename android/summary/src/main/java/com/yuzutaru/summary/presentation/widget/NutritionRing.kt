@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.yuzutaru.design.ui.theme.Gray100
 import com.yuzutaru.design.ui.theme.Gray200
 import com.yuzutaru.design.ui.theme.Gray500
 import com.yuzutaru.design.ui.theme.Green500
@@ -91,6 +92,9 @@ public fun NutritionRing(
                 text = summary.dayLabel,
                 fontSize = 10.sp,
                 color = Gray500,
+                modifier = Modifier
+                    .background(Gray100, RoundedCornerShape(8.dp))
+                    .padding(horizontal = 8.dp, vertical = 2.dp),
             )
             Text(
                 text = "${summary.percentComplete}%",
